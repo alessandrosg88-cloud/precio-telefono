@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Versión de teléfono: usa los datos y traducciones de la web publicada -->
+<base href="https://alessandrosg88-cloud.github.io/precio-cartas/">
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Precio Cartas">
+<title>Precio Cartas Celular</title>
+<style>
+  :root{
+    --bg:#f4f5f8; --card:#ffffff; --text:#1c1f26; --muted:#6b7280; --line:#e5e7eb;
+    --accent:#2563eb; --accent-soft:#e8efff; --good:#059669; --bad:#dc2626; --warn:#b45309;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0f1115; --card:#181b22; --text:#eef0f4; --muted:#9aa3b2; --line:#2a2f3a;
+      --accent:#5b8cff; --accent-soft:#1d2840; --good:#34d399; --bad:#f87171; --warn:#fbbf24; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.45}
+  .wrap{max-width:900px;margin:0 auto;padding:28px 16px 60px}
+  h1{font-size:30px;margin:0 0 4px;text-align:center}
+  .sub{color:var(--muted);text-align:center;margin:0 0 20px}
+  .langbar{position:relative;display:flex;justify-content:flex-end;gap:8px;margin:-12px 0 6px}
+  /* cuenta de usuario (cuenta.js) */
+  .acct{position:relative}
+  .acct .lsel{display:flex;align-items:center;gap:6px}
+  .acct .lsel img{width:22px;height:22px;border-radius:50%}
+  .acct .lmenu{min-width:220px}
+  .acct .who{font-size:13px;color:var(--muted);padding:6px 10px;border-bottom:1px solid var(--line);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis}
+  .login{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+  .login[hidden]{display:none}
+  .lbox{position:relative;background:var(--card);color:var(--text);border-radius:16px;padding:22px;width:min(380px,100%);display:flex;flex-direction:column;gap:10px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+  .lbox h2{margin:0 0 4px;font-size:20px;text-align:center}
+  .lbox input{font-size:16px;padding:11px 13px}
+  .lbox .gbtn{margin:0;width:100%}
+  .lbox .google{background:#fff;color:#1f1f1f;border:1px solid #dadce0}
+  .lrow{display:flex;gap:8px}
+  .lor{text-align:center;color:var(--muted);font-size:13px;margin:4px 0 0}
+  .lclose{position:absolute;top:8px;right:10px;border:0;background:none;color:var(--muted);font-size:18px;cursor:pointer}
+  .link{border:0;background:none;color:var(--accent);cursor:pointer;padding:0;font-size:14px;text-align:left}
+  .lmsg{margin:0;font-size:14px;min-height:1em}
+  .lmsg.err{color:var(--bad)} .lmsg.ok{color:var(--good)}
+  .gbtn.soft{background:var(--accent-soft);color:var(--accent)}
+  .gbtn.soft.on{background:#f59e0b;color:#fff}
+  .mine{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
+  .mine .gbtn{margin:0}
+  .qty{display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);border-radius:10px;padding:5px 8px;font-weight:600}
+  .qty button,.mq button{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--text);cursor:pointer;font-size:16px}
+  .mbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+  .mbar select{font-size:14px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--text)}
+  .mtabs{margin-bottom:6px}
+  .mg{margin:18px 0 6px;font-size:18px} .mg small{color:var(--muted);font-weight:500;font-size:14px}
+  .mset{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin-bottom:8px}
+  .mset summary{cursor:pointer;font-weight:600} .mset summary small{color:var(--muted);font-weight:500}
+  .mrow{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+  .mrow:first-of-type{border-top:0}
+  .mrow img,.mrow .noimg{width:48px;aspect-ratio:63/88;object-fit:cover;border-radius:4px;background:var(--line);flex:none;display:grid;place-items:center}
+  .mrow .mi{flex:1;min-width:0}
+  .mrow .mopen{font-weight:600;font-size:15px}
+  .mq{display:flex;align-items:center;gap:6px;flex:none}
+  .mq .mfav.on{color:#f59e0b}
+  .lsel{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer}
+  .lmenu{position:absolute;top:calc(100% + 4px);right:0;z-index:6;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.18);padding:6px;display:none;min-width:180px}
+  .lmenu.open{display:block}
+  .lmenu button{display:flex;gap:8px;width:100%;border:0;background:none;color:var(--text);padding:8px 10px;border-radius:8px;font-size:15px;cursor:pointer;text-align:left}
+  .lmenu button:hover{background:var(--accent-soft)}
+  .lmenu button.on{background:var(--accent);color:#fff;font-weight:700}
+  .picker-game{position:relative;display:flex;justify-content:center;margin-bottom:16px}
+  .gsel{display:flex;align-items:center;gap:10px;border:2px solid var(--accent);background:var(--card);color:var(--text);padding:10px 18px;border-radius:14px;font-size:18px;font-weight:700;cursor:pointer;min-width:260px;justify-content:space-between}
+  .gsel small{display:block;font-size:12px;color:var(--muted);font-weight:600;text-align:left}
+  .gsel .ico{font-size:24px}
+  .gsel .car{font-size:14px;color:var(--accent);transition:transform .15s}
+  .gsel[aria-expanded="true"] .car{transform:rotate(180deg)}
+  .gmenu{position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);z-index:5;width:min(560px,100%);background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.18);padding:8px;display:none;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:4px}
+  .gmenu.open{display:grid}
+  .tab{display:flex;align-items:center;gap:8px;border:0;background:none;color:var(--text);padding:10px 12px;border-radius:10px;font-size:15px;cursor:pointer;text-align:left}
+  .tab:hover{background:var(--accent-soft)}
+  .tab.on{background:var(--accent);color:#fff;font-weight:700}
+  .tab .ico{font-size:20px}
+  form{display:flex;gap:8px}
+  input{flex:1;min-width:0;font-size:18px;padding:14px 16px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--text)}
+  input:focus{outline:none;border-color:var(--accent)}
+  button.go{font-size:18px;padding:0 22px;border:0;border-radius:12px;background:var(--accent);color:#fff;font-weight:600;cursor:pointer}
+  .help{background:var(--accent-soft);border-radius:12px;padding:12px 16px;margin:14px 0 22px;font-size:15px}
+  .help b{font-family:ui-monospace,Menlo,monospace}
+  .ex{display:inline-block;margin:4px 6px 0 0;padding:3px 10px;border-radius:8px;background:var(--card);border:1px solid var(--line);cursor:pointer;font-family:ui-monospace,Menlo,monospace;font-size:14px;color:var(--text)}
+  .msg{text-align:center;color:var(--muted);padding:24px}
+  .msg.err{color:var(--bad)}
+  .result{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;grid-template-columns:260px 1fr;gap:22px;touch-action:pan-y}
+  .pic{position:relative}
+  .pic img{width:100%;border-radius:10px;display:block;min-height:120px;background:var(--line)}
+  .pic.loading img{opacity:.35}
+  .altrow{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 2px}
+  .alt{flex:1 1 0;min-width:70px;max-width:110px;padding:4px;border:2px solid var(--line);border-radius:8px;background:var(--card);color:var(--text);cursor:pointer;font-size:11px;line-height:1.2}
+  .alt.on{border-color:#2563eb}
+  .alt img{width:100%;aspect-ratio:63/88;object-fit:cover;border-radius:4px;display:block;margin-bottom:3px;background:var(--line)}
+  .replica{font-size:12px;color:var(--muted,#888);margin:6px 2px 0;line-height:1.35}
+  .tile.rep img,.item.rep img{opacity:.55}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}
+  .arrow{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:22px;cursor:pointer;flex:none}
+  .arrow:hover{border-color:var(--accent);color:var(--accent)}
+  .vlabel{text-align:center;font-size:13px;color:var(--muted);line-height:1.3}
+  .vlabel b{display:block;color:var(--text);font-size:14px}
+  .picker{margin:0 0 14px}
+  .result > *{min-width:0}
+  .rail{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;padding:4px 2px 10px;margin:0 0 10px;-webkit-overflow-scrolling:touch;scroll-behavior:smooth;overscroll-behavior-x:contain}
+  .tile{flex:none;width:88px;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;border:2px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;padding:5px;cursor:pointer;font:inherit}
+  .tile img{width:100%;aspect-ratio:63/88;object-fit:cover;border-radius:6px;background:var(--line)}
+  .tile .noimg{width:100%;aspect-ratio:63/88;display:grid;place-items:center;border-radius:6px;background:var(--line);font-size:24px}
+  .tile .tr{font-size:11px;line-height:1.2;color:var(--muted);text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tile .tp{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+  .tile:hover{border-color:var(--accent)}
+  .tile.on{border-color:var(--accent);background:var(--accent-soft)}
+  .tile.on .tr{color:var(--accent);font-weight:700}
+  .pic img.slideR{animation:slideR .22s ease-out}
+  .pic img.slideL{animation:slideL .22s ease-out}
+  @keyframes slideR{from{transform:translateX(40px);opacity:.3}to{transform:none;opacity:1}}
+  @keyframes slideL{from{transform:translateX(-40px);opacity:.3}to{transform:none;opacity:1}}
+  @media (prefers-reduced-motion: reduce){.pic img.slideR,.pic img.slideL{animation:none}.rail{scroll-behavior:auto}}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+  .chip{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:999px;padding:5px 11px;font-size:13px;cursor:pointer}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+  .chip small{opacity:.7;margin-left:3px}
+  .picker select{width:100%;font-size:14px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text)}
+  .picker .lbl2{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin:0 0 6px}
+  .dots{display:flex;gap:5px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--line)}
+  .dot.on{background:var(--accent)}
+  .name{font-size:24px;font-weight:700;margin:0}
+  .meta{color:var(--muted);margin:4px 0 10px}
+  .rar{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:700;font-size:13px;margin:0 0 12px}
+  .big{background:var(--accent-soft);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+  .big .lbl{font-size:14px;color:var(--muted)}
+  .big .val{font-size:40px;font-weight:800;color:var(--good)}
+  .approx{color:var(--warn);font-size:13px}
+  .upd{font-size:13px;color:var(--muted);margin-top:4px}
+  .refresh{margin-left:6px;border:1px solid var(--line);background:var(--card);color:var(--accent);border-radius:8px;padding:4px 10px;cursor:pointer;font-size:13px;font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  td{padding:8px 4px;border-bottom:1px solid var(--line)}
+  td:last-child{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+  .sec{font-weight:700;padding-top:14px;color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+  .links{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .links a,.links button{padding:8px 14px;border-radius:10px;border:1px solid var(--line);color:var(--accent);background:var(--card);text-decoration:none;font-weight:600;font-size:15px;cursor:pointer}
+  .links .main{background:var(--accent);color:#fff;border-color:var(--accent)}
+  details.grade{margin-top:18px;border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+  details.grade summary{cursor:pointer;font-weight:700}
+  .gtable td:first-child a{color:var(--accent);font-weight:700;text-decoration:none}
+  .gtable td{font-size:14px}
+  .gtable td:last-child{font-weight:400;text-align:right;color:var(--muted)}
+  .note{font-size:13px;color:var(--muted);margin:8px 0 0}
+  .list{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;cursor:pointer;text-align:center;font-size:13px;color:var(--text)}
+  .item img{width:100%;border-radius:6px;aspect-ratio:5/7;object-fit:cover;background:var(--line)}
+  .item .p{font-weight:700;color:var(--good);font-size:14px}
+  .item:hover{border-color:var(--accent)}
+  .bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+  .bar h2{font-size:20px;margin:0}
+  .bar select{font-size:15px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--text)}
+  .back{background:none;border:0;color:var(--accent);cursor:pointer;font-size:15px;margin-bottom:10px;padding:0}
+  .gbtn{display:inline-block;margin-top:10px;padding:8px 14px;border-radius:10px;border:0;background:var(--accent);color:#fff;font-weight:700;font-size:15px;cursor:pointer}
+  details.howto{margin:16px 0 0;border:2px solid var(--accent-soft);border-radius:12px;padding:10px 14px}
+  details.howto summary{cursor:pointer;font-weight:700;font-size:16px}
+  .howto p{margin:10px 0;font-size:15px}
+  .howto ul{margin:6px 0;padding-left:20px;font-size:15px}
+  .ctext{background:var(--bg);border-radius:10px;padding:10px 12px;margin:10px 0;font-size:14px;line-height:1.5}
+  .ctext .lbl2,.howto .lbl2{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+  table.stats td{font-size:14px;padding:5px 4px}
+  .gpage{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .gpage h2{margin:0 0 14px}
+  .gstep{display:flex;gap:14px;padding:12px 0;border-top:1px solid var(--line)}
+  .gico{font-size:30px;line-height:1}
+  .gstep h3{margin:0 0 4px;font-size:17px}
+  .gstep p{margin:0;font-size:16px;line-height:1.55}
+  .sfilters{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+  .sfind{width:100%;font-size:16px;padding:10px 12px;margin:0 0 10px}
+  .more{display:block;margin:14px auto;padding:10px 18px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--accent);font-weight:700;cursor:pointer}
+  footer{color:var(--muted);font-size:13px;text-align:center;margin-top:30px}
+  /* ---- Escáner ---- */
+  button.cam{font-size:22px;padding:0 16px;border:2px solid var(--line);border-radius:12px;background:var(--card);cursor:pointer}
+  .scan{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px;z-index:10;color:#fff}
+  .scan.open{display:flex}
+  .scan p{margin:0 0 12px;text-align:center;font-size:16px}
+  .view{position:relative;width:100%;max-width:520px;border-radius:14px;overflow:hidden;background:#000}
+  .view video{display:block;width:100%;height:auto}
+  .guide{position:absolute;left:8%;width:84%;top:38%;height:24%;border:3px solid #4ade80;border-radius:10px;box-shadow:0 0 0 9999px rgba(0,0,0,.45)}
+  .scanbtns{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;justify-content:center}
+  .scanbtns button,.scanbtns label{font-size:17px;padding:12px 20px;border-radius:12px;border:0;cursor:pointer;font-weight:600}
+  .shoot{background:#4ade80;color:#06281a}
+  .sec2{background:#2a2f3a;color:#fff}
+  #scanStatus{min-height:24px;margin-top:12px;text-align:center;font-size:15px;color:#d1d5db}
+  @media (max-width:640px){ .result{grid-template-columns:1fr} .pic{max-width:280px;margin:0 auto;width:100%} .big .val{font-size:34px} }
+
+  /* ================= VERSIÓN TELÉFONO ================= */
+  body{padding-bottom:calc(74px + env(safe-area-inset-bottom));-webkit-tap-highlight-color:transparent}
+  .wrap{padding:0 14px 24px}
+  .langbar{display:none}
+  .appbar{position:sticky;top:0;z-index:20;background:var(--bg);display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 0 10px;margin:0 -14px 10px;padding-left:14px;padding-right:14px;border-bottom:1px solid var(--line)}
+  .appbar h1{font-size:21px;margin:0;flex:1;text-align:left;letter-spacing:-.01em}
+  .appbar .gchip{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:999px;padding:6px 12px;font-size:14px;font-weight:600;cursor:pointer}
+  .wrap > h1,.wrap > .sub{display:none}
+  .picker-game{margin:0;position:static}
+  .picker-game .gsel{display:none}
+  .gmenu{top:calc(58px + env(safe-area-inset-top));position:fixed;left:50%;width:calc(100% - 24px)}
+  form{position:relative}
+  input{font-size:16px;padding:12px 14px}
+  button.go{font-size:16px;padding:0 16px}
+  .help{font-size:14px;margin:10px 0 14px}
+  footer{font-size:12px;color:var(--muted);text-align:center;margin-top:20px}
+  body:not(.v-home) #form, body:not(.v-home) #help{display:none}
+  /* barra de abajo, estilo Instagram */
+  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:space-around;align-items:center;background:var(--card);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  .tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--muted);font-size:10.5px;font-weight:600;padding:4px 0;cursor:pointer}
+  .tabbar button .i{font-size:23px;line-height:1;filter:grayscale(1);opacity:.75;transition:transform .12s}
+  .tabbar button.on{color:var(--text)}
+  .tabbar button.on .i{filter:none;opacity:1;transform:scale(1.12)}
+  .tabbar button.scan .i{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#f58529,#dd2a7b 50%,#515bd4);color:#fff;filter:none;opacity:1;font-size:24px;box-shadow:0 4px 14px rgba(221,42,123,.35);margin-top:-18px}
+  .tabbar .badge{position:absolute;margin:-2px 0 0 22px;background:#ef4444;color:#fff;border-radius:999px;font-size:10px;padding:0 5px;min-width:16px;line-height:16px}
+  .tabbar button{position:relative}
+  /* perfil */
+  .prof{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:4px 0 14px}
+  .prof .av{width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#f58529,#dd2a7b,#515bd4);display:grid;place-items:center;font-size:28px;color:#fff;flex:none;overflow:hidden}
+  .prof .av img{width:100%;height:100%;object-fit:cover}
+  .prof .nm{font-weight:700;font-size:17px} .prof .em{color:var(--muted);font-size:13px;word-break:break-all}
+  .stats{display:flex;gap:18px;margin-top:6px;font-size:13px;color:var(--muted)} .stats b{color:var(--text);font-size:16px;display:block}
+  .menu-list{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:14px}
+  .menu-list button{display:flex;align-items:center;gap:12px;width:100%;border:0;border-top:1px solid var(--line);background:none;color:var(--text);padding:14px 16px;font-size:16px;cursor:pointer;text-align:left}
+  .menu-list button:first-child{border-top:0}
+  .menu-list button .r{margin-left:auto;color:var(--muted);font-size:14px}
+  .menu-list button.on{color:var(--accent);font-weight:700}
+  .ptitle{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:16px 4px 6px}
+  .result{gap:14px}
+  #help #sbtn,#help #gbtn{display:none}   /* ya están en la barra de abajo y en Perfil */
+  body.has-out #help{display:none}        /* con resultados, solo el buscador (como una app) */
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="appbar"><h1>🔎 Precio Cartas</h1><button class="gchip" id="gchip"></button></header>
+  <div class="langbar">
+    <button class="lsel" id="lsel" aria-haspopup="listbox" aria-expanded="false">🌐 <span id="lselName"></span> ▾</button>
+    <div class="lmenu" id="lmenu" role="listbox"></div>
+  </div>
+  <h1>🔎 Precio Cartas</h1>
+  <p class="sub" data-t="Escribe o escanea el código de tu carta y mira cuánto vale."></p>
+
+  <div class="picker-game">
+    <button class="gsel" id="gsel" aria-haspopup="listbox" aria-expanded="false">
+      <span class="ico" id="gselIco"></span>
+      <span style="flex:1"><small data-t="Juego"></small><span id="gselName"></span></span>
+      <span class="car">▼</span>
+    </button>
+    <div class="gmenu" id="tabs" role="listbox"></div>
+  </div>
+
+  <form id="form">
+    <input id="q" autocomplete="off" data-tp="Código o nombre de la carta">
+    <button type="button" class="cam" id="camBtn" data-tt="Escanear con la cámara">📷</button>
+    <button class="go" data-t="Buscar"></button>
+  </form>
+
+  <!-- Ventana del escáner -->
+  <div class="scan" id="scan">
+    <p data-t="Pon el <b>código de la carta</b> dentro del recuadro verde"></p>
+    <div class="view">
+      <video id="video" playsinline muted></video>
+      <div class="guide"></div>
+    </div>
+    <div class="scanbtns">
+      <button class="shoot" id="shoot" data-t="📸 Leer código"></button>
+      <label class="sec2"><span data-t="🖼️ Subir foto"></span><input type="file" id="photo" accept="image/*" hidden></label>
+      <button class="sec2" id="closeScan" data-t="Cerrar"></button>
+    </div>
+    <div id="scanStatus"></div>
+  </div>
+
+  <div class="help" id="help"></div>
+  <div id="out"></div>
+
+  <nav class="tabbar" id="tabbar"></nav>
+  <footer data-t="Precios: Cardmarket (guía de precios pública) · TCGplayer · tcgdex.net · ygoprodeck.com · scryfall.com · Torekakaku — orientativos."></footer>
+</div>
+
+<script src="i18n-keys.js?v=13"></script>
+<script src="i18n.js?v=13"></script>
+<script src="guias.js?v=5"></script>
+<script src="como-se-usa.js?v=5"></script>
+<script>
+// =====================================================================
+//  JUEGOS
+//  type 'api'   -> se consulta en directo (Pokémon, Yu-Gi-Oh!, Magic)
+//  type 'local' -> datos de /data/<juego>.json, se actualizan solos cada día (GitHub Action)
+//  type 'links' -> no hay base de datos de precios pública: enlaces de búsqueda
+// =====================================================================
+const GAMES = {
+  pokemon:   { label: 'Pokémon', type: 'api', cm: 'Pokemon',
+    help: 'Usa el <b>código del set + número</b> de abajo de la carta (ej. <b>OBF 125</b>), solo el número (<b>125/197</b>) o el nombre en inglés.',
+    ex: ['OBF 125', '125/197', 'base1-4', 'Pikachu'] },
+  yugioh:    { label: 'Yu-Gi-Oh!', type: 'api', cm: 'YuGiOh',
+    help: 'Usa el <b>código impreso</b> debajo de la imagen (ej. <b>LOB-EN001</b>), también en alemán, francés, italiano, portugués o español (<b>LOB-DE001</b>, <b>LOB-SP001</b>…), o el nombre de la carta en cualquiera de esos idiomas o en inglés.',
+    ex: ['LOB-EN001', 'LOB-DE001', 'Dark Magician', 'Dragón Blanco de Ojos Azules'] },
+  magic:     { label: 'Magic', type: 'api', cm: 'Magic',
+    help: 'Usa el <b>código del set + número</b> de abajo a la izquierda (ej. <b>MH3 123</b>) o el nombre en inglés.',
+    ex: ['MH3 123', 'LEA 232', 'Lightning Bolt'] },
+  onepiece:  { label: 'One Piece', type: 'local', cm: 'OnePiece',
+    help: 'Usa el <b>código</b> de abajo a la derecha (ej. <b>OP01-120</b>) o el nombre en inglés.',
+    ex: ['OP01-120', 'OP05-119', 'Nami'] },
+  dragonball:{ label: 'Dragon Ball', type: 'local', cm: 'DragonBallSuper',
+    help: 'Fusion World y Masters. Usa el <b>código</b> (ej. <b>FB01-001</b>, <b>BT1-031</b>) o el nombre en inglés.',
+    ex: ['FB01-139', 'BT1-031', 'Son Goku'] },
+  digimon:   { label: 'Digimon', type: 'local', cm: 'Digimon',
+    help: 'Usa el <b>código</b> de abajo a la derecha (ej. <b>BT1-084</b>) o el nombre en inglés.',
+    ex: ['BT1-084', 'EX1-073', 'Omnimon'] },
+  lorcana:   { label: 'Lorcana', type: 'local', cm: 'Lorcana',
+    help: 'Usa el <b>número / total</b> de abajo (ej. <b>207/204</b>) o el nombre en inglés.',
+    ex: ['207/204', 'Elsa', 'Stitch'] },
+  gundam:    { label: 'Gundam', type: 'local', cm: 'Gundam',
+    help: 'Usa el <b>código</b> (ej. <b>GD01-001</b>) o el nombre en inglés.',
+    ex: ['GD01-001', 'ST01-001', 'Zaku'] },
+  riftbound: { label: 'League of Legends', type: 'local', cm: 'Riftbound',
+    help: 'Riftbound (el TCG de LoL). Usa el <b>número / total</b> (ej. <b>150/167</b>) o el nombre en inglés.',
+    ex: ['150/167', 'Jinx', 'Ahri'] },
+  weiss:     { label: 'Weiß Schwarz', type: 'local', cm: 'WeissSchwarz',
+    help: 'Usa el <b>código</b> de la carta (ej. <b>KGL/S79-001</b>) o el nombre en inglés.',
+    ex: ['Hatsune Miku', 'Rem', 'Asuna'] },
+  wow:       { label: 'World of Warcraft', type: 'local', cm: 'WoW',
+    help: 'Busca por <b>nombre</b> de la carta (en inglés) o por número.',
+    ex: ['Spectral Tiger', 'Thrall', 'Illidan'] },
+  duelmasters:{ label: 'Duel Masters', type: 'local', yen: true, noSealed: true,
+    help: 'Precios de <b>Japón en yenes (¥)</b>, de Torekakaku. Busca por el <b>nombre en japonés</b> o por el <b>código</b> de abajo de la carta (ej. <b>DM26RP1</b>).',
+    ex: ['ボルメテウス', 'ドギラゴン', 'DM26RP1'] },
+};
+
+let game = 'pokemon';
+const $ = id => document.getElementById(id);
+const out = $('out');
+let backStack = []; // pantallas anteriores para el botón "Volver"
+
+// ---- Selector de juego: un solo botón que abre la lista ----
+const ICONS = { pokemon:'⚡', yugioh:'👁️', magic:'🔮', onepiece:'🏴‍☠️', dragonball:'🐉', digimon:'🦖', lorcana:'✨',
+  gundam:'🤖', riftbound:'⚔️', weiss:'🌸', wow:'🛡️', duelmasters:'🔥' };
+try { const saved = localStorage.getItem('juego'); if (saved && GAMES[saved]) game = saved; } catch (e) {}
+$('tabs').innerHTML = Object.entries(GAMES).map(([k, g]) =>
+  `<button class="tab" role="option" data-game="${k}"><span class="ico">${ICONS[k]}</span>${g.label}</button>`).join('');
+function showGame(){
+  $('gselIco').textContent = ICONS[game];
+  $('gselName').textContent = GAMES[game].label;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x.dataset.game === game));
+}
+function toggleMenu(open){
+  $('tabs').classList.toggle('open', open);
+  $('gsel').setAttribute('aria-expanded', open);
+}
+$('gsel').onclick = e => { e.stopPropagation(); toggleMenu(!$('tabs').classList.contains('open')); };
+document.addEventListener('click', e => { if (!e.target.closest('.picker-game')) toggleMenu(false); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') toggleMenu(false); });
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  toggleMenu(false);
+  if (game === t.dataset.game) return;
+  game = t.dataset.game;
+  try { localStorage.setItem('juego', game); } catch (e) {}
+  showGame(); out.innerHTML = ''; backStack = []; $('q').value = ''; showHelp(); $('q').focus();
+  if (GAMES[game].type === 'local') loadLocal(game).catch(() => {}); // precarga
+});
+showGame();
+
+function showHelp(){
+  const g = GAMES[game];
+  $('help').innerHTML = T(g.help) + '<br>' + T('Ejemplos:') + ' ' + g.ex.map(e => `<span class="ex">${e}</span>`).join('') +
+    `<br><button class="gbtn" id="gbtn">${T('📖 Cómo se juega a {0}', g.label)}</button>` +
+    (g.type !== 'links' && !g.noSealed ? ` <button class="gbtn" id="sbtn">${T('📦 Cajas selladas')}</button>` : '');
+  $('gbtn').onclick = () => { backStack = []; current = null; showGuide(game); };
+  if ($('sbtn')) $('sbtn').onclick = () => { backStack = []; current = null; showSealed(game); };
+  $('help').querySelectorAll('.ex').forEach(el => el.onclick = () => { $('q').value = el.textContent; search(); });
+}
+$('form').onsubmit = e => { e.preventDefault(); search(); };
+
+// ===================== UTILIDADES =====================
+const usd = v => money(v, 'USD');
+const money = (v, cur, d = 2) => (v == null || v === '' || Number(v) === 0) ? null : new Intl.NumberFormat(LOCALE(), { style: 'currency', currency: cur, minimumFractionDigits: d, maximumFractionDigits: d }).format(Number(v));
+const eur = v => money(v, 'EUR');
+const fecha = d => d ? new Date(d).toLocaleDateString(LOCALE()) : '';
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const normCode = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+const normName = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+// Pide datos a una API; si falla, reintenta
+async function getJSON(url, tries = 4){
+  for (let i = 1; ; i++) {
+    try {
+      const r = await fetch(url, { cache: 'no-store' });
+      if (r.status === 404 || r.status === 400) return null;
+      if (!r.ok) throw new Error('Error ' + r.status);
+      return await r.json();
+    } catch (e) {
+      if (i >= tries) throw e;
+      await new Promise(ok => setTimeout(ok, 800 * i));
+    }
+  }
+}
+
+function loading(t = T('Buscando…')){ out.innerHTML = `<div class="msg">${t}</div>`; }
+function error(t){ out.innerHTML = `<div class="msg err">${t}</div>`; }
+function toTop(){ if (out.getBoundingClientRect().top < 0) out.scrollIntoView({ block: 'start' }); }
+function remember(fn){ backStack.push(fn); }
+function backBtn(){ return backStack.length ? `<button class="back" id="back">${T('← Volver')}</button>` : ''; }
+function wireBack(){ const b = $('back'); if (b) b.onclick = () => { const fn = backStack.pop(); fn && fn(); }; }
+
+// ===================== EMPRESAS DE GRADEO =====================
+// Precios aproximados (más baratos por carta) consultados en noviembre de 2026
+const GRADERS = [
+  ['PSA', 'https://www.psacard.com/services', 'desde $39,99 (Value) · PSA Europa desde 59,99 €'],
+  ['CGC Cards', 'https://www.cgccards.com/', 'desde $17 (Bulk, mín. 25 cartas) · Standard $55'],
+  ['Beckett (BGS)', 'https://www.beckett.com/grading', 'desde $14,95 (Base) · Standard $34,95'],
+  ['SGC', 'https://gosgc.com/', 'desde $50 (Standard)'],
+  ['TAG', 'https://taggrading.com/', 'desde $59 (Express)'],
+  ['PCA (Europa)', 'https://pcagrade.com/', 'desde 10,90 €'],
+];
+function gradingHTML(value){
+  const cheap = value != null && value < 25;
+  return `<details class="grade"><summary>${T('🏅 Gradear esta carta (PSA, CGC, Beckett…)')}</summary>
+    <table class="gtable">${GRADERS.map(([n, url, p]) =>
+      `<tr><td><a href="${url}" target="_blank" rel="noopener">${n} ↗</a></td><td>${T(p)}</td></tr>`).join('')}</table>
+    ${cheap ? `<p class="note">${T('⚠️ Esta carta vale menos de lo que cuesta gradearla: normalmente solo compensa si sale un 10.')}</p>` : ''}
+    <p class="note">${T('Precios aproximados por carta (noviembre 2026), sin envío. Cambian a menudo: confírmalos en su web.')}</p>
+  </details>`;
+}
+
+// =====================================================================
+//  VISOR DE CARTA CON VERSIONES
+//  versions = { items: [...], index, build: async item => vista }
+//  Se cambia de versión con las flechas, deslizando el dedo o con ← → del teclado.
+// =====================================================================
+let current = null;
+let redraw = null; // vuelve a dibujar la pantalla actual al cambiar de idioma
+
+async function showVersions(items, index, build, label){
+  current = { items, index: Math.max(0, index), build, label: label || (() => ({ r: '', t: '' })) };
+  await drawCurrent();
+  toTop();
+}
+
+let slideDir = 0; // -1 izquierda, 1 derecha: para la animación de la imagen
+function jump(i){
+  if (!current || i === current.index) return;
+  slideDir = i > current.index ? 1 : -1;
+  current.index = i;
+  const pic = out.querySelector('.pic'); if (pic) pic.classList.add('loading');
+  drawCurrent();
+}
+
+// Selector de rareza / versión: botones con cada rareza + desplegable con todas las versiones
+function drawPicker(){
+  const box = $('vpick'); if (!box || !current) return;
+  const n = current.items.length, i = current.index;
+  if (n < 2) { box.innerHTML = ''; return; }
+  const labels = current.items.map(current.label);
+  const rars = [];
+  labels.forEach((l, k) => { if (l.r && !rars.some(x => x.r === l.r)) rars.push({ r: l.r, k, count: 0 }); });
+  labels.forEach(l => { const x = rars.find(x => x.r === l.r); if (x) x.count++; });
+  const curR = labels[i].r;
+  box.innerHTML = `
+    <p class="lbl2">${T('Desliza para ver todas las versiones ({0})', n)}</p>
+    <div class="rail" id="rail">${labels.map((l, k) =>
+      `<button class="tile${k === i ? ' on' : ''}${l.rep ? ' rep' : ''}" data-k="${k}" title="${esc([l.t, l.r].filter(Boolean).join(' · '))}">
+        ${l.i ? `<img src="${l.i}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}
+        <span class="tr">${esc(l.r || '—')}</span><span class="tp">${l.p || '·'}</span></button>`).join('')}</div>
+    ${rars.length > 1 && rars.length <= 20 ? `<p class="lbl2">${T('Todas las rarezas de esta carta ({0})', rars.length)}</p><div class="chips">${rars.map(x =>
+      `<button class="chip${x.r === curR ? ' on' : ''}" data-r="${esc(x.r)}">${esc(x.r)}${x.count > 1 ? `<small>×${x.count}</small>` : ''}</button>`).join('')}</div>` : ''}
+    <p class="lbl2">${T('Elige la versión')}</p>
+    <select id="vsel">${labels.map((l, k) =>
+      `<option value="${k}"${k === i ? ' selected' : ''}>${k + 1}. ${esc([l.t, l.r && !String(l.t).includes(l.r) ? l.r : ''].filter(Boolean).join(' · '))}${l.p ? ' — ' + l.p : ''}</option>`).join('')}</select>`;
+  box.querySelectorAll('.chip').forEach(b => b.onclick = () => {
+    const r = b.dataset.r;
+    const ks = labels.map((l, k) => l.r === r ? k : -1).filter(k => k >= 0);
+    // si ya estás en esa rareza, pasa a la siguiente versión de la misma rareza
+    const next = curR === r ? ks[(ks.indexOf(i) + 1) % ks.length] : ks[0];
+    jump(next);
+  });
+  $('vsel').onchange = e => jump(Number(e.target.value));
+  const rail = $('rail');
+  rail.querySelectorAll('.tile').forEach(b => b.onclick = () => jump(Number(b.dataset.k)));
+  // la carrusel no debe disparar el cambio de versión al deslizarla
+  rail.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
+  rail.addEventListener('touchend', e => e.stopPropagation());
+  const on = rail.querySelector('.tile.on');
+  if (on) rail.scrollTo({ left: rail.scrollLeft + on.getBoundingClientRect().left - rail.getBoundingClientRect().left - (rail.clientWidth - on.offsetWidth) / 2, behavior: 'instant' });
+}
+
+async function go(step){
+  if (!current || current.items.length < 2) return;
+  slideDir = step;
+  current.index = (current.index + step + current.items.length) % current.items.length;
+  const pic = out.querySelector('.pic'); if (pic) pic.classList.add('loading');
+  await drawCurrent();
+}
+
+async function drawCurrent(){
+  const me = current, i = me.index;
+  let v;
+  try { v = await me.build(me.items[i]); }
+  catch (e) { console.error(e); return error(T('No se pudo cargar esta versión. Inténtalo otra vez.')); }
+  if (me !== current || i !== me.index) return; // el usuario ya cambió de versión
+  render(v);
+}
+
+// Dibuja una carta. v.rows = [[etiqueta, valor] | ['#Sección']]
+function render(v){
+  redraw = current ? () => drawCurrent() : () => render(v);
+  const n = current?.items.length || 1, i = current?.index || 0;
+  const isSec = r => r[0].startsWith('#');
+  const kept = v.rows.filter(r => isSec(r) || r[1]);
+  const clean = kept.filter((r, k) => !isSec(r) || (kept[k + 1] && !isSec(kept[k + 1])));
+  const tr = clean.map(r => isSec(r)
+    ? `<tr><td class="sec" colspan="2">${T(r[0].slice(1))}</td></tr>`
+    : `<tr><td>${T(r[0])}</td><td>${r[1]}</td></tr>`).join('');
+  const dots = n > 1 && n <= 24 ? `<div class="dots">${Array.from({length: n}, (_, k) => `<span class="dot${k === i ? ' on' : ''}"></span>`).join('')}</div>` : '';
+  out.innerHTML = `
+    ${backBtn()}
+    <div class="result" id="result">
+      <div class="pic">
+        ${v.img ? `<img src="${v.img}" alt="${esc(v.name)}"${slideDir ? ` class="slide${slideDir > 0 ? 'R' : 'L'}"` : ''}>` : '<img alt="">'}
+        ${v.alts ? `<div class="alts"><p class="replica">${T('Con este código se imprimieron varias versiones. Toca la tuya:')}</p><div class="altrow">${v.alts.map((a, k) =>
+          `<button class="alt${k === 0 ? ' on' : ''}" data-k="${k}"><img src="${ygpThumb(a.url)}" alt="" loading="lazy"><span>${esc(a.label)}</span></button>`).join('')}</div></div>` : ''}
+        ${v.replica ? `<p class="replica">${T('⚠️ No hay foto de esta impresión oficial: la imagen es solo de referencia (réplica de YGOPRODeck, «Not For Use in Sanctioned Tournaments»).')}</p>` : ''}
+        ${n > 1 ? `<div class="nav">
+            <button class="arrow" id="prev" aria-label="${T('Versión anterior')}">‹</button>
+            <div class="vlabel"><b>${T('Versión {0} de {1}', i + 1, n)}</b>${esc(v.versionLabel || v.rarity || '')}</div>
+            <button class="arrow" id="next" aria-label="${T('Versión siguiente')}">›</button>
+          </div>${dots}` : ''}
+      </div>
+      <div>
+        <p class="name">${esc(v.name)}</p>
+        ${v.subname ? `<p class="meta">${esc(v.subname)}</p>` : ''}
+        <p class="meta">${v.meta}</p>
+        ${v.rarity ? `<span class="rar">✦ ${esc(v.rarity)}</span>` : ''}
+        <div class="picker" id="vpick"></div>
+        <div class="big"><div class="lbl">${T(v.mainLabel)}</div><div class="val">${v.mainValue || T('Sin precio')}</div>
+          ${v.approx ? `<div class="approx">${T(v.approx)}</div>` : ''}
+          <div class="upd">${v.updated ? esc(v.updated) + ' · ' : ''}${T('consultado a las {0}', new Date().toLocaleTimeString(LOCALE(), {hour:'2-digit', minute:'2-digit'}))}
+            ${v.reload ? `<button class="refresh" id="refresh">${T('🔄 Actualizar precio')}</button>` : ''}</div></div>
+        <div class="mine" id="mine"></div>
+        <table>${tr || `<tr><td>${T('No hay más precios disponibles')}</td><td></td></tr>`}</table>
+        <div class="links">
+          ${v.openSet ? `<button class="main" id="openSet">${T('📚 Ver la expansión entera')}</button>` : ''}
+          ${v.links.filter(l => l[1]).map(l => `<a href="${l[1]}" target="_blank" rel="noopener">${T(l[0])} ↗</a>`).join('')}
+        </div>
+        ${v.howto ? `<details class="howto" open><summary>${T('📖 Cómo se usa esta carta')}</summary><div id="howto"><p>${T('Cargando…')}</p></div></details>` : ''}
+        ${v.sealed ? '' : gradingHTML(v.value)}
+      </div>
+    </div>`;
+  if (v.howto) {
+    const me = current, idx = current?.index;
+    Promise.resolve().then(v.howto).then(html => {
+      if (current === me && current?.index === idx && $('howto')) $('howto').innerHTML = html;
+    }).catch(() => { if ($('howto')) $('howto').innerHTML = `<p>${T('No se pudo cargar la explicación.')}</p>`; });
+  }
+  wireBack();
+  if (v.alts) out.querySelectorAll('.alt').forEach(b => b.onclick = () => {
+    const a = v.alts[b.dataset.k];
+    out.querySelector('.pic img').src = a.url;
+    if (a.pv) out.querySelector('.big .val').innerHTML = a.pv;
+    out.querySelectorAll('.alt').forEach(x => x.classList.toggle('on', x === b));
+    const l = [...out.querySelectorAll('.links a')].find(x => x.href.includes('yugipedia.com/wiki/File:'));
+    if (l) l.href = `https://yugipedia.com/wiki/File:${encodeURIComponent(a.file)}`;
+  });
+  if (n > 1) { $('prev').onclick = () => go(-1); $('next').onclick = () => go(1); }
+  slideDir = 0;
+  drawPicker();
+  if (window.cuentaCard) window.cuentaCard(v); // botones "Mi colección" / "Favorito" (cuenta.js)
+  preloadNeighbours();
+  if (v.reload) $('refresh').onclick = async () => {
+    $('refresh').textContent = T('Actualizando…');
+    try { await v.reload(); } catch (e) { $('refresh').textContent = T('⚠️ Error, reintenta'); }
+  };
+  if (v.openSet) $('openSet').onclick = () => {
+    const snap = { ...current };
+    remember(() => { current = snap; drawCurrent(); });
+    v.openSet();
+  };
+  // Deslizar con el dedo
+  const box = $('result'); let x0 = null, y0 = null;
+  box.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+  box.addEventListener('touchend', e => {
+    if (x0 == null) return;
+    const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1);
+    x0 = null;
+  });
+}
+// precarga las imágenes de la versión anterior y siguiente para que el cambio sea instantáneo
+function preloadNeighbours(){
+  if (!current || current.items.length < 2) return;
+  const n = current.items.length;
+  [1, -1].forEach(d => { const l = current.label(current.items[(current.index + d + n) % n]); if (l?.i) new Image().src = l.i; });
+}
+document.addEventListener('keydown', e => {
+  if (!$('result') || document.activeElement === $('q')) return;
+  if (e.key === 'ArrowRight') go(1);
+  if (e.key === 'ArrowLeft') go(-1);
+});
+
+// Rejilla de cartas (resultados de búsqueda o expansión entera)
+// items: [{ img, title, sub, price, open }]
+function renderGrid(title, items, { sort } = {}){
+  const draw = list => {
+    redraw = () => $('q').value.trim() ? search() : (out.innerHTML = ''); // al cambiar idioma se vuelve a buscar
+    out.innerHTML = `${backBtn()}
+      <div class="bar"><h2>${title}</h2>
+        ${sort ? `<select id="sort"><option value="num">${T('Ordenar por número')}</option><option value="hi">${T('Más caras primero')}</option><option value="lo">${T('Más baratas primero')}</option></select>` : ''}
+      </div>
+      <div class="list">${list.map((it, k) => `<div class="item${it.real ? ' rep' : ''}" data-k="${k}">
+          <img src="${it.img || ''}" loading="lazy" alt="">
+          <div>${esc(it.title)}</div>${it.sub ? `<div class="note">${esc(it.sub)}</div>` : ''}
+          ${it.price ? `<div class="p">${it.price}</div>` : ''}</div>`).join('')}</div>`;
+    wireBack();
+    lazyReal(list);
+    out.querySelectorAll('.item').forEach(el => el.onclick = () => {
+      remember(() => draw(list));
+      list[el.dataset.k].open();
+    });
+    if (sort) {
+      $('sort').value = sortMode;
+      $('sort').onchange = e => { sortMode = e.target.value; draw(sorted()); };
+    }
+  };
+  let sortMode = 'num';
+  setTimeout(toTop);
+  const sorted = () => sortMode === 'num' ? items : [...items].sort((a, b) =>
+    sortMode === 'hi' ? (b.v ?? -1) - (a.v ?? -1) : (a.v ?? 1e9) - (b.v ?? 1e9));
+  draw(items);
+}
+
+// Cambia la imagen de referencia por la foto real cuando la tarjeta aparece en pantalla.
+// it.real = async () => url | null
+function lazyReal(list){
+  const els = [...out.querySelectorAll('.item')].filter(el => list[el.dataset.k]?.real);
+  if (!els.length) return;
+  const queue = []; let busy = 0;
+  const pump = () => { while (busy < 4 && queue.length) { const el = queue.shift(); busy++;
+    list[el.dataset.k].real().then(u => { if (u) { const img = el.querySelector('img'); img.src = u; el.classList.remove('rep'); } })
+      .catch(() => {}).finally(() => { busy--; pump(); }); } };
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { io.unobserve(e.target); queue.push(e.target); pump(); } }), { rootMargin: '300px' });
+  els.forEach(el => io.observe(el));
+}
+
+// ===================== BÚSQUEDA =====================
+async function search(){
+  const q = $('q').value.trim();
+  if (!q) return;
+  backStack = []; current = null;
+  loading();
+  try {
+    const g = GAMES[game];
+    if (game === 'pokemon') await searchPokemon(q);
+    else if (game === 'yugioh') await searchYugioh(q);
+    else if (game === 'magic') await searchMagic(q);
+    else if (g.type === 'local') await searchLocal(q);
+    else searchLinks(q);
+  } catch (e) {
+    console.error(e);
+    error(T('No se pudo conectar con la base de datos. Inténtalo de nuevo en unos segundos.'));
+  }
+}
+
+// =====================================================================
+//  POKÉMON (tcgdex.net — precios de Cardmarket actualizados a diario)
+// =====================================================================
+const PKM = 'https://api.tcgdex.net/v2/en';
+const pkmImg = (c, q) => c.image ? `${c.image}/${q}.webp` : '';
+const pkmSets = {};
+async function pokemonSetIds(code){
+  code = code.toUpperCase();
+  if (!pkmSets[code]) pkmSets[code] = ((await getJSON(`${PKM}/sets?abbreviation.official=${encodeURIComponent(code)}`)) || []).map(s => s.id);
+  return pkmSets[code];
+}
+async function cardsInSets(setIds, num){
+  const n = String(num).replace(/^0+(?=.)/, '');
+  const found = await Promise.all(setIds.map(async id =>
+    (await getJSON(`${PKM}/sets/${id}/${n}`).catch(() => null)) ||
+    (await getJSON(`${PKM}/sets/${id}/${n.padStart(3, '0')}`).catch(() => null))));
+  return found.filter(c => c && c.id);
+}
+
+async function searchPokemon(q){
+  let m, cards = [];
+  if (/^[a-z0-9.]+-[a-z0-9]+$/i.test(q)) {
+    const id = q.toLowerCase();
+    const c = await getJSON(`${PKM}/cards/${id}`) ||
+              await getJSON(`${PKM}/cards/${id.replace(/^([a-z]+)(\d)(?=\D)/, '$10$2')}`);
+    if (c) cards = [c];
+  } else if ((m = q.match(/^0*(\d+)\s*\/\s*0*(\d+)$/))) {
+    const sets = (await getJSON(`${PKM}/sets?cardCount.official=${m[2]}`)) || [];
+    cards = await cardsInSets(sets.map(s => s.id), m[1]);
+  } else if ((m = q.match(/^([a-z0-9-]{2,6})\s+(\w+?)(?:\/\d+)?$/i))) {
+    const ids = await pokemonSetIds(m[1]);
+    if (!ids.length) return error(T('No conozco el set "{0}". Revisa el código.', esc(m[1].toUpperCase())));
+    cards = await cardsInSets(ids, m[2]);
+  } else {
+    const list = (await getJSON(`${PKM}/cards?name=${encodeURIComponent(q)}`)) || [];
+    if (!list.length) return error(T('No encontré esa carta. Revisa el código (ej. OBF 125).'));
+    if (list.length === 1) return openPokemon(await getJSON(`${PKM}/cards/${list[0].id}`));
+    return renderGrid(T('{0} resultados', list.length), list.slice(-80).reverse().map(b => ({
+      img: pkmImg(b, 'low'), title: b.name, sub: b.id,
+      open: async () => { loading(T('Cargando…')); openPokemon(await getJSON(`${PKM}/cards/${b.id}`)); } })));
+  }
+  if (!cards.length) return error(T('No encontré esa carta. Revisa el código (ej. OBF 125).'));
+  if (cards.length === 1) return openPokemon(cards[0]);
+  renderGrid(T('{0} cartas con ese número', cards.length), cards.map(c => ({
+    img: pkmImg(c, 'low'), title: c.name, sub: `${c.set.name} ${c.localId}`, open: () => openPokemon(c) })));
+}
+
+// Versiones = todas las cartas con el mismo nombre (otras expansiones / ilustraciones)
+const pkmCache = {};
+async function openPokemon(c){
+  pkmCache[c.id] = c;
+  let others = [];
+  try { others = (await getJSON(`${PKM}/cards?name=eq:${encodeURIComponent(c.name)}`)) || []; } catch (e) {}
+  if (!others.some(o => o.id === c.id)) others.unshift({ id: c.id });
+  others = others.slice(-60);
+  const idx = others.findIndex(o => o.id === c.id);
+  const label = o => { const f = pkmCache[o.id];
+    return f ? { r: f.rarity, t: `${f.set?.name} · ${f.localId}`, p: eur(f.pricing?.cardmarket?.trend), i: pkmImg(f, 'low') } : { r: '', t: o.id, i: pkmImg(o, 'low') }; };
+  await showVersions(others, idx, async o => {
+    const full = pkmCache[o.id] || (pkmCache[o.id] = await getJSON(`${PKM}/cards/${o.id}`));
+    return pokemonView(full);
+  }, label);
+  // carga en segundo plano las demás versiones para saber su rareza y precio
+  const mine = current; let k = 0;
+  await Promise.all(Array.from({ length: 4 }, async () => {
+    while (k < others.length) {
+      const o = others[k++];
+      if (!pkmCache[o.id]) pkmCache[o.id] = await getJSON(`${PKM}/cards/${o.id}`).catch(() => null);
+      if (pkmCache[o.id] === null) delete pkmCache[o.id];
+    }
+  }));
+  if (current === mine) drawPicker();
+}
+
+function pokemonView(c){
+  const cm = c.pricing?.cardmarket || {}, tp = c.pricing?.tcgplayer || {};
+  const NAMES = { normal:'Normal', holofoil:'Holo', 'reverse-holofoil':'Reverse Holo',
+    '1st-edition-holofoil':'1ª Edición Holo', '1st-edition':'1ª Edición', 'unlimited-holofoil':'Unlimited Holo' };
+  const rows = [['#Cardmarket (Europa)'],
+    ['Tendencia', eur(cm.trend)], ['Precio medio de venta', eur(cm.avg)], ['Desde', eur(cm.low)],
+    ['Media último día', eur(cm.avg1)], ['Media 7 días', eur(cm.avg7)], ['Media 30 días', eur(cm.avg30)],
+    ['Holo / Reverse (tendencia)', eur(cm['trend-holo'])], ['#TCGplayer (EE. UU.)']];
+  let tpId = null;
+  for (const [k, p] of Object.entries(tp)) {
+    if (!p || typeof p !== 'object') continue;
+    tpId = tpId || p.productId;
+    rows.push([T('{0} — mercado', T(NAMES[k] || k)), usd(p.marketPrice) || usd(p.midPrice)]);
+  }
+  const main = cm.trend || cm.avg;
+  const firstTp = Object.values(tp).find(p => p && typeof p === 'object');
+  return {
+    img: pkmImg(c, 'high'), name: c.name, rarity: c.rarity,
+    versionLabel: `${c.set?.name || ''} · ${c.localId}`,
+    meta: `${esc(c.set?.name)} · Nº ${esc(c.localId)}/${esc(c.set?.cardCount?.official ?? '?')}`,
+    mainLabel: main ? 'Precio de tendencia en Cardmarket' : 'Precio de mercado en TCGplayer',
+    mainValue: eur(main) || usd(firstTp?.marketPrice || firstTp?.midPrice), value: main || firstTp?.marketPrice,
+    rows,
+    links: [['Cardmarket', `https://www.cardmarket.com/es/Pokemon/Products/Search?searchString=${encodeURIComponent(c.name)}`],
+            ['TCGplayer', tpId ? `https://www.tcgplayer.com/product/${tpId}` : null]],
+    updated: cm.updated ? T('Cardmarket del {0}', fecha(cm.updated)) : '',
+    reload: async () => { pkmCache[c.id] = await getJSON(`${PKM}/cards/${c.id}`); drawCurrent(); },
+    openSet: c.set?.id ? () => openPokemonSet(c.set.id) : null,
+    howto: () => howtoPokemon(c.id),
+  };
+}
+
+async function openPokemonSet(id){
+  loading(T('Cargando la expansión…'));
+  const s = await getJSON(`${PKM}/sets/${id}`);
+  if (!s) return error(T('No se pudo cargar la expansión.'));
+  renderGrid(`${esc(s.name)} · ${T('{0} cartas', s.cards.length)} <span class="note">${T('(toca una carta para ver su precio)')}</span>`,
+    s.cards.map(b => ({ img: pkmImg(b, 'low'), title: b.name, sub: 'Nº ' + b.localId,
+      open: async () => { loading(T('Cargando…')); openPokemon(await getJSON(`${PKM}/cards/${b.id}`)); } })));
+}
+
+// =====================================================================
+//  YU-GI-OH! (ygoprodeck.com)  — versiones = todas sus ediciones/rarezas
+// =====================================================================
+const YGO = 'https://db.ygoprodeck.com/api/v7';
+// Las imágenes de YGOPRODeck son recreaciones que llevan «Replica - Not For Use in Sanctioned Tournaments».
+// Para enseñar la carta real usamos los escaneos oficiales de Yugipedia (uno por impresión: set, idioma, rareza y edición).
+const YGP = 'https://yugipedia.com/api.php?action=query&list=allimages&aiprop=url&ailimit=500&format=json&origin=*&aiprefix=';
+const ygpKey = n => String(n || '').normalize('NFD').replace(/[^A-Za-z0-9]/g, '');
+const RAR_ABBR = { 'Common': ['C', 'SP'], 'Short Print': ['SP', 'C'], 'Rare': ['R'], 'Super Rare': ['SR'], 'Ultra Rare': ['UR'],
+  'Secret Rare': ['ScR'], 'Ultimate Rare': ['UtR'], 'Ghost Rare': ['GR'], 'Gold Rare': ['GUR'], 'Ghost/Gold Rare': ['GGR'],
+  'Premium Gold Rare': ['PGR'], 'Gold Secret Rare': ['GScR'], 'Prismatic Secret Rare': ['PScR'], 'Extra Secret Rare': ['EScR'],
+  'Starlight Rare': ['StR'], "Collector's Rare": ['CR'], 'Quarter Century Secret Rare': ['QCScR'], 'Platinum Secret Rare': ['PlScR'],
+  'Platinum Rare': ['PlR'], 'Mosaic Rare': ['MSR'], 'Shatterfoil Rare': ['SHR'], 'Starfoil Rare': ['SFR'], 'Super Short Print': ['SSP'],
+  'Duel Terminal Normal Parallel Rare': ['DNPR'], 'Duel Terminal Super Parallel Rare': ['DSPR'], 'Duel Terminal Ultra Parallel Rare': ['DUPR'],
+  'Duel Terminal Normal Rare Parallel Rare': ['DNRPR'], 'Duel Terminal Rare Parallel Rare': ['DRPR'],
+  'Normal Parallel Rare': ['NPR'], 'Super Parallel Rare': ['SPR'], 'Ultra Parallel Rare': ['UPR'], 'Ultra Rare (Pharaoh\'s Rare)': ['URPR'],
+  '10000 Secret Rare': ['10000ScR'], 'Ghost Secret Rare': ['GScR'],
+  // nombres que usa TCGplayer
+  "Prismatic Collector's Rare": ['PCR', 'CR'], 'Prismatic Ultimate Rare': ['PUR', 'UtR'], 'Starfoil Rare': ['SFR'], 'Starfoil': ['SFR'],
+  'Parallel Rare': ['NPR', 'SPR', 'UPR', 'PR'], 'Duel Terminal Technology Common': ['DNPR', 'C'], 'Duel Terminal Technology Ultra Rare': ['DUPR', 'UR'],
+  'Duel Terminal Rare Parallel Rare': ['DRPR'], 'Duel Terminal Super Parallel Rare': ['DSPR'], 'Duel Terminal Ultra Parallel Rare': ['DUPR'] };
+const scanCache = {};
+async function ygpScans(name, setPrefix){
+  const pre = ygpKey(name) + '-' + (setPrefix ? setPrefix + '-' : '');
+  return scanCache[pre] ||= (async () => {
+    const all = []; let cont = '';
+    for (let page = 0; page < 5; page++) {
+      const r = await getJSON(YGP + encodeURIComponent(pre) + (cont ? '&aicontinue=' + encodeURIComponent(cont) : ''));
+      all.push(...(r?.query?.allimages || []));
+      cont = r?.continue?.aicontinue; if (!cont) break;
+    }
+    return all.map(f => {
+      const base = f.name.replace(/\.[a-z]+$/i, '');
+      const t = base.slice(ygpKey(name).length + 1).split('-');
+      return { url: f.url, file: f.name, set: t[0], reg: t[1], rar: t[2], ed: t[3], extra: t.slice(4) };
+    }).filter(x => x.set && x.reg && !x.extra.includes('OP') && x.rar !== 'OP' && x.ed !== 'OP');
+  })().catch(() => (delete scanCache[pre], []));
+}
+function ygpRegion(code){
+  const m = String(code || '').toUpperCase().match(/^[A-Z0-9]+-([A-Z]*)\d/);
+  const l = !m ? 'EN' : m[1].length > 2 ? m[1].slice(0, 2) : m[1]; // LDK2-ENK01 → EN
+  return ({ '': 'NA', E: 'EU', A: 'AU', S: 'SP', G: 'DE', F: 'FR', I: 'IT', P: 'PT', K: 'KR', J: 'JP', SP: 'SP', EN: 'EN', DE: 'DE', FR: 'FR', IT: 'IT', PT: 'PT', KR: 'KR', JP: 'JP' })[l] || l;
+}
+// Elige el escaneo que corresponde a esa impresión (o null si Yugipedia no lo tiene)
+// Todas las impresiones reales que encajan con ese código y rareza (p. ej. LOB-EN001: original, reimpresión y 25 aniversario)
+function scanGroup(scans, code, rarity){
+  const best = pickScan(scans, code, rarity);
+  if (!best) return [];
+  const g = scans.filter(x => x.set === best.set && x.reg === best.reg && x.rar === best.rar && !x.extra.some(e => /^(German|Italian|French|Spanish|Portuguese|GC|OP)$/.test(e)));
+  const ord = x => (x.extra.length ? 10 : 0) + ({ '1E': 0, 'UE': 1, 'LE': 2 }[x.ed] ?? 3);
+  return [best, ...g.filter(x => x !== best).sort((a, b) => ord(a) - ord(b))];
+}
+const ED_NAME = { '1E': '1ª edición', 'UE': 'Edición ilimitada', 'LE': 'Edición limitada', 'DT': 'Duel Terminal' };
+const EXTRA_NAME = { 'Reprint': 'Reimpresión', '25thAnniversaryEdition': '25 aniversario' };
+const scanLabel = x => [T(ED_NAME[x.ed] || x.ed || ''), ...x.extra.map(e => T(EXTRA_NAME[e] || e))].filter(Boolean).join(' · ');
+function pickScan(scans, code, rarity){
+  if (!scans?.length) return null;
+  const set = code ? String(code).toUpperCase().split('-')[0] : null;
+  const reg = code ? ygpRegion(code) : 'EN';
+  const ab = RAR_ABBR[rarity] || [];
+  let best = null, bs = -1;
+  for (const x of scans) {
+    if (set && x.set.toUpperCase() !== set) continue;
+    let sc = 0;
+    if (x.reg === reg) sc += 8; else if (['EN', 'NA', 'EU'].includes(x.reg) && ['EN', 'NA', 'EU'].includes(reg)) sc += 3; else if (code) continue;
+    if (ab.length) { if (ab[0] === x.rar) sc += 6; else if (ab.includes(x.rar)) sc += 4; else continue; } // otra rareza = otra carta
+    if (!x.extra.length) sc += 2;
+    if (x.ed === '1E') sc += 1;
+    if (sc > bs) { bs = sc; best = x; }
+  }
+  return best;
+}
+const ygpThumb = u => { const m = u?.match(/^(https:\/\/img\.yugipedia\.com\/)(.+\/)([^/]+)$/); return m ? `${m[1]}thumb/${m[2]}${m[3]}/200px-${m[3]}` : u; };
+// si falla la miniatura de Yugipedia, usa la imagen original
+document.addEventListener('error', e => { const im = e.target;
+  if (im?.tagName === 'IMG' && /img\.yugipedia\.com\/thumb\//.test(im.src)) im.src = im.src.replace('/thumb/', '/').replace(/\/[^/]+$/, ''); }, true);
+const withTimeout = (p, ms) => Promise.race([p, new Promise(ok => setTimeout(() => ok(null), ms))]);
+async function ygoRealImg(c, code, rarity, small){
+  const prefix = code ? String(code).toUpperCase().split('-')[0] : null;
+  const s = pickScan(await ygpScans(c.name, prefix), code, rarity);
+  return s ? (small ? ygpThumb(s.url) : s.url) : null;
+}
+// Idioma según el código impreso: LOB-DE001 / LOB-G001 (alemán), -FR/-F, -IT/-I, -PT/-P, -SP/-S
+const CODE_LANG = { DE: 'de', G: 'de', FR: 'fr', F: 'fr', IT: 'it', I: 'it', PT: 'pt', P: 'pt', SP: 'es', S: 'es' };
+const YLANGS = { de: ['German', 'alemán', '🇩🇪'], fr: ['French', 'francés', '🇫🇷'], it: ['Italian', 'italiano', '🇮🇹'], pt: ['Portuguese', 'portugués', '🇵🇹'], es: ['Spanish', 'español', '🇪🇸'] };
+const YGP_ASK = 'https://yugipedia.com/api.php?action=ask&format=json&origin=*&query=';
+// Nombre de la carta en alemán, francés, italiano, portugués y español (Yugipedia)
+const locNameCache = {};
+function ygoLocalNames(enName){
+  return locNameCache[enName] ||= getJSON(YGP_ASK + encodeURIComponent(`[[${enName.replace(/[[\]|]/g, '')}]]` + Object.values(YLANGS).map(l => `|?${l[0]} name`).join('')))
+    .then(r => { const pr = Object.values(r?.query?.results || {})[0]?.printouts || {};
+      return Object.fromEntries(Object.entries(YLANGS).map(([k, l]) => [k, pr[`${l[0]} name`]?.[0] || null])); })
+    .catch(() => (delete locNameCache[enName], null));
+}
+// Busca por nombre en alemán, francés, italiano y portugués (YGOPRODeck) y en español (Yugipedia).
+// Devuelve las cartas en inglés + el nombre que coincidió: { cards, hit: { id: { lang, name } } }
+async function searchYugiohLocal(q){
+  const hit = {};
+  const viaYgo = ['de', 'fr', 'it', 'pt'].map(l => getJSON(`${YGO}/cardinfo.php?fname=${encodeURIComponent(q)}&language=${l}`).catch(() => null)
+    .then(r => (r?.data || []).forEach(c => { hit[c.id] ||= { lang: l, name: c.name }; })));
+  // Yugipedia distingue mayúsculas y acentos ("dragon" no encuentra "Dragón"). Por eso cada palabra se busca
+  // con comodines en la primera letra, las vocales y la n (dragon -> *r*g*n, que sí encuentra Dragón/dragón)
+  // y luego comprobamos el nombre sin acentos ni mayúsculas.
+  const plain = x => String(x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const qw = plain(q).split(/[^a-z0-9ñ]+/).map(w => w.replace(/ñ/g, 'n')).filter(w => w.length > 1).slice(0, 6);
+  const pat = w => ('*' + w.slice(1).replace(/[aeiouyn]/g, '*') + '*').replace(/\*+/g, '*');
+  const strong = qw.filter(w => pat(w).replace(/\*/g, '').length >= 1);
+  const cond = l => strong.map(w => `[[${l} name::~${pat(w)}]]`).join('');
+  const fits = name => { const n = plain(name).replace(/ñ/g, 'n'); return qw.every(w => n.includes(w)); };
+  // una consulta por idioma (Yugipedia no admite bien varias con OR)
+  const viaYgp = !strong.length ? [] : Object.entries(YLANGS).map(([lang, l]) => getJSON(YGP_ASK + encodeURIComponent(`[[Category:TCG cards]]${cond(l[0])}|?Password|?${l[0]} name|limit=500`)).catch(() => null)
+    .then(r => Object.values(r?.query?.results || {}).forEach(x => {
+      const id = Number(x.printouts.Password?.[0]), name = x.printouts[`${l[0]} name`]?.[0] || '';
+      if (!id || hit[id] || !fits(name)) return;
+      hit[id] = { lang, name };
+    })));
+  await Promise.all([...viaYgo, ...viaYgp]);
+  const ids = Object.keys(hit).slice(0, 80);
+  if (!ids.length) return { cards: [], hit };
+  const r = await getJSON(`${YGO}/cardinfo.php?id=${ids.join(',')}`).catch(() => null);
+  return { cards: r?.data || [], hit };
+}
+
+async function searchYugioh(q){
+  const m = q.toUpperCase().replace(/\s+/g, '').match(/^([A-Z0-9]+)-([A-Z]{0,2})(\d+)$/);
+  if (m) {
+    const typed = q.toUpperCase().replace(/\s+/g, '');
+    const lang = CODE_LANG[m[2]] || null;
+    const tries = [typed, `${m[1]}-EN${m[3]}`, `${m[1]}-${m[3]}`, `${m[1]}-E${m[3]}`];
+    for (const code of [...new Set(tries)]) {
+      const info = await getJSON(`${YGO}/cardsetsinfo.php?setcode=${encodeURIComponent(code)}`).catch(() => null);
+      if (info && info.id) {
+        const card = (await getJSON(`${YGO}/cardinfo.php?id=${info.id}`))?.data?.[0];
+        return openYugioh(card, code, info.set_rarity, lang ? { lang, code: typed } : null);
+      }
+    }
+    return error(T('No encontré ese código. Revisa que esté bien escrito (ej. LOB-EN001).'));
+  }
+  const r = await getJSON(`${YGO}/cardinfo.php?fname=${encodeURIComponent(q)}`);
+  let cards = r?.data || [], hit = {};
+  if (!cards.length) ({ cards, hit } = await searchYugiohLocal(q)); // no está en inglés: alemán, francés, italiano, portugués o español
+  if (!cards.length) return error(T('No encontré esa carta. Prueba con el código o con su nombre en inglés, alemán, francés, italiano, portugués o español.'));
+  const loc = c => hit[c.id] ? { lang: hit[c.id].lang } : null;
+  if (cards.length === 1) return openYugioh(cards[0], null, null, loc(cards[0]));
+  renderGrid(T('{0} resultados', cards.length), cards.slice(0, 80).map(c => ({
+    img: c.card_images?.[0]?.image_url_small, title: hit[c.id]?.name || c.name, sub: hit[c.id] ? c.name : '',
+    real: () => ygoRealImg(c, c.card_sets?.[0]?.set_code, c.card_sets?.[0]?.set_rarity, true).then(u => u || ygoRealImg(c, null, null, true)),
+    price: eur(c.card_prices?.[0]?.cardmarket_price), open: () => openYugioh(c, null, null, loc(c)) })));
+}
+
+// ---- Precio de TCGplayer de cada impresión (lo descarga cada día la GitHub Action en data/ygo/) ----
+// El set_price de YGOPRODeck mezcla impresiones que comparten código (p. ej. LOB-EN001 original y 25 aniversario)
+// y a menudo está desactualizado, así que usamos el precio de mercado de TCGplayer de cada producto.
+const ygoNorm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .replace(/\(.*?\)|\[.*?\]/g, ' ').replace(/[^a-z0-9]+/g, ' ').trim();
+const ygoShard = n => ygoNorm(n).replace(/ /g, '').slice(0, 2).padEnd(2, '_');
+const printCache = {};
+async function ygoPrints(name){
+  const k = ygoShard(name);
+  const f = await (printCache[k] ||= fetch(`data/ygo/${k}.json`).then(r => r.ok ? r.json() : null).catch(() => null));
+  return f ? { updated: f.updated, list: f.d[ygoNorm(name)] || [] } : null;
+}
+// Lista de versiones de una carta. TCGplayer manda: YGOPRODeck tiene rarezas mal puestas en algunas
+// impresiones ("New", "2", "Reprint", Common donde es Ultra Rare…) y le faltan rarezas (p. ej. los 7 de
+// las Rarity Collection). Para cada código usamos las rarezas reales de TCGplayer con su precio;
+// solo si TCGplayer no tiene ese código (impresiones europeas antiguas, LOB-E001…) se queda el dato de YGOPRODeck.
+function ygoVersions(c, pr){
+  const ysets = c.card_sets || [];
+  if (!pr) return ysets.map(s => ({ ...s }));
+  const byCode = {};
+  for (const e of pr.list) (byCode[normCode(e.c)] ||= []).push(e);
+  const out = [], done = new Set();
+  const addCode = (k, code, setName) => {
+    done.add(k);
+    // una versión por rareza y variante de arte (p. ej. RA04-EN106 Dark Magician: Arkana, 6th Art, 7th Art…)
+    const byR = {};
+    for (const e of byCode[k]) (byR[(e.r || '—') + '|' + (e.v || '')] ||= []).push(e);
+    for (const [key, prints] of Object.entries(byR)) { const [r, variant] = key.split('|');
+      out.push({ set_code: code, set_rarity: r, set_name: setName, prints, ...(variant ? { variant } : {}) }); }
+  };
+  for (const s of ysets) {
+    const k = normCode(s.set_code);
+    if (done.has(k)) continue;
+    if (byCode[k]) addCode(k, s.set_code, s.set_name);
+    else out.push({ ...s, set_rarity: /^(\d+|New|New artwork|Reprint|European.*)$/i.test(s.set_rarity) ? '—' : s.set_rarity, prints: [], noTcg: true }); // rarezas de YGOPRODeck que no son rarezas
+  }
+  // impresiones que TCGplayer tiene y YGOPRODeck no
+  for (const k of Object.keys(byCode)) if (!done.has(k)) {
+    const e = byCode[k][0];
+    addCode(k, e.c, e.g.replace(/\s*\((Worldwide English|25th Anniversary Edition)\)/i, ''));
+  }
+  return out;
+}
+const versionPrice = s => { const v = (s?.prints || []).map(printPrice).filter(Boolean); return v.length ? Math.min(...v) : null; };
+// Precio a mostrar: Cardmarket (€) si lo hay; si no, TCGplayer ($). { t: texto, n: número aprox. en € para ordenar }
+const shownPrice = prints => {
+  const e = (prints || []).map(x => x.e).filter(Boolean);
+  if (e.length) { const v = Math.min(...e); return { t: ((prints || []).some(x => x.ea) ? '~' : '') + eur(v), n: v, e: true }; }
+  const u = (prints || []).map(printPrice).filter(Boolean);
+  return u.length ? { t: usd(Math.min(...u)), n: Math.min(...u) * 0.92 } : null;
+};
+// impresiones de TCGplayer con ese código y rareza
+function printsFor(pr, s){
+  if (s?.prints) return s.prints;
+  if (!pr || !s) return [];
+  const same = pr.list.filter(e => normCode(e.c) === normCode(s.set_code));
+  const r = same.filter(e => e.r.toLowerCase() === String(s.set_rarity).toLowerCase());
+  return r.length ? r : (same.length && new Set(same.map(e => e.r)).size === 1 ? same : []);
+}
+// precio de mercado más bajo entre sus ediciones (1st Edition, Unlimited…)
+const printPrice = e => { const v = Object.values(e?.p || {}).map(x => x[0]).filter(Boolean); return v.length ? Math.min(...v) : null; };
+const is25 = e => /25th Anniversary/i.test(e?.g || '');
+const ED_TCG = { '1st Edition': '1ª edición', 'Unlimited': 'Edición ilimitada', 'Limited': 'Edición limitada' };
+
+// local = { lang, code? }: la carta se buscó en otro idioma (código LOB-DE001 o nombre en alemán…)
+async function openYugioh(c, code, rarity, local = null, variant = null){
+  const sets = c.card_sets || [];
+  const names = withTimeout(ygoLocalNames(c.name), 4000);
+  // escaneos reales de todas las impresiones de la carta (una sola consulta) + precios por impresión
+  const [scans0, pr] = await Promise.all([withTimeout(ygpScans(c.name), 4000), withTimeout(ygoPrints(c.name), 4000)]);
+  const scans = scans0 || [];
+  const real = s => s && pickScan(scans, s.set_code, s.set_rarity);
+  const vers = ygoVersions(c, pr);
+  const items = vers.length ? vers : [null];
+  // primero la edición buscada (por código; la rareza de YGOPRODeck puede no coincidir con la real)
+  const cc = code && normCode(code);
+  let idx = cc ? items.findIndex(s => s && normCode(s.set_code) === cc && (!rarity || s.set_rarity === rarity) && (!variant || s.variant === variant)) : -1;
+  if (idx < 0 && cc) idx = items.findIndex(s => s && normCode(s.set_code) === cc && (!rarity || s.set_rarity === rarity));
+  if (idx < 0 && cc) idx = items.findIndex(s => s && normCode(s.set_code) === cc);
+  const locNames = await names;
+  // código en el idioma de la carta para la versión buscada (LOB-EN001 -> LOB-DE001)
+  const locCode = s => local?.code && s && normCode(s.set_code) === cc ? local.code : null;
+  const realLoc = s => { const lc = locCode(s); return (lc && pickScan(scans, lc, s.set_rarity)) || real(s); };
+  return showVersions(items, idx < 0 ? 0 : idx, async s => yugiohView(c, s, realLoc(s) || (!s && pickScan(scans, null, null)),
+      s && !locCode(s) ? scanGroup(scans, s.set_code, s.set_rarity) : [], pr, { names: locNames, lang: local?.lang, code: locCode(s) }),
+    s => { const x = real(s); const i = x ? ygpThumb(x.url) : c.card_images?.[0]?.image_url_small;
+      return s ? { r: s.set_rarity, t: s.set_code + (s.variant ? ' · ' + s.variant : ''), p: s.prints?.length ? (shownPrice(s.prints)?.t || '') : (Number(s.set_price) ? '≈ ' + usd(s.set_price) : ''), i, rep: !x } : { r: '', t: c.name, i, rep: !x }; });
+}
+
+function yugiohView(c, set, scan, group = [], pr = null, loc = {}){
+  const p = c.card_prices?.[0] || {};
+  const rows = [];
+  // idioma a destacar: el de la búsqueda o, si no, el de la web
+  const showLang = loc.lang || (YLANGS[LANG] ? LANG : null);
+  const locName = showLang && loc.names?.[showLang];
+  const ps = printsFor(pr, set);
+  // con varias impresiones del mismo código, la foto elegida decide cuál es "la tuya"
+  const alts = group.length > 1 ? group.map(x => ({ url: x.url, label: scanLabel(x), file: x.file, is25: x.extra.includes('25thAnniversaryEdition') })) : null;
+  const pick = a => ps.length > 1 && a ? (ps.find(e => is25(e) === a.is25) || null) : ps[0] || null;
+  if (alts) alts.forEach(a => { const e = pick(a); a.pv = e ? shownPrice([e])?.t || null : null; });
+  const chosen = ps.length > 1 ? pick(alts?.[0]) : ps[0];
+  if (set && ps.some(e => e.e)) {
+    rows.push(['#Esta edición (Cardmarket)']);
+    for (const e of ps) if (e.e) rows.push([[set.set_code, ps.length > 1 ? (is25(e) ? T('25 aniversario') : e.g) : '', T('Tendencia')].filter(Boolean).join(' · '),
+      eur(e.e) + (e.el ? ` <small>(${T('desde')} ${eur(e.el)}${e.e30 ? ` · ${T('media 30 días')} ${eur(e.e30)}` : ''})</small>` : '')]);
+  }
+  if (set && ps.length) {
+    rows.push(['#Esta edición (TCGplayer)']);
+    for (const e of ps) for (const [ed, [m, low]] of Object.entries(e.p))
+      rows.push([[set.set_code, ps.length > 1 ? (is25(e) ? T('25 aniversario') : e.g) : '', T(ED_TCG[ed] || ed)].filter(Boolean).join(' · '),
+        usd(m || low) + (low && m ? ` <small>(${T('desde')} ${usd(low)})</small>` : '')]);
+  } else if (set && Number(set.set_price)) rows.push(['#Esta edición'], [`${set.set_code} (${set.set_rarity}) · YGOPRODeck`, usd(set.set_price)]);
+  if (loc.code) rows.push(['#Tu carta'], [`${loc.code} (${T(YLANGS[loc.lang][1])})`, `<small>${T('TCGplayer solo vende cartas en inglés: el precio es el de {0}. Para tu idioma, mira Cardmarket.', esc(set.set_code))}</small>`]);
+  if (loc.names && Object.values(loc.names).some(Boolean)) {
+    rows.push(['#Nombre en otros idiomas']);
+    for (const [k, l] of Object.entries(YLANGS)) if (loc.names[k]) { const t = T(l[1]); rows.push([`${l[2]} ${t[0].toUpperCase() + t.slice(1)}`, esc(loc.names[k])]); }
+  }
+  rows.push(['#Precio general de la carta'],
+    ['Cardmarket (la edición más barata)', eur(p.cardmarket_price)], ['TCGplayer', usd(p.tcgplayer_price)],
+    ['eBay', usd(p.ebay_price)], ['Amazon', usd(p.amazon_price)], ['CoolStuffInc', usd(p.coolstuffinc_price)]);
+  const sp = chosen ? printPrice(chosen) : null;
+  const se = chosen?.e || null; // Cardmarket manda
+  const approx = !sp && set && Number(set.set_price) ? Number(set.set_price) : null; // TCGplayer no la vende: dato orientativo
+  return {
+    img: scan?.url || c.card_images?.[0]?.image_url, replica: !scan, name: locName || c.name, subname: locName && locName !== c.name ? c.name : '', rarity: set?.set_rarity,
+    alts,
+    updated: pr && ps.length ? T(se ? 'Cardmarket del {0}' : 'TCGplayer del {0}', fecha(pr.updated)) : '',
+    versionLabel: set ? `${loc.code || set.set_code} · ${set.set_rarity}${set.variant ? ' · ' + set.variant : ''}` : '',
+    meta: set ? `${esc(set.set_name)} · ${esc(loc.code || set.set_code)}${set.variant ? ' · ' + esc(set.variant) : ''}` : esc(c.type),
+    mainLabel: se ? 'Precio en Cardmarket de esta edición' : sp ? 'Precio de esta edición exacta' : approx ? 'Precio orientativo de esta edición' : set ? 'Precio de esta edición exacta' : 'Precio en Cardmarket (desde)',
+    mainValue: se ? eur(se) : sp ? usd(sp) : approx ? usd(approx) : set ? '' : eur(p.cardmarket_price) || usd(p.tcgplayer_price),
+    approx: se && chosen.ea ? 'Cardmarket no separa bien las versiones de esta carta en esta expansión: precio aproximado.' : approx ? 'TCGplayer no vende esta impresión; dato de YGOPRODeck, puede estar desactualizado.' : set && !sp ? 'TCGplayer no tiene precio de esta impresión ahora mismo.' : '',
+    value: se || sp || approx || Number(p.cardmarket_price) || null,
+    rows,
+    links: [['Cardmarket', `https://www.cardmarket.com/es/YuGiOh/Products/Search?searchString=${encodeURIComponent(c.name)}${loc.lang ? '&language=' + ({ fr: 2, de: 3, es: 4, it: 5, pt: 8 })[loc.lang] : ''}`],
+            ['TCGplayer', `https://www.tcgplayer.com/search/yugioh/product?q=${encodeURIComponent(c.name)}`],
+            ['Ficha', c.ygoprodeck_url], ['Foto (Yugipedia)', scan ? `https://yugipedia.com/wiki/File:${encodeURIComponent(scan.file)}` : null]],
+    reload: async () => { const n = (await getJSON(`${YGO}/cardinfo.php?id=${c.id}`))?.data?.[0]; if (n) { Object.assign(c, n); drawCurrent(); } },
+    openSet: set ? () => openYugiohSet(set.set_name) : null,
+    howto: async () => {
+      // texto de la carta en francés, alemán o italiano si YGOPRODeck lo tiene
+      if (['fr', 'de', 'it'].includes(LANG)) {
+        const t = (await getJSON(`${YGO}/cardinfo.php?id=${c.id}&language=${LANG}`).catch(() => null))?.data?.[0];
+        if (t) return howtoYugioh({ ...c, desc: t.desc, pend_desc: t.pend_desc, monster_desc: t.monster_desc, _lang: LANG_NAME() });
+      }
+      return howtoYugioh(c);
+    },
+  };
+}
+
+async function openYugiohSet(name){
+  loading(T('Cargando la expansión…'));
+  const r = await getJSON(`${YGO}/cardinfo.php?cardset=${encodeURIComponent(name)}`);
+  const cards = r?.data || [];
+  if (!cards.length) return error(T('No se pudo cargar la expansión.'));
+  // precios por impresión (un archivo pequeño por cada 2 letras del nombre)
+  const prs = {};
+  await withTimeout(Promise.all([...new Set(cards.map(c => c.name))].map(async n => { prs[n] = await ygoPrints(n); })), 6000);
+  const items = [];
+  for (const c of cards) {
+    const codes = new Set((c.card_sets || []).filter(s => s.set_name === name).map(s => normCode(s.set_code)));
+    for (const s of ygoVersions(c, prs[c.name])) if (codes.has(normCode(s.set_code))) {
+      const sh = s.prints ? shownPrice(s.prints) : null;
+      const v = s.prints ? sh?.n ?? null : Number(s.set_price) || null;
+      items.push({
+    img: c.card_images?.[0]?.image_url_small, title: c.name, sub: `${s.set_code} · ${s.set_rarity}${s.variant ? ' · ' + s.variant : ''}`,
+    real: () => ygoRealImg(c, s.set_code, s.set_rarity, true),
+    price: sh ? sh.t : v ? '≈ ' + usd(v) : '', v, code: s.set_code,
+    open: () => openYugioh(c, s.set_code.toUpperCase(), s.set_rarity, null, s.variant) });
+    }
+  }
+  items.sort((a, b) => a.code.localeCompare(b.code, 'en', { numeric: true }));
+  renderGrid(`${esc(name)} · ${T('{0} cartas', items.length)}`, items, { sort: true });
+}
+
+// =====================================================================
+//  MAGIC (scryfall.com) — versiones = todas sus impresiones
+// =====================================================================
+const MTG = 'https://api.scryfall.com';
+async function searchMagic(q){
+  const m = q.match(/^([a-z0-9]{2,6})\s*[\s\-\/#]\s*([0-9a-z★]+)$/i);
+  if (m) {
+    const c = await getJSON(`${MTG}/cards/${m[1].toLowerCase()}/${m[2].toLowerCase()}`);
+    if (c) return openMagic(c);
+  }
+  const r = await getJSON(`${MTG}/cards/search?order=name&q=${encodeURIComponent(q)}`);
+  const cards = r?.data || [];
+  if (!cards.length) return error(T('No encontré esa carta. Revisa el código (ej. MH3 123) o el nombre en inglés.'));
+  if (cards.length === 1) return openMagic(cards[0]);
+  renderGrid(T('{0} resultados', cards.length), cards.slice(0, 80).map(c => ({
+    img: mtgImg(c, 'small'), title: c.name, price: eur(c.prices?.eur) || usd(c.prices?.usd), open: () => openMagic(c) })));
+}
+const mtgImg = (c, size) => c.image_uris?.[size] || c.card_faces?.[0]?.image_uris?.[size];
+
+async function openMagic(c){
+  let prints = [c];
+  try {
+    const r = await getJSON(c.prints_search_uri);
+    if (r?.data?.length) prints = r.data;
+  } catch (e) {}
+  const idx = prints.findIndex(p => p.id === c.id);
+  return showVersions(prints, idx < 0 ? 0 : idx, async p => magicView(p),
+    p => ({ r: p.rarity, t: `${p.set_name} · ${p.collector_number}`, p: eur(p.prices?.eur) || usd(p.prices?.usd), i: mtgImg(p, 'small') }));
+}
+
+function magicView(c){
+  const p = c.prices || {};
+  const main = Number(p.eur) || Number(p.usd) || Number(p.eur_foil) || Number(p.usd_foil) || null;
+  return {
+    img: mtgImg(c, 'normal'), name: c.name, rarity: c.rarity,
+    versionLabel: `${c.set_name} · ${c.collector_number}`,
+    meta: `${esc(c.set_name)} · ${esc(c.set.toUpperCase())} ${esc(c.collector_number)}`,
+    mainLabel: p.eur ? 'Precio en Cardmarket' : 'Precio de referencia',
+    mainValue: eur(p.eur) || usd(p.usd) || eur(p.eur_foil) || usd(p.usd_foil), value: main,
+    rows: [['#Cardmarket (Europa)'], ['Normal', eur(p.eur)], ['Foil', eur(p.eur_foil)],
+           ['#TCGplayer (EE. UU.)'], ['Normal', usd(p.usd)], ['Foil', usd(p.usd_foil)], ['Etched', usd(p.usd_etched)]],
+    links: [['Cardmarket', c.purchase_uris?.cardmarket], ['TCGplayer', c.purchase_uris?.tcgplayer], ['Scryfall', c.scryfall_uri]],
+    reload: async () => { const n = await getJSON(`${MTG}/cards/${c.id}`); if (n) { Object.assign(c, n); drawCurrent(); } },
+    openSet: () => openMagicSet(c.set, c.set_name),
+    howto: () => howtoMagic(c),
+  };
+}
+
+async function openMagicSet(code, name){
+  loading(T('Cargando la expansión…'));
+  let url = `${MTG}/cards/search?order=set&unique=prints&q=${encodeURIComponent('e:' + code)}`, cards = [];
+  for (let page = 0; url && page < 4; page++) {
+    const r = await getJSON(url); if (!r) break;
+    cards.push(...r.data); url = r.has_more ? r.next_page : null;
+  }
+  if (!cards.length) return error(T('No se pudo cargar la expansión.'));
+  renderGrid(`${esc(name)} · ${T('{0} cartas', cards.length)}`, cards.map(c => ({
+    img: mtgImg(c, 'small'), title: c.name, sub: `Nº ${c.collector_number} · ${c.rarity}`,
+    price: eur(c.prices?.eur) || usd(c.prices?.usd), v: Number(c.prices?.eur) || Number(c.prices?.usd) || null,
+    open: () => openMagic(c) })), { sort: true });
+}
+
+// =====================================================================
+//  JUEGOS CON DATOS DIARIOS (One Piece, Dragon Ball, Digimon, Lorcana,
+//  Gundam, Riftbound, Weiß Schwarz, WoW)
+//  Fichero data/<juego>.json, lo actualiza cada día la GitHub Action.
+// =====================================================================
+const localData = {};
+async function loadLocal(key){
+  if (localData[key]) return localData[key];
+  const r = await fetch(`data/${key}.json`);
+  if (!r.ok) throw new Error('Sin datos');
+  const d = await r.json();
+  d.byCode = {};
+  for (const c of d.cards) {
+    c.k = normCode(c.c);              // código completo
+    c.k1 = d.currency === 'JPY' ? '' : normCode(String(c.c).split(' ')[0]); // sin la rareza (Digimon: "BT1-084 SR")
+    c.nn = normName(c.n);
+    c.b = normName(c.n.replace(/\(.*?\)|\[.*?\]/g, '')).trim(); // nombre sin "(Alternate Art)"…
+    for (const k of new Set([c.k, c.k1])) if (k) (d.byCode[k] ||= []).push(c);
+  }
+  return (localData[key] = d);
+}
+const tcgImg = (c, big) => c.y !== undefined ? `https://torekakaku.com/dm/image/${c.id}.jpg`
+  : `https://tcgplayer-cdn.tcgplayer.com/product/${c.id}_${big ? 'in_1000x1000' : '200w'}.jpg`;
+const yen = v => money(v, 'JPY', 0);
+// Rareza + tipo de versión sacado del nombre: "SEC · Alt Art", "SEC · Manga", "SR · Parallel"…
+const localRarity = c => {
+  const tags = [...String(c.n).matchAll(/[(\[]([^)\]]+)[)\]]/g)].map(m => m[1].trim())
+    .filter(t => normCode(t) !== c.k1 && normCode(t) !== c.k && !/^[\d\s]+$/.test(t))
+    .map(t => t.replace(/Alternate Art/i, 'Alt Art'));
+  return [c.r, ...tags].filter(Boolean).join(' · ');
+};
+const localValue = c => c.y || c.e || c.u || null;
+const localPrice = c => c.y !== undefined ? yen(c.y) : eur(c.e) || usd(c.u);
+
+async function searchLocal(q){
+  loading(T('Cargando datos del juego…'));
+  const d = await loadLocal(game).catch(() => null);
+  if (!d) return error(T('Los datos de este juego aún no están listos. Vuelve a intentarlo en unos minutos.'));
+  const k = normCode(q);
+  let found = d.byCode[k] || [];
+  if (!found.length && /\d/.test(q)) {                 // código parcial: "OP01-12" -> empieza por
+    found = d.cards.filter(c => c.k.startsWith(k) || c.k1.startsWith(k));
+    if (found.length > 1 && new Set(found.map(c => c.k1)).size > 1) {
+      return gridLocal(T('{0} cartas', found.length), found);
+    }
+  }
+  if (found.length) {
+    if (new Set(found.map(c => c.b)).size > 1) return gridLocal(T('{0} cartas con ese código', found.length), found);
+    const v = sameCard(d, found[0]); return openLocal(v[0], v); // empieza por la versión normal
+  }
+  const words = normName(q).split(/\s+/).filter(Boolean);
+  const byName = d.cards.filter(c => words.every(w => c.nn.includes(w)));
+  if (!byName.length) return error(T('No encontré esa carta. Revisa el código o escribe el nombre en inglés.'));
+  // agrupa las versiones de la misma carta y muestra una por grupo
+  const groups = {};
+  for (const c of byName) (groups[c.k1 + '|' + c.b] ||= []).push(c);
+  const reps = Object.values(groups).map(g => g.sort((a, b) => (localValue(a) ?? 1e9) - (localValue(b) ?? 1e9))[0]);
+  if (reps.length === 1) return openLocal(reps[0], sameCard(d, reps[0]));
+  gridLocal(T('{0} resultados', reps.length), reps);
+}
+
+// Todas las versiones (rarezas, paralelas, alt art…) de la misma carta
+function sameCard(d, c){
+  const list = c.k1 ? d.byCode[c.k1].filter(x => x.b === c.b) : d.cards.filter(x => x.b === c.b);
+  return [...new Set(list)].sort((a, b) => (localValue(a) ?? 1e9) - (localValue(b) ?? 1e9));
+}
+
+function gridLocal(title, cards, opts){
+  const d = localData[game];
+  renderGrid(title, cards.slice(0, 300).map(c => ({
+    img: tcgImg(c), title: c.n, sub: [c.c, c.r].filter(Boolean).join(' · '),
+    price: localPrice(c), v: localValue(c),
+    open: () => openLocal(c, sameCard(d, c)) })), opts);
+}
+
+function openLocal(c, versions){
+  const key = game;
+  const idx = versions.indexOf(c);
+  return showVersions(versions, idx < 0 ? 0 : idx, async x => localView(key, x),
+    x => ({ r: localRarity(x), t: x.c || x.n, p: localPrice(x), i: tcgImg(x) }));
+}
+
+function localView(key, c){
+  const d = localData[key], g = GAMES[key], set = d.sets[c.g] || {};
+  if (g.yen) return dmView(key, c, d, set);
+  const rows = [['#Cardmarket (Europa)'],
+    ['Tendencia', eur(c.e)], ['Desde', eur(c.el)], ['Media 30 días', eur(c.e30)], ['Foil (tendencia)', eur(c.ef)],
+    ['#TCGplayer (EE. UU.)'], ['Precio de mercado', usd(c.u)], ['Desde', usd(c.ul)], ['Foil', usd(c.uf)]];
+  const cmLink = c.cm
+    ? `https://www.cardmarket.com/es/${g.cm}/Products?idProduct=${c.cm}`
+    : `https://www.cardmarket.com/es/${g.cm}/Products/Search?searchString=${encodeURIComponent(c.n.replace(/\(.*?\)/g, '').trim())}`;
+  return {
+    img: tcgImg(c, true), name: c.n, rarity: localRarity(c),
+    versionLabel: [localRarity(c), c.c].filter(Boolean).join(' · '),
+    meta: `${esc(set.n || '')}${c.c ? ' · ' + esc(c.c) : ''}`,
+    mainLabel: c.e ? 'Precio de tendencia en Cardmarket' : 'Precio de mercado en TCGplayer',
+    mainValue: localPrice(c), value: localValue(c),
+    approx: c.e && c.ea ? '≈ Esta carta tiene varias versiones: comprueba en Cardmarket que sea la tuya.' : '',
+    rows,
+    links: [['Cardmarket', cmLink], ['TCGplayer', `https://www.tcgplayer.com/product/${c.id}`]],
+    howto: () => howtoLocal(key, c),
+    updated: c.e ? T('Cardmarket del {0}', fecha(d.cmUpdated || d.updated)) : T('TCGplayer del {0}', fecha(d.updated)),
+    openSet: () => {
+      const list = d.cards.filter(x => x.g === c.g)
+        .sort((a, b) => String(a.c).localeCompare(String(b.c), 'en', { numeric: true }));
+      gridLocal(`${esc(set.n || T('Expansión'))} · ${T('{0} cartas', list.length)}`, list, { sort: true });
+    },
+  };
+}
+
+// Duel Masters: precios de Japón en yenes (Torekakaku)
+function dmView(key, c, d, set){
+  const q = encodeURIComponent(c.n);
+  return {
+    img: tcgImg(c, true), name: c.n, rarity: c.r,
+    versionLabel: [c.r, c.c].filter(Boolean).join(' · '),
+    meta: `${esc(set.n || '')}${c.c ? ' · ' + esc(c.c) : ''}`,
+    mainLabel: 'Precio de venta en Japón (Torekakaku)',
+    mainValue: yen(c.y), value: null,
+    rows: [['#Torekakaku (Japón)'], ['Precio de venta', yen(c.y)]],
+    links: [['Torekakaku', `https://torekakaku.com/dm/card/?cardid=${c.id}`],
+            ['Yuyu-tei', `https://yuyu-tei.jp/sell/dm/s/search?search_word=${q}`],
+            ['eBay', `https://www.ebay.es/sch/i.html?_nkw=${encodeURIComponent('duel masters ' + c.n)}`],
+            ['Ficha oficial', 'https://dm.takaratomy.co.jp/card/']],
+    howto: async () => '<p>' + T('El texto oficial de esta carta (en japonés) está en la {0}. Para aprender a jugar, pulsa arriba en <b>📖 Cómo se juega a Duel Masters</b>.', `<a href="https://dm.takaratomy.co.jp/card/" target="_blank" rel="noopener">${T('base de datos de Takara Tomy')} ↗</a>`) + '</p>',
+    updated: T('Torekakaku del {0}', fecha(d.updated)),
+    openSet: () => {
+      const list = d.cards.filter(x => x.g === c.g).sort((a, b) => String(a.c).localeCompare(String(b.c), 'ja', { numeric: true }));
+      gridLocal(`${esc(set.n || 'Pack')} · ${T('{0} cartas', list.length)}`, list, { sort: true });
+    },
+  };
+}
+
+// =====================================================================
+//  CAJAS SELLADAS (booster box, ETB, sobres, mazos…) — data/sealed/<juego>.json
+// =====================================================================
+const SEALED_TYPES = { box: '📦 Cajas de sobres', etb: '🎁 Elite Trainer Box', case: '🗃️ Cajas máster (case)',
+  pack: '🃏 Sobres', deck: '🂠 Mazos', coll: '🎀 Colecciones y packs', other: '➕ Otros' };
+const sealedData = {};
+async function showSealed(key){
+  loading(T('Cargando productos sellados…'));
+  if (!sealedData[key]) {
+    const r = await fetch(`data/sealed/${key}.json`).catch(() => null);
+    if (!r || !r.ok) return error(T('Los precios de productos sellados de este juego aún no están listos.'));
+    sealedData[key] = await r.json();
+  }
+  const d = sealedData[key];
+  const types = Object.keys(SEALED_TYPES).filter(t => d.items.some(i => i.t === t));
+  let type = types.includes('box') ? 'box' : types.includes('etb') ? 'etb' : 'all', q = '', sort = 'new', limit = 60;
+  const val = i => i.e || i.u || null;
+  // las colecciones "Miscellaneous" / promos no tienen fecha real: al final
+  const setDate = i => /misc|promo|other/i.test(d.sets[i.g]?.n || '') ? '0' : String(d.sets[i.g]?.d || '');
+  redraw = () => showSealed(key);
+  const draw = () => {
+    let list = d.items.filter(i => (type === 'all' || i.t === type) && (!q || normName(i.n + ' ' + (d.sets[i.g]?.n || '')).includes(q)));
+    list.sort(sort === 'hi' ? (a, b) => (val(b) ?? -1) - (val(a) ?? -1)
+      : sort === 'lo' ? (a, b) => (val(a) ?? 1e9) - (val(b) ?? 1e9)
+      : (a, b) => setDate(b).localeCompare(setDate(a)));
+    out.innerHTML = `${backBtn()}
+      <div class="bar"><h2>${T('📦 Productos sellados · {0}', esc(GAMES[key].label))}</h2>
+        <select id="ssort"><option value="new">${T('Más nuevos primero')}</option><option value="hi">${T('Más caros primero')}</option><option value="lo">${T('Más baratos primero')}</option></select></div>
+      <div class="sfilters">
+        <button class="chip${type === 'all' ? ' on' : ''}" data-t="all">${T('Todo')}</button>
+        ${types.map(t => `<button class="chip${type === t ? ' on' : ''}" data-t="${t}">${T(SEALED_TYPES[t])}</button>`).join('')}
+      </div>
+      <input class="sfind" id="sfind" placeholder="${T('Buscar por expansión o nombre (ej. 151, Romance Dawn…)')}" value="${esc(q)}">
+      <p class="note">${T('{0} productos · Precios del {1} (Cardmarket €, si no TCGplayer $)', list.length, fecha(d.cmUpdated || d.updated))}</p>
+      <div class="list">${list.slice(0, limit).map((i, k) => `<div class="item" data-k="${k}">
+        <img src="${tcgImg(i)}" loading="lazy" alt="">
+        <div>${esc(i.n)}</div><div class="note">${esc(d.sets[i.g]?.n || '')}</div>
+        <div class="p">${eur(i.e) || usd(i.u) || '—'}</div></div>`).join('')}</div>
+      ${list.length > limit ? `<button class="more" id="more">${T('Ver más')}</button>` : ''}`;
+    wireBack();
+    out.querySelectorAll('.sfilters .chip').forEach(b => b.onclick = () => { type = b.dataset.t; limit = 60; draw(); });
+    $('ssort').value = sort; $('ssort').onchange = e => { sort = e.target.value; draw(); };
+    const f = $('sfind');
+    f.oninput = () => { clearTimeout(f._t); f._t = setTimeout(() => { q = normName(f.value.trim()); limit = 60; draw(); $('sfind').focus(); $('sfind').setSelectionRange(99, 99); }, 300); };
+    if ($('more')) $('more').onclick = () => { limit += 60; draw(); };
+    out.querySelectorAll('.item').forEach(el => el.onclick = () => {
+      remember(draw);
+      sealedView(key, list[el.dataset.k]);
+    });
+  };
+  draw();
+  toTop();
+}
+
+function sealedView(key, i){
+  const d = sealedData[key], g = GAMES[key];
+  current = null;
+  render({
+    img: tcgImg(i, true), name: i.n, rarity: T(SEALED_TYPES[i.t] || '').replace(/^\S+\s/, ''),
+    meta: esc(d.sets[i.g]?.n || '') + (d.sets[i.g]?.d ? ' · ' + T('salió el {0}', fecha(d.sets[i.g].d)) : ''),
+    mainLabel: i.e ? 'Precio de tendencia en Cardmarket' : 'Precio de mercado en TCGplayer',
+    mainValue: eur(i.e) || usd(i.u), value: null,
+    rows: [['#Cardmarket (Europa)'], ['Tendencia', eur(i.e)], ['Desde', eur(i.el)], ['Media 30 días', eur(i.e30)],
+           ['#TCGplayer (EE. UU.)'], ['Precio de mercado', usd(i.u)], ['Desde', usd(i.ul)]],
+    links: [['Cardmarket', i.cm ? `https://www.cardmarket.com/es/${g.cm}/Products?idProduct=${i.cm}`
+              : `https://www.cardmarket.com/es/${g.cm}/Products/Search?searchString=${encodeURIComponent(i.n)}`],
+            ['TCGplayer', `https://www.tcgplayer.com/product/${i.id}`]],
+    updated: T(i.e ? 'Cardmarket del {0}' : 'TCGplayer del {0}', fecha(d.cmUpdated || d.updated)),
+    sealed: true,
+  });
+}
+
+// =====================================================================
+//  DUEL MASTERS — sin precios públicos: enlaces de búsqueda
+// =====================================================================
+function searchLinks(q){
+  const e = encodeURIComponent(q);
+  out.innerHTML = `<div class="result" style="display:block">
+    <p class="name">${esc(q)}</p>
+    <p class="meta">No hay una base de precios pública para Duel Masters. Búscala en estas tiendas:</p>
+    <div class="links">
+      <a class="main" href="https://www.ebay.es/sch/i.html?_nkw=${encodeURIComponent('duel masters ' + q)}&LH_Sold=1" target="_blank" rel="noopener">eBay (vendidas) ↗</a>
+      <a href="https://yuyu-tei.jp/sell/dm/s/search?search_word=${e}" target="_blank" rel="noopener">Yuyu-tei (Japón) ↗</a>
+      <a href="https://www.google.com/search?q=${encodeURIComponent('duel masters ' + q + ' precio')}" target="_blank" rel="noopener">Google ↗</a>
+    </div>
+    ${gradingHTML(null)}
+  </div>`;
+}
+
+// ===================== ESCÁNER CON CÁMARA =====================
+// Usa la cámara para hacer una foto del código y Tesseract.js para leer el texto.
+let stream = null, ocrWorker = null;
+const video = $('video'), setStatus = t => $('scanStatus').textContent = t;
+
+$('camBtn').onclick = openScan;
+$('closeScan').onclick = closeScan;
+$('shoot').onclick = () => readImage(cropGuide(video, video.videoWidth, video.videoHeight));
+$('photo').onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  const img = new Image();
+  img.onload = () => { readImage(prep(img, 0, 0, img.width, img.height)); URL.revokeObjectURL(img.src); };
+  img.src = URL.createObjectURL(f);
+  e.target.value = '';
+};
+
+async function openScan(){
+  $('scan').classList.add('open');
+  setStatus('');
+  loadOCR().catch(() => {});
+  if (GAMES[game].type === 'local') loadLocal(game).catch(() => {});
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false });
+    video.srcObject = stream;
+    await video.play();
+  } catch (e) {
+    setStatus(T('No se pudo abrir la cámara. Da permiso a la cámara o usa "Subir foto".'));
+  }
+}
+function closeScan(){
+  $('scan').classList.remove('open');
+  if (stream) stream.getTracks().forEach(t => t.stop());
+  stream = null;
+}
+// Recorta la zona del recuadro verde (mismas proporciones que en el CSS)
+function cropGuide(src, w, h){
+  if (!w) return null;
+  return prep(src, w * .08, h * .38, w * .84, h * .24);
+}
+// Agranda la imagen y la pasa a blanco y negro con más contraste para leer mejor
+function prep(src, x, y, w, h){
+  const scale = Math.min(3, 2000 / w);
+  const c = document.createElement('canvas');
+  c.width = w * scale; c.height = h * scale;
+  const g = c.getContext('2d');
+  g.drawImage(src, x, y, w, h, 0, 0, c.width, c.height);
+  const img = g.getImageData(0, 0, c.width, c.height), d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const v = 0.3 * d[i] + 0.59 * d[i + 1] + 0.11 * d[i + 2];
+    d[i] = d[i + 1] = d[i + 2] = Math.max(0, Math.min(255, (v - 128) * 1.6 + 128));
+  }
+  g.putImageData(img, 0, 0);
+  return c;
+}
+function loadScript(src){
+  return new Promise((ok, fail) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = fail; document.head.appendChild(s); });
+}
+async function loadOCR(){
+  if (ocrWorker) return ocrWorker;
+  if (!window.Tesseract) await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js');
+  ocrWorker = Tesseract.createWorker('eng').catch(e => { ocrWorker = null; throw e; });
+  return ocrWorker;
+}
+async function readImage(canvas){
+  if (!canvas) return setStatus(T('La cámara aún no está lista, espera un segundo.'));
+  setStatus(T('Leyendo el código… ⏳'));
+  try {
+    const worker = await loadOCR();
+    const { data } = await worker.recognize(canvas);
+    const code = await extractCode(data.text);
+    if (!code) return setStatus(T('No pude leer un código. Acerca más la cámara, con buena luz, y vuelve a intentarlo.'));
+    closeScan();
+    $('q').value = code;
+    search();
+  } catch (e) {
+    console.error(e);
+    setStatus(T('Error al leer la imagen. Inténtalo otra vez.'));
+  }
+}
+// Corrige letras que el lector confunde con números (O→0, I→1…)
+const digits = s => s.replace(/[OQD]/g, '0').replace(/[IL|]/g, '1').replace(/S/g, '5').replace(/B/g, '8').replace(/Z/g, '2');
+
+async function extractCode(raw){
+  const T = raw.toUpperCase().replace(/[–—_]/g, '-');
+  let m;
+  if (game === 'yugioh') {
+    m = T.match(/\b([A-Z0-9]{2,5})\s*-\s*([A-Z0-9]{3,7})\b/);
+    if (m) {
+      const reg = (m[2].match(/^(EN|SP|DE|FR|IT|PT|JP|KR|AE|E|S|G|F|I|P)(?=[0-9OQDILSBZ]{3,})/) || [''])[0];
+      const num = digits(m[2].slice(reg.length)).replace(/\D/g, '').slice(-3);
+      if (num.length === 3) return `${m[1]}-${reg}${num}`;
+    }
+  }
+  if (game === 'pokemon') {
+    const num = T.match(/([0-9OIL]{1,3})\s*\/\s*([0-9OIL]{2,3})/);
+    if (num) {
+      const n = digits(num[1]).replace(/^0+(?=\d)/, ''), total = digits(num[2]).replace(/^0+(?=\d)/, '');
+      const before = T.slice(Math.max(0, num.index - 20), num.index);
+      for (const c of (before.match(/\b[A-Z]{3}\b/g) || []).reverse())
+        if ((await pokemonSetIds(c).catch(() => [])).length) return `${c} ${n}`;
+      return `${n}/${total}`;
+    }
+  }
+  if (game === 'magic') {
+    const num = T.match(/\b([0-9OIL]{1,4})(?:\s*\/\s*\d{2,4})?\s+[CURMLSTP]\b/);
+    const set = T.match(/\b([A-Z0-9]{3,5})\s*[•·*.+]?\s*(?:EN|ES|DE|FR|IT|PT|JA)\b/);
+    if (num && set) return `${set[1]} ${parseInt(digits(num[1]), 10)}`;
+  }
+  if (GAMES[game].type === 'local') {
+    // Busca en el texto cualquier código que exista en los datos del juego (OP01-120, 207/204…)
+    const d = await loadLocal(game).catch(() => null);
+    if (!d) return null;
+    const S = T.replace(/\s*([-\/])\s*/g, '$1');
+    for (const tok of S.match(/[A-Z0-9]{1,8}(?:[-\/][A-Z0-9]{1,8})+/g) || []) {
+      const parts = tok.split(/([-\/])/);
+      const fixed = parts.map((p, i) => i === parts.length - 1 ? digits(p) : p).join(''); // el número final
+      for (const t of [tok, fixed]) if (d.byCode[normCode(t)]) return d.byCode[normCode(t)][0].c.split(' ')[0];
+    }
+  }
+  return null;
+}
+
+// ===================== IDIOMA =====================
+$('lmenu').innerHTML = LANGS.map(([k, name, flag]) => `<button data-lang="${k}">${flag} ${name}</button>`).join('');
+function applyLang(){
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('[data-t]').forEach(el => el.innerHTML = T(el.dataset.t));
+  document.querySelectorAll('[data-tp]').forEach(el => el.placeholder = T(el.dataset.tp));
+  document.querySelectorAll('[data-tt]').forEach(el => { el.title = T(el.dataset.tt); el.setAttribute('aria-label', T(el.dataset.tt)); });
+  const L = LANGS.find(l => l[0] === LANG);
+  $('lselName').textContent = L[2] + ' ' + L[1];
+  document.querySelectorAll('#lmenu button').forEach(b => b.classList.toggle('on', b.dataset.lang === LANG));
+  showHelp();
+}
+function toggleLang(open){ $('lmenu').classList.toggle('open', open); $('lsel').setAttribute('aria-expanded', open); }
+$('lsel').onclick = e => { e.stopPropagation(); toggleLang(!$('lmenu').classList.contains('open')); };
+document.addEventListener('click', e => { if (!e.target.closest('.langbar')) toggleLang(false); });
+document.querySelectorAll('#lmenu button').forEach(b => b.onclick = () => {
+  toggleLang(false);
+  setLang(b.dataset.lang);
+  loadLang(LANG).then(() => { applyLang(); if (redraw) redraw(); });
+});
+applyLang();
+if (LANG !== 'es') loadLang(LANG).then(() => { applyLang(); if (redraw) redraw(); });
+</script>
+
+<script>
+// ================= VERSIÓN TELÉFONO: barra de abajo como en Instagram =================
+// textos de la barra (traducidos aquí para no tocar los archivos de idioma de la web)
+const MOB = {
+  en: { Inicio: 'Home', Selladas: 'Sealed', Escanear: 'Scan', 'Colección': 'Collection', Perfil: 'Profile' },
+  de: { Inicio: 'Start', Selladas: 'Sealed', Escanear: 'Scannen', 'Colección': 'Sammlung', Perfil: 'Profil' },
+  fr: { Inicio: 'Accueil', Selladas: 'Scellés', Escanear: 'Scanner', 'Colección': 'Collection', Perfil: 'Profil' },
+  it: { Inicio: 'Home', Selladas: 'Sigillati', Escanear: 'Scansiona', 'Colección': 'Collezione', Perfil: 'Profilo' },
+  nl: { Inicio: 'Home', Selladas: 'Verzegeld', Escanear: 'Scannen', 'Colección': 'Verzameling', Perfil: 'Profiel' },
+  ja: { Inicio: 'ホーム', Selladas: '未開封', Escanear: 'スキャン', 'Colección': 'コレクション', Perfil: 'プロフィール' },
+  zh: { Inicio: '首页', Selladas: '未拆封', Escanear: '扫描', 'Colección': '收藏', Perfil: '我的' },
+  ko: { Inicio: '홈', Selladas: '미개봉', Escanear: '스캔', 'Colección': '컬렉션', Perfil: '프로필' },
+};
+const _T = T;
+T = (s, ...a) => _T(MOB[LANG]?.[s] ?? s, ...a);
+const TABS = [['home', '🏠', 'Inicio'], ['sealed', '📦', 'Selladas'], ['scan', '📷', 'Escanear'], ['col', '📚', 'Colección'], ['me', '👤', 'Perfil']];
+let view = 'home';
+function drawTabbar(){
+  const api = window.cuentaAPI, n = api?.user ? api.count('col') : 0;
+  $('tabbar').innerHTML = TABS.map(([k, ico, lbl]) => `<button data-v="${k}" class="${k === 'scan' ? 'scan' : ''}${k === view ? ' on' : ''}" aria-label="${T(lbl)}">
+    <span class="i">${ico}</span>${k === 'scan' ? '' : `<span>${T(lbl)}</span>`}${k === 'col' && n ? `<span class="badge">${n}</span>` : ''}</button>`).join('');
+  $('tabbar').querySelectorAll('button').forEach(b => b.onclick = () => go2(b.dataset.v));
+}
+function setView(v){
+  view = v;
+  document.body.classList.toggle('v-home', v === 'home');
+  drawTabbar();
+}
+function go2(v){
+  if (v === 'scan') { setView('home'); return $('camBtn').click(); }
+  backStack = []; current = null; window.scrollTo({ top: 0 });
+  if (v === 'home') { setView('home'); if (!out.querySelector('.result,.list')) { out.innerHTML = ''; } $('q').focus(); return; }
+  if (v === 'sealed') { setView('sealed'); return showSealed(game); }
+  if (v === 'col') { setView('col'); if (window.cuentaAPI?.user) return window.cuentaAPI.show('col'); out.innerHTML = loginCard(); return wireLogin(); }
+  if (v === 'me') { setView('me'); return showProfile(); }
+}
+const loginCard = () => `<div class="prof"><div class="av">👤</div><div><div class="nm">${T('Mi colección')}</div>
+  <div class="em">${T('Entra para guardar cartas en tu colección.')}</div></div></div>
+  <div class="menu-list"><button id="pLogin">👤 ${T('Entrar')} / ${T('Crear cuenta')}<span class="r">›</span></button></div>`;
+const wireLogin = () => { if ($('pLogin')) $('pLogin').onclick = () => window.cuentaAPI?.login(''); };
+function showProfile(){
+  redraw = () => showProfile();
+  const api = window.cuentaAPI, u = api?.user;
+  const nm = u ? (u.displayName || (u.email || '').split('@')[0]) : '';
+  const L = LANGS.find(l => l[0] === LANG);
+  out.innerHTML = `${u ? `<div class="prof"><div class="av">${u.photoURL ? `<img src="${esc(u.photoURL)}" alt="" referrerpolicy="no-referrer">` : esc(nm[0]?.toUpperCase() || '👤')}</div>
+      <div><div class="nm">${esc(nm)}</div><div class="em">${esc(u.email || '')}</div>
+      <div class="stats"><span><b>${api.count('col')}</b>${T('Mi colección')}</span><span><b>${api.count('fav')}</b>${T('Favoritos')}</span></div></div></div>` : loginCard()}
+    <div class="menu-list">
+      ${u ? `<button data-a="col">📚 ${T('Mi colección')}<span class="r">${api.count('col')} ›</span></button>
+      <button data-a="fav">⭐ ${T('Favoritos')}<span class="r">${api.count('fav')} ›</span></button>` : ''}
+      <button data-a="guide">${T('📖 Cómo se juega a {0}', GAMES[game].label)}<span class="r">›</span></button>
+    </div>
+    <p class="ptitle">${T('Juego')}</p>
+    <div class="menu-list">${Object.entries(GAMES).map(([k, g]) => `<button data-g="${k}" class="${k === game ? 'on' : ''}">${ICONS[k]} ${g.label}${k === game ? '<span class="r">✓</span>' : ''}</button>`).join('')}</div>
+    <p class="ptitle">🌐 ${L ? L[2] + ' ' + L[1] : ''}</p>
+    <div class="menu-list">${LANGS.map(([k, name, flag]) => `<button data-l="${k}" class="${k === LANG ? 'on' : ''}">${flag} ${name}${k === LANG ? '<span class="r">✓</span>' : ''}</button>`).join('')}</div>
+    ${u ? `<div class="menu-list"><button data-a="out" style="color:var(--bad)">🚪 ${T('Salir')}</button></div>` : ''}`;
+  wireLogin();
+  out.querySelectorAll('[data-a]').forEach(b => b.onclick = () => {
+    const a = b.dataset.a;
+    if (a === 'col' || a === 'fav') { setView('col'); api.show(a); }
+    if (a === 'guide') { showGuide(game); }
+    if (a === 'out') api.logout();
+  });
+  out.querySelectorAll('[data-g]').forEach(b => b.onclick = () => { document.querySelector(`.tab[data-game="${b.dataset.g}"]`).click(); showGame2(); showProfile(); });
+  out.querySelectorAll('[data-l]').forEach(b => b.onclick = () => { setLang(b.dataset.l); loadLang(LANG).then(() => { applyLang(); drawTabbar(); showGame2(); showProfile(); }); });
+}
+// botón de juego arriba a la derecha (abre la lista de juegos)
+function showGame2(){ $('gchip').innerHTML = `${ICONS[game]} ${GAMES[game].label} ▾`; }
+$('gchip').onclick = e => { e.stopPropagation(); toggleMenu(!$('tabs').classList.contains('open')); };
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => { showGame2(); if (view === 'sealed') showSealed(game); }));
+// una búsqueda siempre vuelve a la pestaña Inicio
+$('form').addEventListener('submit', () => setView('home'));
+window.addEventListener('cuenta', () => { drawTabbar(); if (view === 'me') showProfile(); if (view === 'col' && !window.cuentaAPI?.user) go2('col'); });
+// oculta la ayuda cuando hay resultados en pantalla
+new MutationObserver(() => document.body.classList.toggle('has-out', out.children.length > 0)).observe(out, { childList: true });
+showGame2(); setView('home');
+</script>
+<!-- Cuentas de usuario: Mi colección y Favoritos (Firebase) -->
+<script type="module">
+// =====================================================================
+//  CUENTAS DE USUARIO (Firebase, plan gratuito Spark)
+//  - Entrar con Google o con email + contraseña (Firebase Authentication)
+//  - Mi colección y favoritos guardados en Firestore: users/{uid}/items/{carta}
+//    (las reglas de Firestore solo dejan a cada usuario leer y escribir sus propias cartas)
+//  Usa variables de la página principal: game, GAMES, search, out, backStack, current, T, esc, $
+// =====================================================================
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword,
+  createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+// Configuración pública de la app web (no es secreta: la seguridad la ponen las reglas de Firestore)
+const app = initializeApp({
+  apiKey: 'AIzaSyBe6sgVxhXGKYilnV0Dghj8Z9wn6TSWobc',
+  authDomain: 'precio-cartas.firebaseapp.com',
+  projectId: 'precio-cartas',
+  storageBucket: 'precio-cartas.firebasestorage.app',
+  messagingSenderId: '729865479700',
+  appId: '1:729865479700:web:f960c11e34422c9d7a2901',
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let user = null;
+let items = new Map();     // id -> datos de la carta guardada
+let unsub = null;
+let lastCard = null;       // última carta dibujada (para el bloque "Mi colección" de la ficha)
+
+// ---------- Botón de cuenta (arriba, junto al idioma) ----------
+const bar = document.querySelector('.langbar');
+bar.insertAdjacentHTML('afterbegin', `<div class="acct"><button class="lsel" id="acct"></button><div class="lmenu" id="acctMenu"></div></div>`);
+const acct = $('acct'), menu = $('acctMenu');
+function drawAcct(){
+  if (!user) { acct.textContent = T('👤 Entrar'); menu.innerHTML = ''; return; }
+  const nm = user.displayName || user.email || '';
+  acct.innerHTML = (user.photoURL ? `<img src="${esc(user.photoURL)}" alt="" referrerpolicy="no-referrer">` : '👤') + ' ' + esc(nm.split(/[ @]/)[0]) + ' ▾';
+  const cols = [...items.values()];
+  menu.innerHTML = `<div class="who">${esc(nm)}</div>
+    <button data-a="col">📚 ${T('Mi colección')} (${cols.filter(i => i.qty > 0).length})</button>
+    <button data-a="fav">⭐ ${T('Favoritos')} (${cols.filter(i => i.fav).length})</button>
+    <button data-a="out">🚪 ${T('Salir')}</button>`;
+  menu.querySelectorAll('button').forEach(b => b.onclick = () => {
+    menu.classList.remove('open');
+    if (b.dataset.a === 'out') signOut(auth);
+    else showMine(b.dataset.a);
+  });
+}
+acct.onclick = e => {
+  e.stopPropagation();
+  if (!user) return openLogin();
+  menu.classList.toggle('open');
+};
+document.addEventListener('click', e => { if (!e.target.closest('.acct')) menu.classList.remove('open'); });
+
+// ---------- Ventana para entrar / crear cuenta ----------
+document.body.insertAdjacentHTML('beforeend', `<div class="login" id="login" hidden><div class="lbox" role="dialog" aria-modal="true">
+  <button class="lclose" id="lclose" aria-label="Cerrar">✕</button>
+  <h2>👤 Precio Cartas</h2>
+  <button class="gbtn google" id="lgoogle"></button>
+  <p class="lor" id="lor"></p>
+  <input id="lemail" type="email" autocomplete="email">
+  <input id="lpass" type="password" autocomplete="current-password">
+  <div class="lrow"><button class="gbtn" id="lin"></button><button class="gbtn soft" id="lnew"></button></div>
+  <button class="link" id="lforgot"></button>
+  <p class="lmsg" id="lmsg"></p>
+</div></div>`);
+function openLogin(msg = ''){
+  $('lgoogle').textContent = T('Entrar con Google');
+  $('lor').textContent = T('o con tu email');
+  $('lemail').placeholder = T('Email'); $('lpass').placeholder = T('Contraseña');
+  $('lin').textContent = T('Entrar'); $('lnew').textContent = T('Crear cuenta');
+  $('lforgot').textContent = T('¿Olvidaste la contraseña?');
+  $('lmsg').textContent = msg; $('lmsg').className = 'lmsg';
+  $('login').hidden = false;
+}
+const closeLogin = () => { $('login').hidden = true; };
+$('lclose').onclick = closeLogin;
+$('login').onclick = e => { if (e.target.id === 'login') closeLogin(); };
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('login').hidden) closeLogin(); });
+const ERR = {
+  'auth/invalid-credential': 'Email o contraseña incorrectos.', 'auth/wrong-password': 'Email o contraseña incorrectos.',
+  'auth/user-not-found': 'Email o contraseña incorrectos.', 'auth/email-already-in-use': 'Ese email ya tiene una cuenta. Entra con él.',
+  'auth/weak-password': 'La contraseña debe tener al menos 6 caracteres.', 'auth/invalid-email': 'Escribe un email válido.',
+  'auth/missing-password': 'La contraseña debe tener al menos 6 caracteres.',
+};
+const fail = e => { if (e?.code === 'auth/popup-closed-by-user' || e?.code === 'auth/cancelled-popup-request') return;
+  $('lmsg').textContent = T(ERR[e?.code] || 'No se pudo iniciar sesión. Inténtalo otra vez.'); $('lmsg').className = 'lmsg err'; };
+const done = () => closeLogin();
+$('lgoogle').onclick = () => signInWithPopup(auth, new GoogleAuthProvider()).then(done, fail);
+$('lin').onclick = () => signInWithEmailAndPassword(auth, $('lemail').value.trim(), $('lpass').value).then(done, fail);
+$('lnew').onclick = () => createUserWithEmailAndPassword(auth, $('lemail').value.trim(), $('lpass').value).then(done, fail);
+$('lpass').onkeydown = e => { if (e.key === 'Enter') $('lin').click(); };
+$('lforgot').onclick = () => {
+  const em = $('lemail').value.trim();
+  if (!em) return fail({ code: 'auth/invalid-email' });
+  sendPasswordResetEmail(auth, em).then(() => { $('lmsg').textContent = T('Te hemos enviado un email para cambiar la contraseña.'); $('lmsg').className = 'lmsg ok'; }, fail);
+};
+
+// ---------- Sesión y datos ----------
+onAuthStateChanged(auth, u => {
+  setTimeout(() => window.dispatchEvent(new Event('cuenta')));
+  user = u; items = new Map();
+  if (unsub) { unsub(); unsub = null; }
+  if (u) unsub = onSnapshot(collection(db, 'users', u.uid, 'items'), snap => {
+    items = new Map(snap.docs.map(d => [d.id, d.data()]));
+    drawAcct(); drawMine();
+    if (mineView) showMine(mineView, true);
+  });
+  drawAcct(); drawMine();
+  if (!u && mineView) { mineView = null; out.innerHTML = ''; }
+});
+
+// ---------- La carta que se está viendo ----------
+const plain = h => { const d = document.createElement('div'); d.innerHTML = h || ''; return d.textContent.trim(); };
+const curOf = txt => /€/.test(txt) ? 'EUR' : /¥|円/.test(txt) ? 'JPY' : /\$/.test(txt) ? 'USD' : '';
+function cardFrom(v){
+  const label = v.versionLabel || '';
+  const meta = plain(v.meta);
+  const code = label ? label.split(' · ')[0] : '';
+  const price = plain(v.mainValue);
+  return {
+    game, name: v.name || '', label, rarity: v.rarity || '',
+    set: (meta.split(' · ')[0] || '').trim(),
+    img: v.img || '', q: code && game === 'yugioh' ? code : ($('q').value.trim() || v.name || ''),
+    value: Number(v.value) || null, price, cur: curOf(price),
+  };
+}
+const idOf = c => (c.game + '|' + c.name + '|' + c.label).replace(/\//g, '∕').slice(0, 400);
+async function save(c, patch){
+  const id = idOf(c), old = items.get(id) || {};
+  const data = { ...old, ...c, qty: old.qty || 0, fav: !!old.fav, ...patch, updated: serverTimestamp() };
+  if (!data.qty && !data.fav) return deleteDoc(doc(db, 'users', user.uid, 'items', id));
+  return setDoc(doc(db, 'users', user.uid, 'items', id), data);
+}
+
+// Bloque "Mi colección / Favorito" dentro de la ficha de la carta
+window.cuentaCard = v => {
+  lastCard = cardFrom(v);
+  drawMine();
+  // si ya la tienes guardada, actualiza su precio con el de ahora
+  const old = user && items.get(idOf(lastCard));
+  if (old && lastCard.value && old.value !== lastCard.value) save(lastCard, {}).catch(() => {});
+};
+function drawMine(){
+  const box = $('mine'); if (!box || !lastCard) return;
+  const it = user && items.get(idOf(lastCard));
+  const qty = it?.qty || 0;
+  box.innerHTML = `${qty
+      ? `<span class="qty"><span>${T('En tu colección: {0}', '')}</span><button data-q="-1" aria-label="−">−</button><b>${qty}</b><button data-q="1" aria-label="+">+</button></span>`
+      : `<button class="gbtn" data-q="1">${T('➕ Añadir a mi colección')}</button>`}
+    <button class="gbtn soft${it?.fav ? ' on' : ''}" data-f="1">${it?.fav ? T('★ En favoritos') : T('☆ Añadir a favoritos')}</button>`;
+  box.querySelectorAll('[data-q]').forEach(b => b.onclick = () => {
+    if (!user) return openLogin(T('Entra para guardar cartas en tu colección.'));
+    save(lastCard, { qty: Math.max(0, qty + Number(b.dataset.q)) });
+  });
+  box.querySelector('[data-f]').onclick = () => {
+    if (!user) return openLogin(T('Entra para guardar cartas en tu colección.'));
+    save(lastCard, { fav: !it?.fav });
+  };
+}
+
+// ---------- Pantalla "Mi colección" / "Favoritos" ----------
+let mineView = null, groupBy = 'set', gameFilter = 'all';
+function showMine(view, keep){
+  if (!keep) { backStack = []; current = null; window.scrollTo({ top: out.offsetTop - 10 }); }
+  mineView = view;
+  redraw = () => showMine(mineView, true);
+  const all = [...items.values()].filter(i => view === 'fav' ? i.fav : i.qty > 0);
+  const games = [...new Set(all.map(i => i.game))];
+  if (gameFilter !== 'all' && !games.includes(gameFilter)) gameFilter = 'all';
+  const list = all.filter(i => gameFilter === 'all' || i.game === gameFilter);
+  // valor total por moneda
+  const tot = {};
+  for (const i of list) if (i.value && i.cur) tot[i.cur] = (tot[i.cur] || 0) + i.value * (view === 'fav' ? 1 : i.qty);
+  const totTxt = Object.entries(tot).map(([c, v]) => money(v, c, c === 'JPY' ? 0 : 2)).join(' + ');
+  // agrupa: juego › expansión o rareza
+  const key2 = i => groupBy === 'rarity' ? (i.rarity || '—') : (i.set || T('Sin expansión'));
+  const tree = {};
+  for (const i of list) ((tree[i.game] ||= {})[key2(i)] ||= []).push(i);
+  const sumOf = arr => { const t = {}; for (const i of arr) if (i.value && i.cur) t[i.cur] = (t[i.cur] || 0) + i.value * (view === 'fav' ? 1 : i.qty);
+    return Object.entries(t).map(([c, v]) => money(v, c, c === 'JPY' ? 0 : 2)).join(' + '); };
+  const row = i => `<div class="mrow" data-id="${esc(idOf(i))}">
+      ${i.img ? `<img src="${esc(i.img)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}
+      <div class="mi"><button class="link mopen">${esc(i.name)}</button>
+        <div class="note">${esc([i.label, groupBy === 'rarity' ? i.set : i.rarity].filter(Boolean).join(' · '))}</div>
+        <div class="note">${esc(i.price || '')}${i.updated?.toDate ? ' · ' + T('Precio guardado el {0}. Abre la carta para actualizarlo.', i.updated.toDate().toLocaleDateString(LOCALE())) : ''}</div></div>
+      <div class="mq">${view === 'col' ? `<button data-q="-1">−</button><b>${i.qty}</b><button data-q="1">+</button>` : ''}
+        <button class="mfav${i.fav ? ' on' : ''}" data-f="1" title="${T('Favoritos')}">${i.fav ? '★' : '☆'}</button>
+        <button data-del="1" title="${T('Quitar')}">🗑</button></div></div>`;
+  out.innerHTML = `<div class="mine-page">
+    <div class="chips mtabs"><button class="chip${view === 'col' ? ' on' : ''}" data-v="col">📚 ${T('Mi colección')} (${[...items.values()].filter(i => i.qty > 0).length})</button>
+      <button class="chip${view === 'fav' ? ' on' : ''}" data-v="fav">⭐ ${T('Favoritos')} (${[...items.values()].filter(i => i.fav).length})</button></div>
+    ${all.length ? `<div class="bar mbar">
+      <select id="mgame"><option value="all">${T('Todos los juegos')}</option>${games.map(g => `<option value="${g}"${g === gameFilter ? ' selected' : ''}>${esc(GAMES[g]?.label || g)}</option>`).join('')}</select>
+      <label>${T('Agrupar por')} <select id="mgroup"><option value="set">${T('Expansión')}</option><option value="rarity"${groupBy === 'rarity' ? ' selected' : ''}>${T('Rareza')}</option></select></label>
+    </div>
+    <div class="big"><div class="lbl">${T('Valor total')} · ${T('{0} cartas', view === 'fav' ? list.length : list.reduce((s, i) => s + i.qty, 0))}</div><div class="val">${totTxt || '—'}</div></div>
+    ${Object.entries(tree).map(([g, groups]) => `<h3 class="mg">${ICONS[g] || ''} ${esc(GAMES[g]?.label || g)} <small>${sumOf(Object.values(groups).flat())}</small></h3>
+      ${Object.entries(groups).sort((a, b) => a[0].localeCompare(b[0])).map(([k, arr]) => `<details class="mset" open><summary>${esc(k)} <small>· ${T('{0} cartas', arr.length)} · ${sumOf(arr)}</small></summary>
+        ${arr.sort((a, b) => (a.label || a.name).localeCompare(b.label || b.name, 'en', { numeric: true })).map(row).join('')}</details>`).join('')}`).join('')}`
+    : `<div class="msg">${T(view === 'fav' ? 'No tienes favoritos todavía.' : 'Tu colección está vacía. Busca una carta y pulsa «➕ Añadir a mi colección».')}</div>`}
+  </div>`;
+  out.querySelectorAll('.mtabs .chip').forEach(b => b.onclick = () => showMine(b.dataset.v, true));
+  if ($('mgame')) $('mgame').onchange = e => { gameFilter = e.target.value; showMine(view, true); };
+  if ($('mgroup')) $('mgroup').onchange = e => { groupBy = e.target.value; showMine(view, true); };
+  out.querySelectorAll('.mrow').forEach(r => {
+    const i = items.get(r.dataset.id); if (!i) return;
+    r.querySelectorAll('[data-q]').forEach(b => b.onclick = () => save(i, { qty: Math.max(0, i.qty + Number(b.dataset.q)) }));
+    r.querySelector('[data-f]').onclick = () => save(i, { fav: !i.fav });
+    r.querySelector('[data-del]').onclick = () => save(i, view === 'fav' ? { fav: false } : { qty: 0 });
+    r.querySelector('.mopen').onclick = () => openItem(i);
+  });
+}
+// Abre la ficha de una carta guardada (vuelve a buscarla)
+function openItem(i){
+  const from = mineView || 'col';
+  mineView = null;
+  if (game !== i.game) document.querySelector(`.tab[data-game="${i.game}"]`)?.click();
+  $('q').value = i.q || i.name;
+  search().then(() => { backStack.push(() => showMine(from)); if (redraw) redraw(); });
+}
+// al hacer una búsqueda normal se sale de la pantalla de colección
+$('form').addEventListener('submit', () => { mineView = null; });
+// al cambiar el idioma, redibuja el botón de cuenta
+document.querySelectorAll('#lmenu button').forEach(b => b.addEventListener('click', () => setTimeout(drawAcct, 300)));
+
+// ---- API para la versión de teléfono ----
+window.cuentaAPI = {
+  get user(){ return user; },
+  count: k => [...items.values()].filter(i => k === 'fav' ? i.fav : i.qty > 0).length,
+  login: msg => openLogin(msg),
+  show: v => { if (!user) return openLogin(T('Entra para guardar cartas en tu colección.')); showMine(v); },
+  logout: () => signOut(auth),
+};
+
+</script>
+</body>
+</html>
