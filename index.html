@@ -183,6 +183,35 @@
   .sfilters{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
   .sfind{width:100%;font-size:16px;padding:10px 12px;margin:0 0 10px}
   .more{display:block;margin:14px auto;padding:10px 18px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--accent);font-weight:700;cursor:pointer}
+  /* ---- Centrado PSA (centrado.js) ---- */
+  .cintro{margin:0 0 12px;font-size:15px}
+  .cpick,.ctools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0 10px}
+  .cpick .gbtn,.ctools .gbtn{margin:0}
+  .cpick .gbtn{font-size:17px;padding:12px 18px}
+  .ctips{font-size:14px;color:var(--muted);margin:12px 0}
+  .crot{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--muted)}
+  .crot input{width:130px}
+  .cwrap{width:100%;display:flex;justify-content:center;margin:8px 0}
+  .cwrap canvas{touch-action:none;border-radius:8px;background:#000;cursor:crosshair;outline:none;max-width:100%}
+  .cfine{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;font-weight:600}
+  .cbtns{display:flex;gap:6px}
+  .cbtns button{width:44px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:16px;cursor:pointer}
+  .clegend{display:flex;gap:14px;font-size:13px;color:var(--muted);margin:6px 0 12px}
+  .clegend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:5px}
+  .cside.done:not(.on)::after{content:' ✓';color:var(--good)}
+  .cbar{margin:10px 0}
+  .cbl{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+  .cbl b{color:var(--text);font-size:16px;font-variant-numeric:tabular-nums}
+  .cbt{position:relative;height:10px;border-radius:5px;background:var(--line);margin:4px 0}
+  .cbt em{position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--muted)}
+  .cbt i{position:absolute;top:-4px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--accent);border:2px solid var(--card)}
+  .cbar small{color:var(--muted)}
+  .cgrades{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+  .cgrade{flex:1;min-width:200px;background:var(--accent-soft);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column}
+  .cgrade span{font-size:13px;color:var(--muted);font-weight:600}
+  .cgrade b{font-size:32px;color:var(--accent);line-height:1.15}
+  .cgrade.small b{font-size:24px}
+  .cgrade small{color:var(--muted)}
   footer{color:var(--muted);font-size:13px;text-align:center;margin-top:30px}
   /* ---- Escáner ---- */
   button.cam{font-size:22px;padding:0 16px;border:2px solid var(--line);border-radius:12px;background:var(--card);cursor:pointer}
@@ -290,10 +319,11 @@
   <footer data-t="Precios: Cardmarket (guía de precios pública) · TCGplayer · tcgdex.net · ygoprodeck.com · scryfall.com · Torekakaku — orientativos."></footer>
 </div>
 
-<script src="i18n-keys.js?v=13"></script>
-<script src="i18n.js?v=13"></script>
+<script src="i18n-keys.js?v=14"></script>
+<script src="i18n.js?v=14"></script>
 <script src="guias.js?v=5"></script>
 <script src="como-se-usa.js?v=5"></script>
+<script src="centrado.js?v=1"></script>
 <script>
 // =====================================================================
 //  JUEGOS
@@ -377,9 +407,11 @@ function showHelp(){
   const g = GAMES[game];
   $('help').innerHTML = T(g.help) + '<br>' + T('Ejemplos:') + ' ' + g.ex.map(e => `<span class="ex">${e}</span>`).join('') +
     `<br><button class="gbtn" id="gbtn">${T('📖 Cómo se juega a {0}', g.label)}</button>` +
-    (g.type !== 'links' && !g.noSealed ? ` <button class="gbtn" id="sbtn">${T('📦 Cajas selladas')}</button>` : '');
+    (g.type !== 'links' && !g.noSealed ? ` <button class="gbtn" id="sbtn">${T('📦 Cajas selladas')}</button>` : '') +
+    ` <button class="gbtn" id="cbtn">${T('📐 Centrado PSA')}</button>`;
   $('gbtn').onclick = () => { backStack = []; current = null; showGuide(game); };
   if ($('sbtn')) $('sbtn').onclick = () => { backStack = []; current = null; showSealed(game); };
+  $('cbtn').onclick = () => { backStack = []; current = null; showCentering(); };
   $('help').querySelectorAll('.ex').forEach(el => el.onclick = () => { $('q').value = el.textContent; search(); });
 }
 $('form').onsubmit = e => { e.preventDefault(); search(); };
@@ -432,8 +464,15 @@ function gradingHTML(value){
       `<tr><td><a href="${url}" target="_blank" rel="noopener">${n} ↗</a></td><td>${T(p)}</td></tr>`).join('')}</table>
     ${cheap ? `<p class="note">${T('⚠️ Esta carta vale menos de lo que cuesta gradearla: normalmente solo compensa si sale un 10.')}</p>` : ''}
     <p class="note">${T('Precios aproximados por carta (noviembre 2026), sin envío. Cambian a menudo: confírmalos en su web.')}</p>
+    <button class="gbtn soft cenbtn">${T('📐 Medir el centrado')}</button>
   </details>`;
 }
+// Botón "Medir el centrado" dentro de la ficha: abre el medidor y deja volver a la carta
+document.addEventListener('click', e => {
+  if (!e.target.closest('.cenbtn')) return;
+  const back = redraw; if (back) remember(back);
+  showCentering(); toTop();
+});
 
 // =====================================================================
 //  VISOR DE CARTA CON VERSIONES
@@ -1595,6 +1634,7 @@ function showProfile(){
       ${u ? `<button data-a="col">📚 ${T('Mi colección')}<span class="r">${api.count('col')} ›</span></button>
       <button data-a="fav">⭐ ${T('Favoritos')}<span class="r">${api.count('fav')} ›</span></button>` : ''}
       <button data-a="guide">${T('📖 Cómo se juega a {0}', GAMES[game].label)}<span class="r">›</span></button>
+      <button data-a="cen">${T('📐 Centrado PSA')}<span class="r">›</span></button>
     </div>
     <p class="ptitle">${T('Juego')}</p>
     <div class="menu-list">${Object.entries(GAMES).map(([k, g]) => `<button data-g="${k}" class="${k === game ? 'on' : ''}">${ICONS[k]} ${g.label}${k === game ? '<span class="r">✓</span>' : ''}</button>`).join('')}</div>
@@ -1606,6 +1646,7 @@ function showProfile(){
     const a = b.dataset.a;
     if (a === 'col' || a === 'fav') { setView('col'); api.show(a); }
     if (a === 'guide') { showGuide(game); }
+    if (a === 'cen') { backStack = []; remember(() => showProfile()); showCentering(); }
     if (a === 'out') api.logout();
   });
   out.querySelectorAll('[data-g]').forEach(b => b.onclick = () => { document.querySelector(`.tab[data-game="${b.dataset.g}"]`).click(); showGame2(); showProfile(); });
