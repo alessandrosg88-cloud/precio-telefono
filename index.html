@@ -407,11 +407,9 @@ function showHelp(){
   const g = GAMES[game];
   $('help').innerHTML = T(g.help) + '<br>' + T('Ejemplos:') + ' ' + g.ex.map(e => `<span class="ex">${e}</span>`).join('') +
     `<br><button class="gbtn" id="gbtn">${T('📖 Cómo se juega a {0}', g.label)}</button>` +
-    (g.type !== 'links' && !g.noSealed ? ` <button class="gbtn" id="sbtn">${T('📦 Cajas selladas')}</button>` : '') +
-    ` <button class="gbtn" id="cbtn">${T('📐 Centrado PSA')}</button>`;
+    (g.type !== 'links' && !g.noSealed ? ` <button class="gbtn" id="sbtn">${T('📦 Cajas selladas')}</button>` : '');
   $('gbtn').onclick = () => { backStack = []; current = null; showGuide(game); };
   if ($('sbtn')) $('sbtn').onclick = () => { backStack = []; current = null; showSealed(game); };
-  $('cbtn').onclick = () => { backStack = []; current = null; showCentering(); };
   $('help').querySelectorAll('.ex').forEach(el => el.onclick = () => { $('q').value = el.textContent; search(); });
 }
 $('form').onsubmit = e => { e.preventDefault(); search(); };
@@ -1597,12 +1595,12 @@ const MOB = {
 };
 const _T = T;
 T = (s, ...a) => _T(MOB[LANG]?.[s] ?? s, ...a);
-const TABS = [['home', '🏠', 'Inicio'], ['sealed', '📦', 'Selladas'], ['scan', '📷', 'Escanear'], ['col', '📚', 'Colección'], ['me', '👤', 'Perfil']];
+const TABS = [['home', '🏠', 'Inicio'], ['sealed', '📦', 'Selladas'], ['cen', '📐', '📐 Centrado PSA'], ['col', '📚', 'Colección'], ['me', '👤', 'Perfil']];
 let view = 'home';
 function drawTabbar(){
   const api = window.cuentaAPI, n = api?.user ? api.count('col') : 0;
-  $('tabbar').innerHTML = TABS.map(([k, ico, lbl]) => `<button data-v="${k}" class="${k === 'scan' ? 'scan' : ''}${k === view ? ' on' : ''}" aria-label="${T(lbl)}">
-    <span class="i">${ico}</span>${k === 'scan' ? '' : `<span>${T(lbl)}</span>`}${k === 'col' && n ? `<span class="badge">${n}</span>` : ''}</button>`).join('');
+  $('tabbar').innerHTML = TABS.map(([k, ico, lbl]) => `<button data-v="${k}" class="${k === 'cen' ? 'scan' : ''}${k === view ? ' on' : ''}" aria-label="${T(lbl)}">
+    <span class="i">${ico}</span>${k === 'cen' ? '' : `<span>${T(lbl)}</span>`}${k === 'col' && n ? `<span class="badge">${n}</span>` : ''}</button>`).join('');
   $('tabbar').querySelectorAll('button').forEach(b => b.onclick = () => go2(b.dataset.v));
 }
 function setView(v){
@@ -1611,12 +1609,12 @@ function setView(v){
   drawTabbar();
 }
 function go2(v){
-  if (v === 'scan') { setView('home'); return $('camBtn').click(); }
   backStack = []; current = null; window.scrollTo({ top: 0 });
   if (v === 'home') { setView('home'); if (!out.querySelector('.result,.list')) { out.innerHTML = ''; } $('q').focus(); return; }
   if (v === 'sealed') { setView('sealed'); return showSealed(game); }
   if (v === 'col') { setView('col'); if (window.cuentaAPI?.user) return window.cuentaAPI.show('col'); out.innerHTML = loginCard(); return wireLogin(); }
   if (v === 'me') { setView('me'); return showProfile(); }
+  if (v === 'cen') { setView('cen'); return showCentering(); }
 }
 const loginCard = () => `<div class="prof"><div class="av">👤</div><div><div class="nm">${T('Mi colección')}</div>
   <div class="em">${T('Entra para guardar cartas en tu colección.')}</div></div></div>
