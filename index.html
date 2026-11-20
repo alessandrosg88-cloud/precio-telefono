@@ -263,7 +263,7 @@
   button.go{font-size:16px;padding:0 16px}
   .help{font-size:14px;margin:10px 0 14px}
   footer{font-size:12px;color:var(--muted);text-align:center;margin-top:20px}
-  body:not(.v-home) #form, body:not(.v-home) #help{display:none}
+  body:not(.v-search) #form, body:not(.v-search) #help{display:none}
   /* barra de abajo, estilo Instagram */
   .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:space-around;align-items:center;background:var(--card);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
   .tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--muted);font-size:10.5px;font-weight:600;padding:4px 0;cursor:pointer}
@@ -322,7 +322,7 @@
   @media (prefers-reduced-motion: reduce){ #out > *,.tabbar button.on .i{animation:none} }
 
   /* ---- Panel de progreso (gamificación) ---- */
-  body:not(.v-home) #gx, body.has-out #gx, body.gx-off #gx{display:none}
+  body:not(.v-home) #gx{display:none} body.v-home #out{display:none}
   .gxh{display:flex;align-items:center;gap:14px;background:var(--grad);color:#fff;border-radius:22px;padding:14px 16px;margin:4px 0 12px;cursor:pointer;box-shadow:0 14px 30px -14px rgba(106,68,242,.7);position:relative;overflow:hidden;border:0;width:100%;text-align:left;font:inherit}
   .gxh::after{content:"";position:absolute;right:-30px;top:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.09)}
   .ring{--p:0;width:58px;height:58px;border-radius:50%;flex:none;display:grid;place-items:center;background:conic-gradient(var(--gold) calc(var(--p)*1%),rgba(255,255,255,.22) 0)}
@@ -433,6 +433,40 @@
   .sheet input,.sheet select,.sheet textarea{width:100%;font-size:16px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--text);font-family:inherit}
   .sheet .r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .sheet .acts{display:flex;gap:8px;margin-top:16px} .sheet .acts .gbtn{flex:1;margin:0}
+  /* ---- Inicio (dashboard) ---- */
+  .hgreet{display:flex;align-items:flex-end;justify-content:space-between;margin:6px 2px 12px}
+  .hgreet small{color:var(--muted);font-weight:600;font-size:14px}
+  .hgreet h2{margin:0;font-size:28px;font-weight:800;letter-spacing:-.03em}
+  .hlv{background:var(--gold-soft);color:var(--warn);font-weight:800;font-size:13px;padding:5px 11px;border-radius:99px}
+  .hsearch{display:flex;align-items:center;gap:10px;width:100%;border:1.5px solid var(--line);background:var(--card);color:var(--muted);border-radius:16px;padding:13px 16px;font-size:15.5px;cursor:pointer;margin:0 0 14px;box-shadow:var(--shadow);text-align:left;font-family:inherit}
+  .hsearch span{flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .hval{position:relative;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;margin:0 0 14px;box-shadow:var(--shadow);overflow:hidden}
+  .hval::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--grad)}
+  .hval small{color:var(--muted);font-weight:600;font-size:13px}
+  .hval > b{display:block;font-size:32px;font-weight:800;letter-spacing:-.03em;margin:2px 0 4px;font-variant-numeric:tabular-nums}
+  .hval .hrow{display:flex;flex-wrap:wrap;gap:12px;font-size:13.5px;font-weight:600;color:var(--muted)}
+  .hval .pchart svg{height:90px}
+  .hmore{display:block;margin:10px 0 0 auto;border:0;background:none;color:var(--accent);font-weight:700;font-size:14px;cursor:pointer;padding:4px 0;font-family:inherit}
+  .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 14px}
+  .quick button{display:flex;flex-direction:column;align-items:center;gap:5px;border:1px solid var(--line);background:var(--card);border-radius:18px;padding:11px 4px;font-size:11.5px;font-weight:700;color:var(--text);cursor:pointer;box-shadow:var(--shadow);font-family:inherit}
+  .quick i{font-style:normal;font-size:22px;width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:var(--accent-soft)}
+  .mvr{display:flex;align-items:center;gap:12px;width:100%;border:0;border-top:1px solid var(--line);background:none;color:var(--text);padding:9px 0;cursor:pointer;text-align:left;font-family:inherit}
+  .mvr:first-of-type{border-top:0}
+  .mvr img,.mvr .noimg{width:40px;aspect-ratio:63/88;object-fit:cover;border-radius:6px;background:var(--line);flex:none;display:grid;place-items:center}
+  .mvn{flex:1;min-width:0} .mvn b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .mvn small{color:var(--muted);font-size:12px}
+  .mvp{text-align:right;flex:none} .mvp b{display:block;font-size:14.5px;font-variant-numeric:tabular-nums} .mvp small{font-weight:800;font-size:12.5px}
+  .bars{display:flex;flex-direction:column;gap:9px}
+  .brow{display:grid;grid-template-columns:minmax(0,38%) 1fr auto;align-items:center;gap:10px;font-size:13.5px}
+  .brow .bl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+  .brow .bt{height:10px;border-radius:99px;background:var(--line);overflow:hidden}
+  .brow .bt i{display:block;height:100%;border-radius:99px;background:var(--grad);animation:grow .7s cubic-bezier(.2,.8,.2,1) both;transform-origin:left}
+  .brow b{font-variant-numeric:tabular-nums;font-size:13px}
+  @keyframes grow{from{transform:scaleX(0)}to{transform:none}}
+  #gx > *{animation:fadeUp .3s ease both}
+  #gx > :nth-child(2){animation-delay:.03s} #gx > :nth-child(3){animation-delay:.06s} #gx > :nth-child(4){animation-delay:.09s} #gx > :nth-child(5){animation-delay:.12s}
+  .tabbar button{font-size:10px}
+  @media (min-width:900px){ .wrap{max-width:980px} .quick{grid-template-columns:repeat(8,1fr)} }
+  @media (min-width:760px){ .tabbar{left:50%;right:auto;width:600px;transform:translateX(-50%);bottom:14px;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)} body{padding-bottom:110px} }
 </style>
 </head>
 <body>
@@ -1512,7 +1546,7 @@ function dmView(key, c, d, set){
 //  CAJAS SELLADAS (booster box, ETB, sobres, mazos…) — data/sealed/<juego>.json
 // =====================================================================
 const SEALED_TYPES = { box: '📦 Cajas de sobres', etb: '🎁 Elite Trainer Box', case: '🗃️ Cajas máster (case)',
-  pack: '🃏 Sobres', deck: '🂠 Mazos', coll: '🎀 Colecciones y packs', other: '➕ Otros' };
+  pack: '🃏 Sobres', tin: '🥫 Tins', cbox: '🎁 Cajas de colección', deck: '🂠 Mazos', coll: '🎀 Colecciones y packs', other: '➕ Otros' };
 const sealedData = {};
 async function showSealed(key){
   loading(T('Cargando productos sellados…'));
@@ -1520,6 +1554,11 @@ async function showSealed(key){
     const r = await fetch(`data/sealed/${key}.json`).catch(() => null);
     if (!r || !r.ok) return error(T('Los precios de productos sellados de este juego aún no están listos.'));
     sealedData[key] = await r.json();
+    // separa Tins y cajas de colección por su nombre (los datos los agrupan en «colecciones» u «otros»)
+    for (const i of sealedData[key].items) if (/^(coll|other)$/.test(i.t)) {
+      if (/\b(mini )?tins?\b|\blata\b/i.test(i.n)) i.t = 'tin';
+      else if (/collection box|premium collection|collection chest|special collection|ultra.?premium|box set|colecci[oó]n especial/i.test(i.n)) i.t = 'cbox';
+    }
   }
   const d = sealedData[key];
   const types = Object.keys(SEALED_TYPES).filter(t => d.items.some(i => i.t === t));
@@ -1569,7 +1608,7 @@ function sealedView(key, i){
     img: tcgImg(i, true), name: i.n, rarity: T(SEALED_TYPES[i.t] || '').replace(/^\S+\s/, ''),
     meta: esc(d.sets[i.g]?.n || '') + (d.sets[i.g]?.d ? ' · ' + T('salió el {0}', fecha(d.sets[i.g].d)) : ''),
     mainLabel: i.e ? 'Precio de tendencia en Cardmarket' : 'Precio de mercado en TCGplayer',
-    mainValue: eur(i.e) || usd(i.u), value: null,
+    mainValue: eur(i.e) || usd(i.u), value: i.e || i.u || null,
     rows: [['#Cardmarket (Europa)'], ['Tendencia', eur(i.e)], ['Desde', eur(i.el)], ['Media 30 días', eur(i.e30)],
            ['#TCGplayer (EE. UU.)'], ['Precio de mercado', usd(i.u)], ['Desde', usd(i.ul)]],
     links: [['Cardmarket', i.cm ? `https://www.cardmarket.com/es/${g.cm}/Products?idProduct=${i.cm}`
@@ -1748,18 +1787,18 @@ if (LANG !== 'es') loadLang(LANG).then(() => { applyLang(); if (redraw) redraw()
 // ================= VERSIÓN TELÉFONO: barra de abajo como en Instagram =================
 // textos de la barra (traducidos aquí para no tocar los archivos de idioma de la web)
 const MOB = {
-  en: { Inicio: 'Home', Selladas: 'Sealed', Escanear: 'Scan', 'Colección': 'Collection', Perfil: 'Profile' },
-  de: { Inicio: 'Start', Selladas: 'Sealed', Escanear: 'Scannen', 'Colección': 'Sammlung', Perfil: 'Profil' },
-  fr: { Inicio: 'Accueil', Selladas: 'Scellés', Escanear: 'Scanner', 'Colección': 'Collection', Perfil: 'Profil' },
-  it: { Inicio: 'Home', Selladas: 'Sigillati', Escanear: 'Scansiona', 'Colección': 'Collezione', Perfil: 'Profilo' },
-  nl: { Inicio: 'Home', Selladas: 'Verzegeld', Escanear: 'Scannen', 'Colección': 'Verzameling', Perfil: 'Profiel' },
-  ja: { Inicio: 'ホーム', Selladas: '未開封', Escanear: 'スキャン', 'Colección': 'コレクション', Perfil: 'プロフィール' },
-  zh: { Inicio: '首页', Selladas: '未拆封', Escanear: '扫描', 'Colección': '收藏', Perfil: '我的' },
-  ko: { Inicio: '홈', Selladas: '미개봉', Escanear: '스캔', 'Colección': '컬렉션', Perfil: '프로필' },
+  en: { Inicio: 'Home', Selladas: 'Sealed', Escanear: 'Scan', 'Colección': 'Collection', Perfil: 'Profile' , Buscar: 'Search', 'Estadísticas': 'Statistics'},
+  de: { Inicio: 'Start', Selladas: 'Sealed', Escanear: 'Scannen', 'Colección': 'Sammlung', Perfil: 'Profil' , Buscar: 'Suchen', 'Estadísticas': 'Statistik'},
+  fr: { Inicio: 'Accueil', Selladas: 'Scellés', Escanear: 'Scanner', 'Colección': 'Collection', Perfil: 'Profil' , Buscar: 'Rechercher', 'Estadísticas': 'Statistiques'},
+  it: { Inicio: 'Home', Selladas: 'Sigillati', Escanear: 'Scansiona', 'Colección': 'Collezione', Perfil: 'Profilo' , Buscar: 'Cerca', 'Estadísticas': 'Statistiche'},
+  nl: { Inicio: 'Home', Selladas: 'Verzegeld', Escanear: 'Scannen', 'Colección': 'Verzameling', Perfil: 'Profiel' , Buscar: 'Zoeken', 'Estadísticas': 'Statistieken'},
+  ja: { Inicio: 'ホーム', Selladas: '未開封', Escanear: 'スキャン', 'Colección': 'コレクション', Perfil: 'プロフィール' , Buscar: '検索', 'Estadísticas': '統計'},
+  zh: { Inicio: '首页', Selladas: '未拆封', Escanear: '扫描', 'Colección': '收藏', Perfil: '我的' , Buscar: '搜索', 'Estadísticas': '统计'},
+  ko: { Inicio: '홈', Selladas: '미개봉', Escanear: '스캔', 'Colección': '컬렉션', Perfil: '프로필' , Buscar: '검색', 'Estadísticas': '통계'},
 };
 const _T = T;
 T = (s, ...a) => _T(MOB[LANG]?.[s] ?? s, ...a);
-const TABS = [['home', '🏠', 'Inicio'], ['sealed', '📦', 'Selladas'], ['cen', '📐', '📐 Centrado PSA'], ['col', '📚', 'Colección'], ['me', '👤', 'Perfil']];
+const TABS = [['home', '🏠', 'Inicio'], ['search', '🔎', 'Buscar'], ['sealed', '📦', 'Selladas'], ['cen', '📐', '📐 Centrado PSA'], ['col', '📚', 'Colección'], ['me', '👤', 'Perfil']];
 let view = 'home';
 function drawTabbar(){
   const api = window.cuentaAPI, n = api?.user ? api.count('col') : 0;
@@ -1770,11 +1809,17 @@ function drawTabbar(){
 function setView(v){
   view = v;
   document.body.classList.toggle('v-home', v === 'home');
+  document.body.classList.toggle('v-search', v === 'search');
   drawTabbar();
 }
 function go2(v){
   backStack = []; current = null; window.scrollTo({ top: 0 });
-  if (v === 'home') { setView('home'); if (!out.querySelector('.result,.list')) { out.innerHTML = ''; } $('q').focus(); return; }
+  if (v === 'home') { setView('home'); return window.GX?.drawHome(); }
+  if (v === 'search') { setView('search'); if (!out.querySelector('.result,.list')) out.innerHTML = ''; showHelp(); $('q').focus(); return; }
+  if (v === 'fav') { setView('col'); if (window.cuentaAPI?.user) return window.cuentaAPI.show('fav'); out.innerHTML = loginCard(); return wireLogin(); }
+  if (v === 'stats') { setView('me'); return window.GX?.showStats(); }
+  if (v === 'progress') { setView('me'); return window.GX?.showProgress(); }
+  if (v === 'guide') { setView('me'); return showGuide(game); }
   if (v === 'sealed') { setView('sealed'); return showSealed(game); }
   if (v === 'col') { setView('col'); if (window.cuentaAPI?.user) return window.cuentaAPI.show('col'); out.innerHTML = loginCard(); return wireLogin(); }
   if (v === 'me') { setView('me'); return showProfile(); }
@@ -1797,6 +1842,8 @@ function showProfile(){
       <button data-a="gx">🏆 ${T('Progreso, misiones y logros')}<span class="r">${window.GX?.on ? T('Nivel {0}', GX.level()) : T('Desactivado')} ›</span></button>
       ${u ? `<button data-a="col">📚 ${T('Mi colección')}<span class="r">${api.count('col')} ›</span></button>
       <button data-a="fav">⭐ ${T('Favoritos')}<span class="r">${api.count('fav')} ›</span></button>` : ''}
+      <button data-a="stats">📊 ${T('Estadísticas')}<span class="r">›</span></button>
+      <button data-a="sealed">📦 ${T('Productos sellados')}<span class="r">›</span></button>
       <button data-a="guide">${T('📖 Cómo se juega a {0}', GAMES[game].label)}<span class="r">›</span></button>
       <button data-a="cen">${T('📐 Centrado PSA')}<span class="r">›</span></button>
     </div>
@@ -1815,6 +1862,8 @@ function showProfile(){
     if (a === 'cen') { backStack = []; remember(() => showProfile()); showCentering(); }
     if (a === 'out') api.logout();
     if (a === 'gx') GX.showProgress();
+    if (a === 'stats') GX.showStats();
+    if (a === 'sealed') go2('sealed');
   });
   const gh = out.querySelector('.gxh'); if (gh) gh.onclick = () => GX.showProgress();
   out.querySelectorAll('[data-th]').forEach(b => b.onclick = () => { GX.setTheme(b.dataset.th); showProfile(); });
@@ -1824,13 +1873,13 @@ function showProfile(){
 // botón de juego arriba a la derecha (abre la lista de juegos)
 function showGame2(){ $('gchip').innerHTML = `${ICONS[game]} ${GAMES[game].label} ▾`; }
 $('gchip').onclick = e => { e.stopPropagation(); toggleMenu(!$('tabs').classList.contains('open')); };
-document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => { showGame2(); if (view === 'sealed') showSealed(game); }));
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => { showGame2(); if (view === 'sealed') showSealed(game); if (view === 'home') window.GX?.drawHome(); if (view === 'search') showHelp(); }));
 // una búsqueda siempre vuelve a la pestaña Inicio
-$('form').addEventListener('submit', () => setView('home'));
-window.addEventListener('cuenta', () => { drawTabbar(); if (view === 'me') showProfile(); if (view === 'col' && !window.cuentaAPI?.user) go2('col'); });
+$('form').addEventListener('submit', () => setView('search'));
+window.addEventListener('cuenta', () => { drawTabbar(); if (view === 'home') window.GX?.drawHome(); if (view === 'me') showProfile(); if (view === 'col' && !window.cuentaAPI?.user) go2('col'); });
 // oculta la ayuda cuando hay resultados en pantalla
 new MutationObserver(() => document.body.classList.toggle('has-out', out.children.length > 0)).observe(out, { childList: true });
-showGame2(); setView('home');
+showGame2(); setView('home'); setTimeout(() => window.GX?.drawHome());
 </script>
 <script>
 // =====================================================================
@@ -2031,11 +2080,7 @@ function heroHTML(big){
       <small>${S.xp - need(L)} / ${need(L + 1) - need(L)} XP · ${T('{0}/{1} misiones de hoy', done, ms.length)}</small></span>
     <span class="streak${alive ? '' : ' off'}">🔥${alive}<small>${T('racha')}</small></span></button>`;
 }
-function drawHero(){
-  const box = $('gx'); if (!box) return;
-  box.innerHTML = S.on ? heroHTML() : '';
-  const b = box.querySelector('.gxh'); if (b) b.onclick = () => { setView('me'); showProgress(); };
-}
+function drawHero(){ if (typeof view === 'undefined' || view === 'home') drawHome(); }
 
 // ---- Pantalla de progreso ----
 function misHTML(m, box){
@@ -2086,7 +2131,141 @@ function showProgress(){
   };
   out.querySelectorAll('[data-gdel]').forEach(b => b.onclick = () => { S.goals.splice(+b.dataset.gdel, 1); store(); showProgress(); });
 }
-window.GX = { track, showProgress, heroHTML: () => S.on ? heroHTML() : '', get on(){ return S.on; }, level: () => levelOf(S.xp), title: () => titleOf(levelOf(S.xp)), xp: () => S.xp, themes: THEMES, setTheme, get theme(){ return theme; } };
+// ---------------------------------------------------------------- INICIO (dashboard) Y ESTADÍSTICAS
+const hist = () => LS.get(HKEY, {});
+function colSummary(){
+  const it = colStats.items.filter(i => i.qty > 0);
+  const tot = {}; for (const i of it) if (i.value && i.cur) tot[i.cur] = (tot[i.cur] || 0) + i.value * i.qty;
+  const cur = Object.entries(tot).sort((a, b) => b[1] - a[1])[0]?.[0];
+  let inv = 0, pl = 0, nb = 0;
+  for (const i of it) if (i.buy != null && i.value && i.cur === cur && (i.buyCur || i.cur) === cur) { inv += i.buy * i.qty; pl += (i.value - i.buy) * i.qty; nb++; }
+  return { it, tot, cur, inv, pl, nb, cards: it.reduce((s, i) => s + i.qty, 0) };
+}
+const fm = (v, c) => money(v, c, c === 'JPY' ? 0 : 2) || money(0.001, c, c === 'JPY' ? 0 : 2);
+const totTxt = tot => Object.entries(tot).sort((a, b) => b[1] - a[1]).map(([c, v]) => fm(v, c)).join(' + ') || '—';
+// cartas consultadas con al menos 2 precios en días distintos: subidas y bajadas reales
+function movers(){
+  const H = hist();
+  return Object.entries(H).filter(([, h]) => h.n && !h.s && h.p.length >= 2)
+    .map(([id, h]) => ({ id, ...h, ch: (h.p.at(-1)[1] - h.p[0][1]) / h.p[0][1] * 100, from: h.p[0][0] }))
+    .filter(m => isFinite(m.ch));
+}
+function recent(n = 10){
+  return Object.entries(hist()).filter(([, h]) => h.n).sort((a, b) => b[1].t - a[1].t).slice(0, n).map(([id, h]) => ({ id, ...h }));
+}
+function openQ(g, q, sealed){
+  if (game !== g) document.querySelector(`.tab[data-game="${g}"]`)?.click();
+  if (sealed) { setView('sealed'); return showSealed(g); }
+  $('q').value = q; setView('search'); search();
+}
+function colHist(){
+  const u = window.cuentaAPI?.user; if (!u) return {};
+  try { return JSON.parse(localStorage.getItem('pc_colhist_' + u.uid)) || {}; } catch (e) { return {}; }
+}
+function colChart(cur){
+  const H = colHist();
+  const pts = Object.keys(H).sort().filter(d => H[d][cur]).map(d => ({ l: new Date(d).toLocaleDateString(LOCALE(), { day: 'numeric', month: 'short' }), v: H[d][cur] }));
+  return pts.length >= 2 ? chartHTML(pts, cur) : '';
+}
+const cardTile = (img, name, price, attrs, rank) => `<button ${attrs}>${rank ? `<span class="rk">${rank}</span>` : ''}${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}<span class="nm2">${esc(name)}</span><b>${price || ''}</b></button>`;
+const moverRow = m => `<button class="mvr" data-g="${esc(m.g)}" data-q="${esc(m.q || m.n)}">
+  ${m.i ? `<img src="${esc(m.i)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}
+  <span class="mvn"><b>${esc(m.n)}</b><small>${ICONS[m.g] || ''} ${T('desde el {0}', new Date(m.from).toLocaleDateString(LOCALE(), { day: 'numeric', month: 'short' }))}</small></span>
+  <span class="mvp"><b>${fm(m.p.at(-1)[1], m.c)}</b><small class="${m.ch >= 0 ? 'up' : 'down'}">${m.ch >= 0 ? '▲' : '▼'} ${Math.abs(m.ch).toFixed(1)}%</small></span></button>`;
+function wireCommon(root){
+  root.querySelectorAll('.mvr,[data-rq]').forEach(b => b.onclick = () => openQ(b.dataset.g, b.dataset.q || b.dataset.rq, b.dataset.s === '1'));
+  root.querySelectorAll('[data-col]').forEach(b => b.onclick = () => { const i = colStats.items.find(x => x.__id === b.dataset.col); if (i) { setView('search'); window.cuentaAPI?.open(i); } });
+  root.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go2(b.dataset.go));
+}
+
+function homeHTML(){
+  roll();
+  const u = window.cuentaAPI?.user, h = new Date().getHours();
+  const nm = u ? (u.displayName || (u.email || '').split('@')[0]).split(' ')[0] : '';
+  const hi = T(h < 6 ? 'Buenas noches' : h < 13 ? 'Buenos días' : h < 21 ? 'Buenas tardes' : 'Buenas noches');
+  const cs = colSummary();
+  const ms = todays();
+  const top = cs.it.filter(i => i.value && i.cur === cs.cur).sort((a, b) => b.value - a.value).slice(0, 8);
+  const rec = recent(10);
+  const mv = movers().sort((a, b) => Math.abs(b.ch) - Math.abs(a.ch)).slice(0, 4);
+  const goals = S.goals.filter(g => !g.done).slice(0, 2);
+  return `
+  <div class="hgreet"><div><small>${hi}${nm ? ',' : ''}</small><h2>${nm ? esc(nm) : T('coleccionista')} 👋</h2></div>
+    ${S.on ? `<span class="hlv">${T('Nv.')} ${levelOf(S.xp)}</span>` : ''}</div>
+  <button class="hsearch" data-go="search">🔎 <span>${T('Busca una carta de {0}…', GAMES[game].label)}</span><b>📷</b></button>
+
+  <div class="hval">
+    ${u ? (cs.it.length ? `<small>${T('Valor de tu colección')}</small><b>${totTxt(cs.tot)}</b>
+      <div class="hrow"><span>🃏 ${T('{0} cartas', cs.cards)}</span>${cs.nb ? `<span class="${cs.pl >= 0 ? 'up' : 'down'}">${cs.pl >= 0 ? '▲ +' : '▼ −'}${fm(Math.abs(cs.pl), cs.cur)} (${cs.inv ? (cs.pl / cs.inv * 100).toFixed(1) : '0'}%)</span>` : `<span>${T('Añade precios de compra para ver beneficios')}</span>`}</div>
+      ${cs.cur ? colChart(cs.cur) : ''}`
+      : `<small>${T('Valor de tu colección')}</small><b>—</b><div class="hrow"><span>${T('Tu colección está vacía. Busca una carta y añádela.')}</span></div>`)
+    : `<small>${T('Mi colección')}</small><b style="font-size:20px">${T('Entra para guardar tus cartas y ver su valor')}</b><button class="gbtn" id="hLogin" style="margin-top:10px">👤 ${T('Entrar')} / ${T('Crear cuenta')}</button>`}
+    <button class="hmore" data-go="col">${T('Ver colección')} ›</button></div>
+
+  <div class="quick">
+    <button data-go="search"><i>🔎</i>${T('Buscar')}</button>
+    <button data-go="col"><i>📚</i>${T('Colección')}</button>
+    <button data-go="fav"><i>⭐</i>${T('Favoritos')}</button>
+    <button data-go="sealed"><i>📦</i>${T('Selladas')}</button>
+    <button data-go="stats"><i>📊</i>${T('Estadísticas')}</button>
+    <button data-go="cen"><i>📐</i>${T('Centrado')}</button>
+    <button data-go="guide"><i>📖</i>${T('Reglas')}</button>
+    <button data-go="me"><i>👤</i>${T('Perfil')}</button>
+  </div>
+
+  ${S.on ? `${heroHTML()}
+  <div class="gxsec"><h3>☀️ ${T('Misiones de hoy')} <small>${ms.filter(m => S.d.done[m.id]).length}/${ms.length}</small></h3>${ms.map(m => misHTML(m, S.d)).join('')}
+    ${goals.map(g => { const v = Math.min(goalProg(g), g.n); return `<div class="mis"><span class="mi-ico">🏆</span><div class="mi-b">${esc(g.set || GAMES[g.game]?.label)}<div class="pbar"><i style="width:${v / g.n * 100}%"></i></div></div><span class="mi-x">${v}/${g.n}</span></div>`; }).join('')}
+    <button class="hmore" data-go="progress">${T('Todas las misiones y logros')} ›</button></div>` : ''}
+
+  ${top.length ? `<div class="gxsec"><h3>✨ ${T('Tus cartas destacadas')} <small>${cs.cur}</small></h3><div class="top5">${top.map((i, k) => cardTile(i.img, i.name, fm(i.value, i.cur), `data-col="${esc(i.__id)}"`, k + 1)).join('')}</div></div>` : ''}
+  ${rec.length ? `<div class="gxsec"><h3>🕒 ${T('Vistas recientemente')}</h3><div class="top5">${rec.map(r => cardTile(r.i, r.n, r.p.length ? fm(r.p.at(-1)[1], r.c) : '', `data-g="${esc(r.g)}" data-rq="${esc(r.q || r.n)}" data-s="${r.s ? 1 : 0}"`)).join('')}</div></div>` : ''}
+
+  <div class="gxsec"><h3>📈 ${T('Evolución del mercado')} <small>${T('cartas que sigues')}</small></h3>
+    ${mv.length ? mv.map(moverRow).join('') : `<p class="note">${T('Aquí verás qué cartas suben y bajan. Se calcula con precios reales que vas consultando: abre tus cartas en días distintos y aparecerán sus cambios.')}</p>`}
+    <button class="hmore" data-go="stats">${T('Ver estadísticas')} ›</button></div>`;
+}
+function drawHome(){
+  const box = $('gx'); if (!box) return;
+  box.innerHTML = homeHTML();
+  wireCommon(box);
+  const hb = box.querySelector('.gxh'); if (hb) hb.onclick = () => go2('progress');
+  if ($('hLogin')) $('hLogin').onclick = () => window.cuentaAPI?.login('');
+}
+
+const bars = (rows, fmt) => { const mx = Math.max(...rows.map(r => r[1]), 1);
+  return `<div class="bars">${rows.map(([l, v]) => `<div class="brow"><span class="bl">${l}</span><span class="bt"><i style="width:${Math.max(2, v / mx * 100)}%"></i></span><b>${fmt ? fmt(v) : v}</b></div>`).join('')}</div>`; };
+function showStats(){
+  backStack = []; current = null; redraw = showStats; window.scrollTo({ top: 0 });
+  const u = window.cuentaAPI?.user, cs = colSummary();
+  const by = (f, val) => { const m = {}; for (const i of cs.it) { const k = f(i); if (k) m[k] = (m[k] || 0) + val(i); } return Object.entries(m).sort((a, b) => b[1] - a[1]); };
+  const cnt = i => i.qty, vl = i => i.value && i.cur === cs.cur ? i.value * i.qty : 0;
+  const mvAll = movers(), ups = [...mvAll].sort((a, b) => b.ch - a.ch).filter(m => m.ch > 0).slice(0, 5), downs = [...mvAll].sort((a, b) => a.ch - b.ch).filter(m => m.ch < 0).slice(0, 5);
+  const curFmt = v => fm(v, cs.cur);
+  out.innerHTML = `<div class="bar"><h2>📊 ${T('Estadísticas')}</h2></div>
+  ${u && cs.it.length ? `
+    <div class="kpis">
+      <div class="kpi"><span>💰 ${T('Valor actual')}</span><b>${totTxt(cs.tot)}</b></div>
+      <div class="kpi"><span>🃏 ${T('Cartas')}</span><b>${cs.cards}</b><small>${T('{0} distintas', cs.it.length)}</small></div>
+      <div class="kpi"><span>🧾 ${T('Inversión total')}</span><b>${cs.nb ? fm(cs.inv, cs.cur) : '—'}</b><small>${T('{0} de {1} con precio de compra', cs.nb, cs.it.length)}</small></div>
+      <div class="kpi"><span>📊 ${T('Beneficio / pérdida')}</span><b class="${cs.pl >= 0 ? 'up' : 'down'}">${cs.nb ? (cs.pl >= 0 ? '+' : '−') + fm(Math.abs(cs.pl), cs.cur) : '—'}</b><small>${cs.nb && cs.inv ? (cs.pl / cs.inv * 100).toFixed(1) + '%' : ''}</small></div>
+    </div>
+    <div class="gxsec"><h3>📈 ${T('Evolución del valor de la colección')} <small>${cs.cur || ''}</small></h3>${colChart(cs.cur) || `<p class="note">${T('Se guarda un punto cada día que abres la app con la sesión iniciada (en este dispositivo). En unos días verás aquí la gráfica.')}</p>`}</div>
+    <div class="gxsec"><h3>🎮 ${T('Cartas por juego')}</h3>${bars(by(i => `${ICONS[i.game] || ''} ${GAMES[i.game]?.label || i.game}`, cnt))}</div>
+    ${cs.cur ? `<div class="gxsec"><h3>💶 ${T('Valor por juego')} <small>${cs.cur}</small></h3>${bars(by(i => `${ICONS[i.game] || ''} ${GAMES[i.game]?.label || i.game}`, vl).filter(r => r[1] > 0), curFmt)}</div>` : ''}
+    <div class="gxsec"><h3>✦ ${T('Por rareza')}</h3>${bars(by(i => esc(i.rarity || '—'), cnt).slice(0, 8))}</div>
+    ${by(i => i.cond, cnt).length ? `<div class="gxsec"><h3>🔍 ${T('Por estado de conservación')}</h3>${bars(by(i => esc(i.cond), cnt))}</div>` : ''}
+    ${by(i => i.set, vl).length ? `<div class="gxsec"><h3>📚 ${T('Expansiones más valiosas')} <small>${cs.cur}</small></h3>${bars(by(i => esc(i.set), vl).filter(r => r[1] > 0).slice(0, 6), curFmt)}</div>` : ''}`
+  : `<div class="gxsec"><p class="note">${u ? T('Tu colección está vacía. Busca una carta y pulsa «➕ Añadir a mi colección».') : T('Entra para guardar tus cartas y ver su valor')}</p>${u ? '' : `<button class="gbtn" id="sLogin">👤 ${T('Entrar')} / ${T('Crear cuenta')}</button>`}</div>`}
+  <div class="gxsec"><h3>🚀 ${T('Más suben')} <small>${T('cartas que sigues')}</small></h3>${ups.length ? ups.map(moverRow).join('') : `<p class="note">${T('Todavía no hay cambios registrados.')}</p>`}</div>
+  <div class="gxsec"><h3>📉 ${T('Más bajan')}</h3>${downs.length ? downs.map(moverRow).join('') : `<p class="note">${T('Todavía no hay cambios registrados.')}</p>`}</div>
+  <p class="note">${T('Los cambios del mercado se calculan con precios reales de Cardmarket, TCGplayer o Torekakaku guardados cada día que consultas una carta. No hay estimaciones.')}</p>
+  ${S.on ? `<button class="gbtn soft" data-go="progress">🏆 ${T('Progreso, misiones y logros')}</button>` : ''}`;
+  wireCommon(out);
+  if ($('sLogin')) $('sLogin').onclick = () => window.cuentaAPI?.login('');
+}
+
+window.GX = { drawHome, showStats, track, showProgress, heroHTML: () => S.on ? heroHTML() : '', get on(){ return S.on; }, level: () => levelOf(S.xp), title: () => titleOf(levelOf(S.xp)), xp: () => S.xp, themes: THEMES, setTheme, get theme(){ return theme; } };
 
 // ---------------------------------------------------------------- GRÁFICAS
 // pts = [{ l: etiqueta, v: número }]
@@ -2128,9 +2307,9 @@ window.pcChart = chartHTML;
 const HKEY = 'pc_hist_v1';
 const curOf = txt => /€/.test(txt) ? 'EUR' : /¥|円/.test(txt) ? 'JPY' : /\$/.test(txt) ? 'USD' : '';
 const plain = h => { const d = document.createElement('div'); d.innerHTML = h || ''; return d.textContent.trim(); };
-function record(id, value, cur){
+function record(id, value, cur, info = {}){
   const H = LS.get(HKEY, {});
-  const h = H[id] || { c: cur, p: [] };
+  const h = Object.assign(H[id] || { c: cur, p: [] }, info);
   const k = dayKey(), last = h.p.at(-1);
   if (last && last[0] === k) last[1] = value; else h.p.push([k, value]);
   h.p = h.p.slice(-180); h.c = cur; h.t = Date.now(); H[id] = h;
@@ -2169,7 +2348,9 @@ function afterRender(v){
   const firstView = !LS.get(HKEY, {})[id];
   track('view', { first: firstView, game });
   const txt = plain(v.mainValue), cur = curOf(txt), val = Number(v.value);
-  const h = val > 0 && cur ? record(id, val, cur) : LS.get(HKEY, {})[id];
+  const code = (v.versionLabel || '').split(' · ')[0];
+  const info = { n: v.name || '', i: v.img || '', g: game, s: v.sealed ? 1 : 0, q: code && game === 'yugioh' ? code : ($('q').value.trim() || v.name || '') };
+  const h = val > 0 && cur ? record(id, val, cur, info) : LS.get(HKEY, {})[id];
 
   // chips de datos de la ficha
   const meta = out.querySelector('.result .name');
@@ -2461,7 +2642,7 @@ function checkAlerts(){
   }
 }
 function colEvent(){
-  const all = [...items.values()];
+  const all = [...items].map(([id, d]) => ({ ...d, __id: id }));
   const col = all.filter(i => i.qty > 0);
   window.dispatchEvent(new CustomEvent('pc:col', { detail: { cards: col.reduce((s, i) => s + i.qty, 0), distinct: col.length, favs: all.filter(i => i.fav).length, items: all } }));
   recordColValue(sumBy(col, i => i.value && i.cur ? [i.cur, i.value * i.qty] : null));
@@ -2626,6 +2807,7 @@ window.cuentaAPI = {
   login: msg => openLogin(msg),
   show: v => { if (!user) return openLogin(T('Entra para guardar cartas en tu colección.')); showMine(v); },
   logout: () => signOut(auth),
+  open: i => openItem(items.get(i.__id) || i),
 };
 
 </script>
