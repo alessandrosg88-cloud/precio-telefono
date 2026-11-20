@@ -9,20 +9,38 @@
 <script src="acceso.js?v=2"></script>
 <link rel="icon" href="logo.jpg">
 <link rel="apple-touch-icon" href="logo.jpg">
-<meta name="theme-color" content="#2563eb">
+<meta name="theme-color" content="#6a44f2">
+<script>try{var t=localStorage.getItem('pc_theme');if(t=='light'||t=='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Precio Cartas">
-<title>Precio Cartas Celular</title>
+<title>Precio Cartas – Colezzioni Saglimbeni Medina</title>
 <style>
+  /* Identidad Colezzioni: violeta coleccionista + oro. Tema: auto / claro / oscuro (html[data-theme]) */
   :root{
-    --bg:#f4f5f8; --card:#ffffff; --text:#1c1f26; --muted:#6b7280; --line:#e5e7eb;
-    --accent:#2563eb; --accent-soft:#e8efff; --good:#059669; --bad:#dc2626; --warn:#b45309;
+    --bg:#f5f3fb; --card:#ffffff; --text:#17142b; --muted:#6c6883; --line:#e6e2f1;
+    --accent:#6a44f2; --accent-2:#a347e6; --accent-soft:#efeafe; --gold:#f2b01e; --gold-soft:#fff5d9;
+    --good:#0e9f6e; --bad:#e5484d; --warn:#b7791f;
+    --shadow:0 1px 2px rgba(23,20,43,.05),0 10px 28px -12px rgba(48,30,120,.18);
+    --grad:linear-gradient(135deg,#6a44f2 0%,#a347e6 60%,#e2569b 100%);
+    color-scheme:light;
+  }
+  html[data-theme="dark"]{
+    --bg:#0d0b16; --card:#17142a; --text:#efedf8; --muted:#a19cb8; --line:#2a2643;
+    --accent:#8f72ff; --accent-2:#c27bff; --accent-soft:#251f45; --gold:#ffc94a; --gold-soft:#3a2f12;
+    --good:#34d399; --bad:#ff7a7f; --warn:#fbbf24;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px -14px rgba(0,0,0,.7);
+    color-scheme:dark;
   }
   @media (prefers-color-scheme: dark){
-    :root{ --bg:#0f1115; --card:#181b22; --text:#eef0f4; --muted:#9aa3b2; --line:#2a2f3a;
-      --accent:#5b8cff; --accent-soft:#1d2840; --good:#34d399; --bad:#f87171; --warn:#fbbf24; }
+    html:not([data-theme="light"]){
+      --bg:#0d0b16; --card:#17142a; --text:#efedf8; --muted:#a19cb8; --line:#2a2643;
+      --accent:#8f72ff; --accent-2:#c27bff; --accent-soft:#251f45; --gold:#ffc94a; --gold-soft:#3a2f12;
+      --good:#34d399; --bad:#ff7a7f; --warn:#fbbf24;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px -14px rgba(0,0,0,.7);
+      color-scheme:dark;
+    }
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.45}
@@ -101,7 +119,7 @@
   .pic.loading img{opacity:.35}
   .altrow{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 2px}
   .alt{flex:1 1 0;min-width:70px;max-width:110px;padding:4px;border:2px solid var(--line);border-radius:8px;background:var(--card);color:var(--text);cursor:pointer;font-size:11px;line-height:1.2}
-  .alt.on{border-color:#2563eb}
+  .alt.on{border-color:var(--accent)}
   .alt img{width:100%;aspect-ratio:63/88;object-fit:cover;border-radius:4px;display:block;margin-bottom:3px;background:var(--line)}
   .replica{font-size:12px;color:var(--muted,#888);margin:6px 2px 0;line-height:1.35}
   .tile.rep img,.item.rep img{opacity:.55}
@@ -270,11 +288,156 @@
   .result{gap:14px}
   #help #sbtn,#help #gbtn{display:none}   /* ya están en la barra de abajo y en Perfil */
   body.has-out #help{display:none}        /* con resultados, solo el buscador (como una app) */
+
+  /* ================= REDISEÑO 2026: identidad propia ================= */
+  body{font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;letter-spacing:-.005em;transition:background-color .25s,color .25s}
+  ::selection{background:var(--accent);color:#fff}
+  .appbar{background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px)}
+  .appbar h1 .logo{box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--accent)}
+  .appbar .brand{display:flex;flex-direction:column;line-height:1.05;font-weight:800;letter-spacing:-.02em}
+  .appbar .brand small{font-size:10.5px;font-weight:600;color:var(--muted);letter-spacing:.02em;margin-top:2px}
+  .tbtn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:18px;cursor:pointer;display:grid;place-items:center;transition:transform .2s}
+  .tbtn:active{transform:rotate(-25deg) scale(.9)}
+  button,.ex,.chip,.tile,.item,.links a{transition:transform .12s ease,box-shadow .2s,background-color .2s,border-color .2s,color .2s}
+  button:active,.ex:active,.chip:active,.item:active,.links a:active{transform:scale(.96)}
+  .gbtn,button.go,.links .main{background:var(--grad);box-shadow:0 6px 16px -8px var(--accent)}
+  .gbtn.soft{background:var(--accent-soft);color:var(--accent);box-shadow:none}
+  .gbtn.soft.on{background:linear-gradient(135deg,#f2b01e,#f07b1e);color:#fff}
+  input{border-width:1.5px;border-radius:14px;transition:border-color .2s,box-shadow .2s}
+  input:focus{box-shadow:0 0 0 4px var(--accent-soft)}
+  button.cam{border-width:1.5px;border-radius:14px}
+  .help{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:18px}
+  .result,.item,.prof,.menu-list,.gpage,.mset,.lbox{border-radius:20px;box-shadow:var(--shadow)}
+  .item{border-radius:16px}
+  .item:hover{transform:translateY(-2px);box-shadow:0 14px 30px -14px rgba(80,50,180,.35)}
+  .big{background:linear-gradient(135deg,var(--accent-soft),color-mix(in srgb,var(--gold-soft) 55%,var(--accent-soft)));border-radius:16px}
+  .rar{background:var(--gold-soft);color:var(--warn)}
+  .tabbar{background:color-mix(in srgb,var(--card) 86%,transparent);backdrop-filter:saturate(1.6) blur(16px);-webkit-backdrop-filter:saturate(1.6) blur(16px)}
+  .tabbar button.scan .i{background:var(--grad);box-shadow:0 6px 18px -4px rgba(106,68,242,.55)}
+  .tabbar button.on .i{animation:pop .35s ease}
+  .prof .av{background:var(--grad)}
+  #out > *{animation:fadeUp .28s ease both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes pop{0%{transform:scale(.8)}60%{transform:scale(1.25)}100%{transform:scale(1.12)}}
+  @media (prefers-reduced-motion: reduce){ #out > *,.tabbar button.on .i{animation:none} }
+
+  /* ---- Panel de progreso (gamificación) ---- */
+  body:not(.v-home) #gx, body.has-out #gx, body.gx-off #gx{display:none}
+  .gxh{display:flex;align-items:center;gap:14px;background:var(--grad);color:#fff;border-radius:22px;padding:14px 16px;margin:4px 0 12px;cursor:pointer;box-shadow:0 14px 30px -14px rgba(106,68,242,.7);position:relative;overflow:hidden;border:0;width:100%;text-align:left;font:inherit}
+  .gxh::after{content:"";position:absolute;right:-30px;top:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.09)}
+  .ring{--p:0;width:58px;height:58px;border-radius:50%;flex:none;display:grid;place-items:center;background:conic-gradient(var(--gold) calc(var(--p)*1%),rgba(255,255,255,.22) 0)}
+  .ring b{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:rgba(20,10,60,.55);font-size:19px;font-weight:800;color:#fff}
+  .ring.lg{width:96px;height:96px} .ring.lg b{width:78px;height:78px;font-size:30px}
+  .gxh .t{flex:1;min-width:0}
+  .gxh .t b{display:block;font-size:16px} .gxh .t small{opacity:.88;font-size:12.5px}
+  .xpbar{height:8px;border-radius:99px;background:rgba(255,255,255,.25);overflow:hidden;margin:6px 0 4px}
+  .xpbar i{display:block;height:100%;border-radius:99px;background:var(--gold);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+  .streak{flex:none;text-align:center;font-weight:800;font-size:20px;line-height:1;z-index:1}
+  .streak small{display:block;font-size:10.5px;font-weight:600;opacity:.85;margin-top:3px}
+  .streak.off{filter:grayscale(1);opacity:.6}
+  .gxsec{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:14px 16px;margin:0 0 12px}
+  .gxsec h3{margin:0 0 10px;font-size:16px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .gxsec h3 small{color:var(--muted);font-weight:600;font-size:12px}
+  .mis{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--line)}
+  .mis:first-of-type{border-top:0}
+  .mis .mi-ico{width:38px;height:38px;border-radius:12px;background:var(--accent-soft);display:grid;place-items:center;font-size:19px;flex:none}
+  .mis.done .mi-ico{background:var(--good);color:#fff}
+  .mis .mi-b{flex:1;min-width:0;font-size:14.5px;font-weight:600}
+  .mis .pbar{height:7px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:5px}
+  .mis .pbar i{display:block;height:100%;background:var(--grad);border-radius:99px;transition:width .5s}
+  .mis.done .pbar i{background:var(--good)}
+  .mis .mi-x{font-size:12px;font-weight:800;color:var(--warn);background:var(--gold-soft);padding:3px 8px;border-radius:99px;flex:none}
+  .medals{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
+  .medal{text-align:center;padding:10px 6px;border-radius:16px;background:var(--bg);border:1px solid var(--line);font-size:11.5px;color:var(--muted);line-height:1.25}
+  .medal .mi{width:50px;height:50px;margin:0 auto 6px;border-radius:50%;display:grid;place-items:center;font-size:24px;background:var(--line);filter:grayscale(1);opacity:.55}
+  .medal b{display:block;color:var(--text);font-size:12px;margin-bottom:2px}
+  .medal.on .mi{filter:none;opacity:1;background:radial-gradient(circle at 30% 30%,#fff6d6,var(--gold));box-shadow:0 6px 16px -6px var(--gold)}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:0 0 12px}
+  @media (min-width:640px){ .kpis{grid-template-columns:repeat(4,1fr)} }
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 14px;box-shadow:var(--shadow);min-width:0}
+  .kpi span{display:block;font-size:12px;color:var(--muted);font-weight:600}
+  .kpi b{display:block;font-size:20px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+  .kpi small{color:var(--muted);font-size:11.5px}
+  .up{color:var(--good)} .down{color:var(--bad)}
+  .goal-form{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .goal-form input,.goal-form select{font-size:14px;padding:9px 11px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--text);flex:1;min-width:120px}
+  .gx-toggle{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .sw{width:46px;height:28px;border-radius:99px;background:var(--line);position:relative;border:0;cursor:pointer;flex:none}
+  .sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+  .sw.on{background:var(--good)} .sw.on::after{transform:translateX(18px)}
+  .seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:3px;gap:3px}
+  .seg button{flex:1;border:0;background:none;color:var(--text);padding:7px 10px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer}
+  .seg button.on{background:var(--card);box-shadow:var(--shadow);color:var(--accent)}
+
+  /* ---- Toasts, +XP y confeti ---- */
+  .toasts{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top));transform:translateX(-50%);z-index:90;display:flex;flex-direction:column;gap:8px;width:min(420px,calc(100% - 24px));pointer-events:none}
+  .toast{display:flex;align-items:center;gap:12px;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:18px;padding:11px 14px;box-shadow:0 20px 40px -16px rgba(0,0,0,.45);animation:tin .45s cubic-bezier(.2,1.4,.4,1) both;pointer-events:auto}
+  .toast.out{animation:tout .3s ease forwards}
+  .toast .ti{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:22px;background:radial-gradient(circle at 30% 30%,#fff6d6,var(--gold))}
+  .toast b{display:block;font-size:14.5px} .toast small{color:var(--muted);font-size:12.5px}
+  @keyframes tin{from{opacity:0;transform:translateY(-20px) scale(.9)}to{opacity:1;transform:none}}
+  @keyframes tout{to{opacity:0;transform:translateY(-14px) scale(.95)}}
+  .xpf{position:fixed;z-index:95;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%);font-weight:900;font-size:20px;color:var(--gold);text-shadow:0 2px 10px rgba(0,0,0,.25);pointer-events:none;animation:xpf 1.1s ease-out forwards}
+  @keyframes xpf{0%{opacity:0;transform:translate(-50%,10px) scale(.7)}20%{opacity:1;transform:translate(-50%,0) scale(1.15)}100%{opacity:0;transform:translate(-50%,-50px) scale(1)}}
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:89}
+
+  /* ---- Ficha: evolución y comparador ---- */
+  .fx{margin:0 0 14px;border:1px solid var(--line);border-radius:16px;background:var(--card);overflow:hidden}
+  .fx > summary{cursor:pointer;font-weight:700;padding:12px 14px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  .fx > summary::-webkit-details-marker{display:none}
+  .fx > summary::after{content:"▾";color:var(--muted);transition:transform .2s}
+  .fx[open] > summary::after{transform:rotate(180deg)}
+  .fx .fxb{padding:0 14px 14px}
+  .pchart{position:relative;touch-action:pan-y;user-select:none;margin:6px 0 2px}
+  .pchart svg{display:block;width:100%;height:130px;color:var(--accent);overflow:visible}
+  .pchart .ln{fill:none;stroke:currentColor;stroke-width:2.5;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+  .pchart .gl{stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke;stroke-dasharray:3 4}
+  .pchart .pm{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--card);border:3px solid var(--accent);display:none;pointer-events:none}
+  .pchart .ptip{position:absolute;top:-6px;transform:translate(-50%,-100%);background:var(--text);color:var(--bg);font-size:12px;font-weight:700;padding:4px 8px;border-radius:8px;white-space:nowrap;display:none;pointer-events:none}
+  .pchart .paxis{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
+  .pchart .pyr{position:absolute;right:0;font-size:10.5px;color:var(--muted);background:var(--card);padding:0 3px;border-radius:4px}
+  .cmp{width:100%;border-collapse:collapse;font-size:14px}
+  .cmp td{padding:9px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+  .cmp td:last-child{text-align:right}
+  .cmp .src{font-weight:700} .cmp .src small,.cmp td small{display:block;color:var(--muted);font-weight:500;font-size:11.5px}
+  .cmp .pv{font-weight:800;font-variant-numeric:tabular-nums;font-size:15px}
+  .cmp a{color:var(--accent);font-weight:700;text-decoration:none;font-size:13px}
+  .fchips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+  .fchip{font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;background:var(--bg);border:1px solid var(--line);color:var(--muted)}
+  .gfilter{display:flex;gap:8px;align-items:center;margin:0 0 12px;flex-wrap:wrap}
+  .gfilter input{font-size:14px;padding:9px 12px;flex:1;min-width:150px}
+  .gfilter .chip{white-space:nowrap}
+
+  /* ---- Mi colección 2.0 ---- */
+  .mtools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+  .mtools input,.mtools select{font-size:14px;padding:8px 10px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--text)}
+  .mtools input{flex:1;min-width:150px}
+  .top5{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 8px;scroll-snap-type:x proximity}
+  .top5 button{flex:none;width:96px;border:1px solid var(--line);background:var(--bg);border-radius:14px;padding:6px;cursor:pointer;color:var(--text);font:inherit;font-size:11.5px;scroll-snap-align:start;position:relative}
+  .top5 img,.top5 .noimg{width:100%;aspect-ratio:63/88;object-fit:cover;border-radius:8px;background:var(--line);display:grid;place-items:center}
+  .top5 .rk{position:absolute;top:2px;left:2px;background:var(--grad);color:#fff;font-weight:800;border-radius:99px;font-size:11px;padding:1px 7px}
+  .top5 b{display:block;font-size:12.5px;color:var(--good);margin-top:3px}
+  .top5 .nm2{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mrow .tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+  .mrow .tag{font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:99px;background:var(--accent-soft);color:var(--accent)}
+  .mrow .tag.cond{background:var(--gold-soft);color:var(--warn)}
+  .mrow .tag.hit{background:var(--good);color:#fff}
+  .mq .medit{font-size:14px}
+  .sheet{position:fixed;inset:0;z-index:60;background:rgba(10,6,30,.55);display:flex;align-items:flex-end;justify-content:center}
+  .sheet[hidden]{display:none}
+  .sheet .sb{background:var(--card);color:var(--text);width:min(520px,100%);max-height:92vh;overflow:auto;border-radius:24px 24px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom));animation:sup .3s cubic-bezier(.2,1,.3,1)}
+  @media (min-width:640px){ .sheet{align-items:center} .sheet .sb{border-radius:24px} }
+  @keyframes sup{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+  .sheet h3{margin:0 0 4px;font-size:18px} .sheet .note{margin:0 0 12px}
+  .sheet label{display:block;font-size:12.5px;font-weight:700;color:var(--muted);margin:10px 0 4px}
+  .sheet input,.sheet select,.sheet textarea{width:100%;font-size:16px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);color:var(--text);font-family:inherit}
+  .sheet .r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .sheet .acts{display:flex;gap:8px;margin-top:16px} .sheet .acts .gbtn{flex:1;margin:0}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header class="appbar"><h1><img class="logo" src="logo.jpg" alt="Colezzioni Saglimbeni Medina">Precio Cartas</h1><button class="gchip" id="gchip"></button></header>
+  <header class="appbar"><h1><img class="logo" src="logo.jpg" alt="Colezzioni Saglimbeni Medina"><span class="brand">Precio Cartas<small>Colezzioni Saglimbeni Medina</small></span></h1><button class="tbtn" id="themeBtn" aria-label="Tema"></button><button class="gchip" id="gchip"></button></header>
   <div class="langbar">
     <button class="lsel" id="lsel" aria-haspopup="listbox" aria-expanded="false">🌐 <span id="lselName"></span> ▾</button>
     <div class="lmenu" id="lmenu" role="listbox"></div>
@@ -312,6 +475,7 @@
     <div id="scanStatus"></div>
   </div>
 
+  <div id="gx"></div>
   <div class="help" id="help"></div>
   <div id="out"></div>
 
@@ -1628,12 +1792,16 @@ function showProfile(){
   out.innerHTML = `${u ? `<div class="prof"><div class="av">${u.photoURL ? `<img src="${esc(u.photoURL)}" alt="" referrerpolicy="no-referrer">` : esc(nm[0]?.toUpperCase() || '👤')}</div>
       <div><div class="nm">${esc(nm)}</div><div class="em">${esc(u.email || '')}</div>
       <div class="stats"><span><b>${api.count('col')}</b>${T('Mi colección')}</span><span><b>${api.count('fav')}</b>${T('Favoritos')}</span></div></div></div>` : loginCard()}
+    ${window.GX?.heroHTML() || ''}
     <div class="menu-list">
+      <button data-a="gx">🏆 ${T('Progreso, misiones y logros')}<span class="r">${window.GX?.on ? T('Nivel {0}', GX.level()) : T('Desactivado')} ›</span></button>
       ${u ? `<button data-a="col">📚 ${T('Mi colección')}<span class="r">${api.count('col')} ›</span></button>
       <button data-a="fav">⭐ ${T('Favoritos')}<span class="r">${api.count('fav')} ›</span></button>` : ''}
       <button data-a="guide">${T('📖 Cómo se juega a {0}', GAMES[game].label)}<span class="r">›</span></button>
       <button data-a="cen">${T('📐 Centrado PSA')}<span class="r">›</span></button>
     </div>
+    <p class="ptitle">🎨 ${T('Apariencia')}</p>
+    <div class="gxsec" style="padding:10px"><div class="seg" id="pTheme">${(window.GX?.themes || []).map(([k, i, n]) => `<button data-th="${k}" class="${GX.theme === k ? 'on' : ''}">${i} ${T(n)}</button>`).join('')}</div></div>
     <p class="ptitle">${T('Juego')}</p>
     <div class="menu-list">${Object.entries(GAMES).map(([k, g]) => `<button data-g="${k}" class="${k === game ? 'on' : ''}">${ICONS[k]} ${g.label}${k === game ? '<span class="r">✓</span>' : ''}</button>`).join('')}</div>
     <p class="ptitle">🌐 ${L ? L[2] + ' ' + L[1] : ''}</p>
@@ -1646,7 +1814,10 @@ function showProfile(){
     if (a === 'guide') { showGuide(game); }
     if (a === 'cen') { backStack = []; remember(() => showProfile()); showCentering(); }
     if (a === 'out') api.logout();
+    if (a === 'gx') GX.showProgress();
   });
+  const gh = out.querySelector('.gxh'); if (gh) gh.onclick = () => GX.showProgress();
+  out.querySelectorAll('[data-th]').forEach(b => b.onclick = () => { GX.setTheme(b.dataset.th); showProfile(); });
   out.querySelectorAll('[data-g]').forEach(b => b.onclick = () => { document.querySelector(`.tab[data-game="${b.dataset.g}"]`).click(); showGame2(); showProfile(); });
   out.querySelectorAll('[data-l]').forEach(b => b.onclick = () => { setLang(b.dataset.l); loadLang(LANG).then(() => { applyLang(); drawTabbar(); showGame2(); showProfile(); }); });
 }
@@ -1660,6 +1831,438 @@ window.addEventListener('cuenta', () => { drawTabbar(); if (view === 'me') showP
 // oculta la ayuda cuando hay resultados en pantalla
 new MutationObserver(() => document.body.classList.toggle('has-out', out.children.length > 0)).observe(out, { childList: true });
 showGame2(); setView('home');
+</script>
+<script>
+// =====================================================================
+//  REDISEÑO 2026 · Colezzioni Saglimbeni Medina
+//  1) Tema claro / oscuro / automático
+//  2) Gamificación opcional (XP, niveles, misiones, rachas, logros, objetivos)
+//     Se guarda en este dispositivo (localStorage); se puede desactivar en Perfil.
+//  3) Ficha de carta: evolución del precio + comparador de fuentes (sin inventar precios)
+//  4) Filtro rápido en los resultados de búsqueda
+// =====================================================================
+(function(){
+const LS = { get(k, d){ try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+             set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const pad = n => String(n).padStart(2, '0');
+const dayKey = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const weekKey = (d = new Date()) => { const m = new Date(d); m.setDate(m.getDate() - ((m.getDay() + 6) % 7)); return dayKey(m); };
+const ago = k => { const [y, m, d] = k.split('-').map(Number); return Math.round((new Date(dayKey()) - new Date(y, m - 1, d)) / 864e5); };
+
+// ---------------------------------------------------------------- TEMA
+const THEMES = [['auto', '🌗', 'Automático'], ['light', '☀️', 'Claro'], ['dark', '🌙', 'Oscuro']];
+let theme = LS.get('pc_theme', 'auto');
+function setTheme(t){
+  theme = t; LS.set('pc_theme', t);
+  if (t === 'auto') delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = t;
+  const btn = $('themeBtn'); if (btn) { const th = THEMES.find(x => x[0] === t); btn.textContent = th[1]; btn.title = T('Tema') + ': ' + T(th[2]); }
+  const dark = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
+  document.querySelector('meta[name=theme-color]')?.setAttribute('content', dark ? '#0d0b16' : '#6a44f2');
+}
+setTheme(theme);
+$('themeBtn').onclick = () => { const i = THEMES.findIndex(x => x[0] === theme); setTheme(THEMES[(i + 1) % 3][0]); toast(THEMES[(i + 1) % 3][1], T('Tema') + ': ' + T(THEMES[(i + 1) % 3][2])); };
+
+// ---------------------------------------------------------------- TOASTS / CONFETI
+const tbox = document.createElement('div'); tbox.className = 'toasts'; document.body.appendChild(tbox);
+function toast(icon, title, sub = '', ms = 3200){
+  const el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status');
+  el.innerHTML = `<span class="ti">${icon}</span><span><b>${esc(title)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</span>`;
+  tbox.appendChild(el);
+  while (tbox.children.length > 3) tbox.firstElementChild.remove();
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 320); }, ms);
+}
+function xpFloat(n){
+  if (reduced) return;
+  const el = document.createElement('div'); el.className = 'xpf'; el.textContent = `+${n} XP`;
+  document.body.appendChild(el); setTimeout(() => el.remove(), 1150);
+}
+function confetti(){
+  if (reduced) return;
+  const c = document.createElement('canvas'); c.id = 'confetti'; document.body.appendChild(c);
+  const ctx = c.getContext('2d'), dpr = devicePixelRatio || 1;
+  c.width = innerWidth * dpr; c.height = innerHeight * dpr; ctx.scale(dpr, dpr);
+  const cols = ['#6a44f2', '#a347e6', '#e2569b', '#f2b01e', '#0e9f6e', '#38bdf8'];
+  const ps = Array.from({ length: 110 }, () => ({ x: innerWidth / 2 + (Math.random() - .5) * 80, y: innerHeight * .35,
+    vx: (Math.random() - .5) * 11, vy: -Math.random() * 11 - 4, r: Math.random() * 6 + 4, a: Math.random() * 6, va: (Math.random() - .5) * .3, c: cols[Math.random() * cols.length | 0] }));
+  const t0 = performance.now();
+  (function f(t){
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const p of ps) { p.vy += .32; p.x += p.vx; p.y += p.vy; p.a += p.va; p.vx *= .99;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.fillStyle = p.c; ctx.fillRect(-p.r / 2, -p.r / 4, p.r, p.r / 2); ctx.restore(); }
+    if (t - t0 < 1900) requestAnimationFrame(f); else c.remove();
+  })(t0);
+}
+window.pcToast = toast;
+
+// ---------------------------------------------------------------- GAMIFICACIÓN
+const KEY = 'pc_gx_v1';
+const S = Object.assign({ on: true, xp: 0, streak: 0, best: 0, last: '', days: 0, c: {}, seen: {}, games: {},
+  ach: {}, d: { k: '', p: {}, done: {}, cap: {} }, w: { k: '', p: {}, done: {}, games: {} }, goals: [] }, LS.get(KEY, {}));
+const store = () => LS.set(KEY, S);
+document.body.classList.toggle('gx-off', !S.on);
+
+const LEVEL_NAMES = [[1, 'Novato'], [3, 'Aprendiz'], [5, 'Coleccionista'], [8, 'Experto'], [12, 'Maestro'], [16, 'Gran Maestro'], [20, 'Leyenda']];
+const need = L => 50 * (L - 1) * L;                       // XP total para llegar al nivel L
+const levelOf = xp => { let L = 1; while (xp >= need(L + 1)) L++; return L; };
+const titleOf = L => T(LEVEL_NAMES.filter(x => x[0] <= L).pop()[1]);
+const lvlPct = xp => { const L = levelOf(xp); return Math.round((xp - need(L)) / (need(L + 1) - need(L)) * 100); };
+
+const DAILY = [
+  { id: 'search', ev: 'search', n: 3, xp: 15, i: '🔎', t: 'Busca {0} cartas' },
+  { id: 'view', ev: 'view', n: 5, xp: 15, i: '👀', t: 'Consulta {0} fichas de precio' },
+  { id: 'add', ev: 'add', n: 1, xp: 20, i: '➕', t: 'Añade {0} carta a tu colección' },
+  { id: 'chart', ev: 'chart', n: 1, xp: 10, i: '📈', t: 'Consulta la evolución de un precio' },
+  { id: 'sealed', ev: 'sealed', n: 1, xp: 10, i: '📦', t: 'Mira productos sellados' },
+  { id: 'fav', ev: 'fav', n: 1, xp: 10, i: '⭐', t: 'Guarda una carta en favoritos' },
+  { id: 'newcard', ev: 'newcard', n: 1, xp: 15, i: '🃏', t: 'Registra una carta nueva' },
+  { id: 'compare', ev: 'compare', n: 1, xp: 10, i: '⚖️', t: 'Compara precios entre plataformas' },
+];
+const WEEKLY = [
+  { id: 'add5', ev: 'add', n: 5, xp: 60, i: '📚', t: 'Añade {0} cartas a tu colección' },
+  { id: 'games3', ev: 'gameweek', n: 3, xp: 50, i: '🧭', t: 'Explora {0} juegos distintos' },
+  { id: 'streak5', ev: 'streak', n: 5, xp: 80, i: '🔥', t: 'Mantén una racha de {0} días', max: true },
+  { id: 'buy3', ev: 'buy', n: 3, xp: 50, i: '🧾', t: 'Registra el precio de compra de {0} cartas' },
+];
+// 3 misiones diarias que cambian cada día (iguales para todo el día)
+function todays(){
+  const k = dayKey(); let h = 0; for (const ch of k) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  const pool = [...DAILY], pick = [];
+  while (pick.length < 3) { h = (h * 1103515245 + 12345) >>> 0; pick.push(pool.splice(h % pool.length, 1)[0]); }
+  return pick;
+}
+const ACH = [
+  ['first_search', '🔎', 'Primera búsqueda', 'Busca tu primera carta', s => s.c.search >= 1],
+  ['view50', '👀', 'Analista', 'Consulta 50 fichas', s => s.c.view >= 50],
+  ['first_card', '🃏', 'Primera carta', 'Añade una carta a tu colección', (s, k) => k.cards >= 1],
+  ['col10', '📚', 'Colección en marcha', '10 cartas en tu colección', (s, k) => k.cards >= 10],
+  ['col50', '🏛️', 'Archivo', '50 cartas en tu colección', (s, k) => k.cards >= 50],
+  ['col100', '👑', 'Cámara del tesoro', '100 cartas en tu colección', (s, k) => k.cards >= 100],
+  ['fav1', '⭐', 'Flechazo', 'Tu primer favorito', (s, k) => k.favs >= 1 || s.c.fav >= 1],
+  ['games3', '🧭', 'Explorador', 'Explora 3 juegos', s => Object.keys(s.games).length >= 3],
+  ['games12', '🌍', 'Trotamundos TCG', 'Explora los 12 juegos', s => Object.keys(s.games).length >= 12],
+  ['streak3', '🔥', 'En racha', 'Racha de 3 días', s => s.best >= 3],
+  ['streak7', '⚡', 'Imparable', 'Racha de 7 días', s => s.best >= 7],
+  ['streak30', '💎', 'Constancia de diamante', 'Racha de 30 días', s => s.best >= 30],
+  ['buy1', '🧾', 'Inversor', 'Registra un precio de compra', s => s.c.buy >= 1],
+  ['target1', '🎯', 'Cazador de precios', 'Pon un precio objetivo', s => s.c.target >= 1],
+  ['chart1', '📈', 'Lector de gráficas', 'Mira la evolución de un precio', s => s.c.chart >= 1],
+  ['sealed1', '📦', 'Precintado', 'Explora productos sellados', s => s.c.sealed >= 1],
+  ['center1', '📐', 'Ojo de halcón', 'Mide el centrado de una carta', s => s.c.center >= 1],
+  ['goal1', '🏆', 'Colección completada', 'Completa un objetivo de colección', s => s.goals.some(g => g.done)],
+  ['lvl5', '🎖️', 'Nivel 5', 'Llega al nivel 5', s => levelOf(s.xp) >= 5],
+  ['lvl10', '🥇', 'Nivel 10', 'Llega al nivel 10', s => levelOf(s.xp) >= 10],
+];
+let colStats = { cards: 0, distinct: 0, favs: 0, items: [] };
+
+function gain(n, why){
+  if (!n) return;
+  const L0 = levelOf(S.xp); S.xp += n; xpFloat(n);
+  const L1 = levelOf(S.xp);
+  if (L1 > L0) { confetti(); toast('🆙', T('¡Nivel {0}!', L1), titleOf(L1) !== titleOf(L0) ? T('Ahora eres {0}', titleOf(L1)) : T('¡Sigue así!'), 4200); }
+}
+function touchDay(){
+  const k = dayKey();
+  if (S.last === k) return;
+  S.streak = S.last && ago(S.last) === 1 ? S.streak + 1 : 1;
+  S.best = Math.max(S.best, S.streak); S.last = k; S.days++;
+  gain(5 + Math.min(S.streak, 7) * 2, 'day');
+  if (S.streak > 1) toast('🔥', T('¡Racha de {0} días!', S.streak), T('Vuelve mañana para mantenerla'));
+}
+function roll(){
+  if (S.d.k !== dayKey()) S.d = { k: dayKey(), p: {}, done: {}, cap: {} };
+  if (S.w.k !== weekKey()) S.w = { k: weekKey(), p: {}, done: {}, games: {} };
+}
+// límites diarios para que la XP no se consiga repitiendo lo mismo
+const CAP = { search: 20, view: 50, sealed: 9, center: 30, chart: 20, compare: 20 };
+function track(ev, data = {}){
+  if (!S.on) return;
+  roll(); touchDay();
+  S.c[ev] = (S.c[ev] || 0) + (data.n || 1);
+  const XP = { search: 2, view: data.first ? 5 : 1, add: data.isNew ? 20 : 5, newcard: 0, fav: 5, sealed: 3, center: 10, chart: 3, buy: 10, target: 5, compare: 2 };
+  let x = (XP[ev] || 0) * (ev === 'add' && !data.isNew ? (data.n || 1) : 1);
+  if (CAP[ev] != null) { const used = S.d.cap[ev] || 0; x = Math.max(0, Math.min(x, CAP[ev] - used)); S.d.cap[ev] = used + x; }
+  if (data.game && !S.games[data.game]) { S.games[data.game] = 1; }
+  if (data.game) S.w.games[data.game] = 1;
+  gain(x, ev);
+  // misiones
+  const bump = (m, box) => {
+    if (box.done[m.id]) return;
+    if (m.ev === 'gameweek') box.p[m.id] = Object.keys(S.w.games).length;
+    else if (m.max) box.p[m.id] = Math.max(box.p[m.id] || 0, S.streak);
+    else if (m.ev === ev) box.p[m.id] = (box.p[m.id] || 0) + (data.n || 1);
+    if ((box.p[m.id] || 0) >= m.n) { box.done[m.id] = 1; gain(m.xp); toast(m.i, T('Misión completada'), T(m.t, m.n) + ` · +${m.xp} XP`); }
+  };
+  todays().forEach(m => bump(m, S.d));
+  WEEKLY.forEach(m => bump(m, S.w));
+  checkGoals(); checkAch(); store(); drawHero();
+}
+function checkAch(){
+  for (const [id, ico, name, , ok] of ACH) if (!S.ach[id] && ok(S, colStats)) {
+    S.ach[id] = Date.now(); gain(25); confetti(); toast(ico, T('¡Logro desbloqueado!'), T(name), 4200);
+  }
+}
+// objetivos de colección: "tener N cartas de la expansión X"
+const goalProg = g => colStats.items.filter(i => i.qty > 0 && i.game === g.game && (!g.set || normName(i.set) === normName(g.set))).length;
+function checkGoals(){
+  for (const g of S.goals) if (!g.done && goalProg(g) >= g.n) {
+    g.done = Date.now(); gain(100); confetti(); toast('🏆', T('¡Objetivo completado!'), `${g.set || GAMES[g.game]?.label} · ${g.n}`, 4500);
+  }
+}
+window.addEventListener('pc:col', e => { colStats = e.detail; if (S.on) { checkGoals(); checkAch(); store(); drawHero(); } });
+window.addEventListener('pc:save', e => {
+  const b = e.detail.before || {}, a = e.detail.after || {};
+  const dq = (a.qty || 0) - (b.qty || 0);
+  if (dq > 0) { track('add', { n: dq, isNew: !b.qty, game: a.game }); if (!b.qty) track('newcard', { game: a.game }); }
+  if (a.fav && !b.fav) track('fav', { game: a.game });
+  if (a.buy && !b.buy) track('buy');
+  if (a.target && !b.target) track('target');
+});
+
+// ---- Tarjeta de progreso en Inicio ----
+function heroHTML(big){
+  roll();
+  const L = levelOf(S.xp), p = lvlPct(S.xp), ms = todays(), done = ms.filter(m => S.d.done[m.id]).length;
+  const alive = S.last && ago(S.last) <= 1 ? S.streak : 0;
+  return `<button class="gxh" aria-label="${T('Progreso, misiones y logros')}">
+    <span class="ring${big ? ' lg' : ''}" style="--p:${p}"><b>${L}</b></span>
+    <span class="t"><b>${T('Nivel {0}', L)} · ${titleOf(L)}</b>
+      <span class="xpbar"><i style="width:${p}%"></i></span>
+      <small>${S.xp - need(L)} / ${need(L + 1) - need(L)} XP · ${T('{0}/{1} misiones de hoy', done, ms.length)}</small></span>
+    <span class="streak${alive ? '' : ' off'}">🔥${alive}<small>${T('racha')}</small></span></button>`;
+}
+function drawHero(){
+  const box = $('gx'); if (!box) return;
+  box.innerHTML = S.on ? heroHTML() : '';
+  const b = box.querySelector('.gxh'); if (b) b.onclick = () => { setView('me'); showProgress(); };
+}
+
+// ---- Pantalla de progreso ----
+function misHTML(m, box){
+  const v = Math.min(box.p[m.id] || 0, m.n), ok = box.done[m.id];
+  return `<div class="mis${ok ? ' done' : ''}"><span class="mi-ico">${ok ? '✓' : m.i}</span>
+    <div class="mi-b">${T(m.t, m.n)}<div class="pbar"><i style="width:${v / m.n * 100}%"></i></div></div>
+    <span class="mi-x">${ok ? '✓' : v + '/' + m.n} · ${m.xp} XP</span></div>`;
+}
+function showProgress(){
+  roll();
+  backStack = []; current = null; redraw = showProgress; window.scrollTo({ top: 0 });
+  const left = (() => { const n = new Date(); const e = new Date(n); e.setHours(24, 0, 0, 0); const h = Math.floor((e - n) / 36e5); return T('{0} h para nuevas misiones', h); })();
+  const sets = [...new Set(colStats.items.filter(i => i.qty > 0 && i.set).map(i => i.set))].sort();
+  const got = ACH.filter(a => S.ach[a[0]]).length;
+  out.innerHTML = `<button class="back" id="pback">${T('← Volver')}</button>
+    ${S.on ? heroHTML(true) : ''}
+    <div class="gxsec gx-toggle"><span><b>🎮 ${T('Gamificación')}</b><br><small class="note">${T('XP, misiones y logros. Es opcional: no afecta a precios ni a tu colección.')}</small></span>
+      <button class="sw${S.on ? ' on' : ''}" id="gxsw" aria-label="${T('Gamificación')}"></button></div>
+    ${S.on ? `
+    <div class="gxsec"><h3>☀️ ${T('Misiones de hoy')} <small>${left}</small></h3>${todays().map(m => misHTML(m, S.d)).join('')}</div>
+    <div class="gxsec"><h3>📅 ${T('Misiones de la semana')} <small>${T('Se renuevan el lunes')}</small></h3>${WEEKLY.map(m => misHTML(m, S.w)).join('')}</div>
+    <div class="gxsec"><h3>🏆 ${T('Objetivos de colección')}</h3>
+      ${S.goals.length ? S.goals.map((g, k) => { const v = Math.min(goalProg(g), g.n); return `<div class="mis${g.done ? ' done' : ''}"><span class="mi-ico">${g.done ? '✓' : ICONS[g.game] || '🎯'}</span>
+        <div class="mi-b">${esc(g.set || T('Cualquier expansión'))} <small class="note">· ${esc(GAMES[g.game]?.label || '')}</small><div class="pbar"><i style="width:${v / g.n * 100}%"></i></div></div>
+        <span class="mi-x">${v}/${g.n}</span><button class="link" data-gdel="${k}" aria-label="${T('Quitar')}">✕</button></div>`; }).join('')
+        : `<p class="note">${T('Ponte una meta: por ejemplo, conseguir 50 cartas de una expansión. Se cuenta sola con las cartas de tu colección.')}</p>`}
+      <div class="goal-form"><select id="ggame">${Object.entries(GAMES).map(([k, g]) => `<option value="${k}"${k === game ? ' selected' : ''}>${ICONS[k]} ${g.label}</option>`).join('')}</select>
+        <input id="gset" list="gsets" placeholder="${T('Expansión (opcional)')}"><datalist id="gsets">${sets.map(s => `<option value="${esc(s)}">`).join('')}</datalist>
+        <input id="gn" type="number" min="1" value="10" style="max-width:90px" aria-label="${T('Cartas')}">
+        <button class="gbtn" id="gadd" style="margin:0">${T('➕ Añadir objetivo')}</button></div></div>
+    <div class="gxsec"><h3>🎖️ ${T('Logros')} <small>${got}/${ACH.length}</small></h3><div class="medals">${ACH.map(([id, ico, name, desc]) =>
+      `<div class="medal${S.ach[id] ? ' on' : ''}" title="${esc(T(desc))}"><div class="mi">${ico}</div><b>${T(name)}</b>${T(desc)}</div>`).join('')}</div></div>
+    <div class="gxsec"><h3>📊 ${T('Tus estadísticas')}</h3><div class="kpis" style="margin:0">
+      <div class="kpi"><span>XP</span><b>${S.xp}</b></div>
+      <div class="kpi"><span>${T('Mejor racha')}</span><b>🔥 ${S.best}</b></div>
+      <div class="kpi"><span>${T('Búsquedas')}</span><b>${S.c.search || 0}</b></div>
+      <div class="kpi"><span>${T('Fichas consultadas')}</span><b>${S.c.view || 0}</b></div>
+      <div class="kpi"><span>${T('Juegos explorados')}</span><b>${Object.keys(S.games).length}/12</b></div>
+      <div class="kpi"><span>${T('Días activos')}</span><b>${S.days}</b></div>
+      <div class="kpi"><span>${T('Cartas en colección')}</span><b>${colStats.cards}</b></div>
+      <div class="kpi"><span>${T('Favoritos')}</span><b>${colStats.favs}</b></div></div></div>` : ''}`;
+  $('pback').onclick = () => showProfile();
+  $('gxsw').onclick = () => { S.on = !S.on; document.body.classList.toggle('gx-off', !S.on); store(); drawHero(); showProgress(); if (S.on) toast('🎮', T('Gamificación activada')); };
+  if ($('gadd')) $('gadd').onclick = () => {
+    const n = Math.max(1, parseInt($('gn').value) || 0);
+    S.goals.push({ game: $('ggame').value, set: $('gset').value.trim(), n, at: Date.now() });
+    store(); checkGoals(); showProgress(); toast('🎯', T('Objetivo añadido'));
+  };
+  out.querySelectorAll('[data-gdel]').forEach(b => b.onclick = () => { S.goals.splice(+b.dataset.gdel, 1); store(); showProgress(); });
+}
+window.GX = { track, showProgress, heroHTML: () => S.on ? heroHTML() : '', get on(){ return S.on; }, level: () => levelOf(S.xp), title: () => titleOf(levelOf(S.xp)), xp: () => S.xp, themes: THEMES, setTheme, get theme(){ return theme; } };
+
+// ---------------------------------------------------------------- GRÁFICAS
+// pts = [{ l: etiqueta, v: número }]
+function chartHTML(pts, cur){
+  const W = 300, H = 120, vs = pts.map(p => p.v);
+  let mn = Math.min(...vs), mx = Math.max(...vs); if (mn === mx) { mn = mn * .9; mx = mx * 1.1 || 1; }
+  const X = i => pts.length === 1 ? W / 2 : i / (pts.length - 1) * W;
+  const Y = v => 10 + (1 - (v - mn) / (mx - mn)) * (H - 20);
+  const d = pts.map((p, i) => `${i ? 'L' : 'M'}${X(i).toFixed(1)},${Y(p.v).toFixed(1)}`).join(' ');
+  const gid = 'g' + Math.random().toString(36).slice(2, 7), dec = cur === 'JPY' ? 0 : 2;
+  return `<div class="pchart" data-pts="${esc(JSON.stringify(pts))}" data-cur="${cur}" data-mn="${mn}" data-mx="${mx}">
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="currentColor" stop-opacity=".28"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs>
+      <line class="gl" x1="0" x2="${W}" y1="10" y2="10"/><line class="gl" x1="0" x2="${W}" y1="${H - 10}" y2="${H - 10}"/>
+      <path d="${d} L${X(pts.length - 1)},${H} L${X(0)},${H} Z" fill="url(#${gid})"/>
+      <path class="ln" d="${d}"/></svg>
+    <span class="pyr" style="top:0">${money(mx, cur, dec) || ''}</span><span class="pyr" style="bottom:22px">${money(mn, cur, dec) || ''}</span>
+    <span class="pm"></span><span class="ptip"></span>
+    <div class="paxis"><span>${esc(pts[0].l)}</span><span>${esc(pts.at(-1).l)}</span></div></div>`;
+}
+function chartMove(e){
+  const ch = e.target.closest?.('.pchart'); if (!ch) return;
+  const pts = JSON.parse(ch.dataset.pts), svg = ch.querySelector('svg'), r = svg.getBoundingClientRect();
+  const x = ((e.touches ? e.touches[0].clientX : e.clientX) - r.left) / r.width;
+  const i = Math.max(0, Math.min(pts.length - 1, Math.round(x * (pts.length - 1))));
+  const mn = +ch.dataset.mn, mx = +ch.dataset.mx, cur = ch.dataset.cur;
+  const px = pts.length === 1 ? r.width / 2 : i / (pts.length - 1) * r.width;
+  const py = (10 + (1 - (pts[i].v - mn) / (mx - mn)) * 100) / 120 * r.height;
+  const pm = ch.querySelector('.pm'), tip = ch.querySelector('.ptip');
+  pm.style.display = tip.style.display = 'block';
+  pm.style.left = tip.style.left = px + 'px'; pm.style.top = py + 'px'; tip.style.top = (py - 8) + 'px';
+  tip.textContent = `${pts[i].l} · ${money(pts[i].v, cur, cur === 'JPY' ? 0 : 2)}`;
+}
+document.addEventListener('pointermove', chartMove);
+document.addEventListener('pointerdown', chartMove);
+window.pcChart = chartHTML;
+
+// ---------------------------------------------------------------- HISTORIAL DE PRECIOS (real, registrado al consultar)
+const HKEY = 'pc_hist_v1';
+const curOf = txt => /€/.test(txt) ? 'EUR' : /¥|円/.test(txt) ? 'JPY' : /\$/.test(txt) ? 'USD' : '';
+const plain = h => { const d = document.createElement('div'); d.innerHTML = h || ''; return d.textContent.trim(); };
+function record(id, value, cur){
+  const H = LS.get(HKEY, {});
+  const h = H[id] || { c: cur, p: [] };
+  const k = dayKey(), last = h.p.at(-1);
+  if (last && last[0] === k) last[1] = value; else h.p.push([k, value]);
+  h.p = h.p.slice(-180); h.c = cur; h.t = Date.now(); H[id] = h;
+  const ids = Object.keys(H);
+  if (ids.length > 600) ids.sort((a, b) => H[a].t - H[b].t).slice(0, ids.length - 600).forEach(x => delete H[x]);
+  LS.set(HKEY, H);
+  return h;
+}
+
+// ---------------------------------------------------------------- FICHA: paneles extra
+const PROVIDERS = [
+  ['Cardmarket', /cardmarket/i, 'Europa', (n) => `https://www.cardmarket.com/es/${GAMES[game].cm || ''}/Products/Search?searchString=${encodeURIComponent(n)}`],
+  ['TCGplayer', /tcgplayer/i, 'EE. UU.', (n) => `https://www.tcgplayer.com/search/all/product?q=${encodeURIComponent(n)}`],
+  ['eBay', /ebay/i, 'Internacional', (n) => `https://www.ebay.es/sch/i.html?_nkw=${encodeURIComponent(n + ' ' + GAMES[game].label)}&LH_Sold=1&LH_Complete=1`],
+  ['PriceCharting', /pricecharting/i, 'EE. UU.', (n) => `https://www.pricecharting.com/search-products?q=${encodeURIComponent(n)}&type=prices`],
+  ['Torekakaku', /torekakaku|japón/i, 'Japón', null],
+  ['Scryfall', /scryfall/i, 'Cardmarket / TCGplayer', null],
+];
+// "1.234,56 €" / "$1,234.56" / "¥12,000" -> número
+function numOf(s){
+  s = String(s).replace(/[^\d.,]/g, ''); if (!s) return NaN;
+  const m = s.match(/[.,](\d{1,2})$/);
+  return m ? Number(s.slice(0, m.index).replace(/[.,]/g, '') + '.' + m[1]) : Number(s.replace(/[.,]/g, ''));
+}
+function sections(rows){
+  const out = []; let cur = null;
+  for (const r of rows) {
+    if (r[0].startsWith('#')) { cur = { name: r[0].slice(1), rows: [] }; out.push(cur); }
+    else if (r[1]) { if (!cur) { cur = { name: '', rows: [] }; out.push(cur); } cur.rows.push(r); }
+  }
+  return out.filter(s => s.rows.length);
+}
+function afterRender(v){
+  const big = out.querySelector('.result .big'); if (!big) return;
+  const id = game + '|' + (v.name || '') + '|' + (v.versionLabel || v.rarity || '');
+  const firstView = !LS.get(HKEY, {})[id];
+  track('view', { first: firstView, game });
+  const txt = plain(v.mainValue), cur = curOf(txt), val = Number(v.value);
+  const h = val > 0 && cur ? record(id, val, cur) : LS.get(HKEY, {})[id];
+
+  // chips de datos de la ficha
+  const meta = out.querySelector('.result .name');
+  if (meta && !out.querySelector('.fchips')) meta.insertAdjacentHTML('beforebegin', `<div class="fchips"><span class="fchip">${ICONS[game]} ${esc(GAMES[game].label)}</span>${cur ? `<span class="fchip">💱 ${cur}</span>` : ''}${v.updated ? `<span class="fchip">🕒 ${esc(plain(v.updated))}</span>` : ''}</div>`);
+
+  // --- Evolución del precio ---
+  const secs = sections(v.rows || []);
+  const avg = {}; for (const s of secs) for (const [l, val2] of s.rows) {
+    const n = numOf(plain(val2));
+    if (/30 d/i.test(l)) avg.d30 ??= n; else if (/7 d/i.test(l)) avg.d7 ??= n; else if (/último día|1 d/i.test(l)) avg.d1 ??= n; else if (/^Tendencia$/i.test(l)) avg.tr ??= n;
+  }
+  const avgPts = [['Media 30 días', avg.d30], ['Media 7 días', avg.d7], ['Media último día', avg.d1], ['Tendencia', avg.tr]].filter(p => p[1] > 0).map(p => ({ l: T(p[0]), v: p[1] }));
+  const histPts = (h?.p || []).map(([k, n]) => ({ l: new Date(k).toLocaleDateString(LOCALE(), { day: 'numeric', month: 'short' }), v: n }));
+  let chg = '';
+  if (histPts.length > 1) { const a = histPts[0].v, b = histPts.at(-1).v, pc = (b - a) / a * 100;
+    chg = `<span class="${pc >= 0 ? 'up' : 'down'}">${pc >= 0 ? '▲' : '▼'} ${Math.abs(pc).toFixed(1)}%</span>`; }
+  const evo = `<details class="fx" id="fxEvo"><summary>📈 ${T('Evolución del precio')} ${chg}</summary><div class="fxb">
+    ${avgPts.length >= 2 ? `<p class="lbl2" style="margin:4px 0 0">${T('Medias de Cardmarket (datos de la fuente)')}</p>${chartHTML(avgPts, 'EUR')}` : ''}
+    ${histPts.length >= 2 ? `<p class="lbl2" style="margin:12px 0 0">${T('Tu historial: un punto por cada día que consultas esta carta')}</p>${chartHTML(histPts, h.c)}`
+      : `<p class="note">${T('Guardamos el precio real cada día que abres esta carta (en este dispositivo). Vuelve otro día y verás aquí su evolución.')}${histPts.length ? ' ' + T('Primer registro: {0}', histPts[0].l) : ''}</p>`}
+    <p class="note">${T('No mostramos precios estimados ni inventados: solo datos de las fuentes y lo que ya has consultado.')}</p></div></details>`;
+
+  // --- Comparador por plataforma ---
+  const nm = v.name || '';
+  const links = (v.links || []).filter(l => l[1]);
+  const rowsCmp = [];
+  const usedProv = new Set();
+  for (const s of secs) {
+    const prov = PROVIDERS.find(p => p[1].test(s.name)) || PROVIDERS.find(p => p[1].test(v.mainLabel || ''));
+    const pname = prov ? prov[0] : (s.name || T('Fuente'));
+    usedProv.add(pname);
+    const head = s.rows[0];
+    const mk = (s.name.match(/\(([^)]+)\)/) || [])[1] || (prov ? prov[2] : '');
+    const link = links.find(l => new RegExp(pname, 'i').test(l[0]))?.[1] || (prov?.[3] ? prov[3](nm) : '');
+    const upd = v.updated && new RegExp(pname, 'i').test(plain(v.updated)) ? plain(v.updated) : '';
+    rowsCmp.push(`<tr><td class="src">${esc(pname)}<small>${esc(T(mk))}${upd ? ' · ' + esc(upd) : ''}</small></td>
+      <td><span class="pv">${head[1]}</span><small>${esc(T(head[0]))} · ${curOf(plain(head[1])) || '—'}</small></td>
+      <td>${link ? `<a href="${esc(link)}" target="_blank" rel="noopener">${T('Ver')} ↗</a>` : ''}</td></tr>`);
+  }
+  if (!secs.length && v.mainValue) {
+    const prov = PROVIDERS.find(p => p[1].test(v.mainLabel || ''));
+    if (prov) usedProv.add(prov[0]);
+    rowsCmp.push(`<tr><td class="src">${esc(prov ? prov[0] : T(v.mainLabel))}<small>${esc(prov ? T(prov[2]) : '')}${v.updated ? ' · ' + esc(plain(v.updated)) : ''}</small></td>
+      <td><span class="pv">${v.mainValue}</span><small>${cur || '—'}</small></td><td>${links[0] ? `<a href="${esc(links[0][1])}" target="_blank" rel="noopener">${T('Ver')} ↗</a>` : ''}</td></tr>`);
+  }
+  for (const p of PROVIDERS) if (p[3] && !usedProv.has(p[0]) && !(GAMES[game].yen && p[0] !== 'eBay'))
+    rowsCmp.push(`<tr><td class="src">${p[0]}<small>${T(p[2])}</small></td><td><small>${T('Sin precio integrado: consúltalo en la fuente')}</small></td>
+      <td><a href="${esc(p[3](nm))}" target="_blank" rel="noopener">${T('Buscar')} ↗</a></td></tr>`);
+  const cmp = `<details class="fx" id="fxCmp"><summary>⚖️ ${T('Comparador de precios')}</summary><div class="fxb">
+    <table class="cmp">${rowsCmp.join('')}</table>
+    <p class="note">${T('Cada plataforma se muestra por separado, en su moneda y mercado. eBay y PriceCharting se abren en su web: no copiamos sus precios.')}</p></div></details>`;
+  big.insertAdjacentHTML('afterend', evo + cmp);
+  $('fxEvo').addEventListener('toggle', e => { if (e.target.open) track('chart'); });
+  $('fxCmp').addEventListener('toggle', e => { if (e.target.open) track('compare'); });
+}
+
+// ---------------------------------------------------------------- ENGANCHES CON LA APP
+const _render = render;
+render = function(v){ _render(v); try { afterRender(v); } catch (e) { console.error(e); } };
+const _search = search;
+search = async function(){ const q = $('q').value.trim(); const r = await _search.apply(this, arguments); if (q) track('search', { game }); return r; };
+const _sealed = showSealed;
+showSealed = function(){ const r = _sealed.apply(this, arguments); track('sealed', { game }); return r; };
+if (typeof showCentering === 'function') { const _c = showCentering; showCentering = function(){ const r = _c.apply(this, arguments); track('center'); return r; }; }
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => { if (S.on) { S.games[t.dataset.game] = 1; roll(); S.w.games[t.dataset.game] = 1; store(); } }));
+
+// filtro rápido en rejillas de resultados (rareza, código, edición, idioma…)
+let gq = '', gPrice = false;
+function filterGrid(){
+  const toks = normName(gq).split(/\s+/).filter(Boolean);
+  let shown = 0;
+  out.querySelectorAll('.list .item').forEach(el => {
+    const t = normName(el.textContent);
+    const ok = toks.every(k => t.includes(k)) && (!gPrice || el.querySelector('.p'));
+    el.style.display = ok ? '' : 'none'; if (ok) shown++;
+  });
+  const c = $('gcount'); if (c) c.textContent = T('{0} resultados', shown);
+}
+new MutationObserver(() => {
+  const list = out.querySelector(':scope > .list'), bar = out.querySelector(':scope > .bar');
+  if (!list || !bar || out.querySelector('.gfilter') || list.children.length < 6) return;
+  bar.insertAdjacentHTML('afterend', `<div class="gfilter"><input id="gfq" placeholder="${T('Filtrar: rareza, código, edición, idioma…')}" value="${esc(gq)}">
+    <button class="chip${gPrice ? ' on' : ''}" id="gfp">💶 ${T('Solo con precio')}</button><small class="note" id="gcount"></small></div>`);
+  $('gfq').oninput = e => { gq = e.target.value; filterGrid(); };
+  $('gfp').onclick = e => { gPrice = !gPrice; e.target.classList.toggle('on', gPrice); filterGrid(); };
+  filterGrid();
+}).observe(out, { childList: true });
+$('form').addEventListener('submit', () => { gq = ''; });
+
+drawHero();
+// primera visita del día: suma a la racha (si la gamificación está activa)
+if (S.on && S.last !== dayKey()) setTimeout(() => { roll(); touchDay(); store(); drawHero(); }, 900);
+})();
 </script>
 <!-- Cuentas de usuario: Mi colección y Favoritos (Firebase) -->
 <script type="module">
@@ -1769,7 +2372,7 @@ onAuthStateChanged(auth, u => {
   if (unsub) { unsub(); unsub = null; }
   if (u) unsub = onSnapshot(collection(db, 'users', u.uid, 'items'), snap => {
     items = new Map(snap.docs.map(d => [d.id, d.data()]));
-    drawAcct(); drawMine();
+    drawAcct(); drawMine(); colEvent();
     if (mineView) showMine(mineView, true);
   });
   drawAcct(); drawMine();
@@ -1795,6 +2398,7 @@ const idOf = c => (c.game + '|' + c.name + '|' + c.label).replace(/\//g, '∕').
 async function save(c, patch){
   const id = idOf(c), old = items.get(id) || {};
   const data = { ...old, ...c, qty: old.qty || 0, fav: !!old.fav, ...patch, updated: serverTimestamp() };
+  window.dispatchEvent(new CustomEvent('pc:save', { detail: { before: old, after: data } }));
   if (!data.qty && !data.fav) return deleteDoc(doc(db, 'users', user.uid, 'items', id));
   return setDoc(doc(db, 'users', user.uid, 'items', id), data);
 }
@@ -1805,7 +2409,7 @@ window.cuentaCard = v => {
   drawMine();
   // si ya la tienes guardada, actualiza su precio con el de ahora
   const old = user && items.get(idOf(lastCard));
-  if (old && lastCard.value && old.value !== lastCard.value) save(lastCard, {}).catch(() => {});
+  if (old && lastCard.value && old.value !== lastCard.value) save(lastCard, { prevValue: old.value || null, prevAt: Date.now() }).catch(() => {});
 };
 function drawMine(){
   const box = $('mine'); if (!box || !lastCard) return;
@@ -1825,55 +2429,180 @@ function drawMine(){
   };
 }
 
-// ---------- Pantalla "Mi colección" / "Favoritos" ----------
-let mineView = null, groupBy = 'set', gameFilter = 'all';
+// ---------- Pantalla "Mi colección" / "Favoritos" (2.0: dashboard, compra, estado, listas, objetivos) ----------
+let mineView = null, groupBy = 'set', gameFilter = 'all', listFilter = 'all', sortBy = 'num', mq = '';
+const CONDS = ['Mint', 'Near Mint', 'Excellent', 'Good', 'Light Played', 'Played', 'Poor'];
+const fmt = (v, c) => money(v, c, c === 'JPY' ? 0 : 2);
+const sumBy = (arr, f) => { const t = {}; for (const i of arr) { const r = f(i); if (r && r[1] != null && !isNaN(r[1])) t[r[0]] = (t[r[0]] || 0) + r[1]; } return t; };
+const show = t => Object.entries(t).filter(([, v]) => v).map(([c, v]) => fmt(v, c)).join(' + ') || '—';
+const listsOf = i => Array.isArray(i.lists) ? i.lists : [];
+// historial del valor de la colección (un punto por día, en este dispositivo)
+function recordColValue(tot){
+  if (!user || !Object.keys(tot).length) return;
+  const k = 'pc_colhist_' + user.uid;
+  let H = {}; try { H = JSON.parse(localStorage.getItem(k)) || {}; } catch (e) {}
+  const d = new Date(), day = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  H[day] = tot;
+  const days = Object.keys(H).sort(); for (const x of days.slice(0, Math.max(0, days.length - 365))) delete H[x];
+  try { localStorage.setItem(k, JSON.stringify(H)); } catch (e) {}
+  return H;
+}
+// avisos de precio objetivo (mientras la app está abierta: no hay servidor de notificaciones)
+function checkAlerts(){
+  const day = new Date().toDateString();
+  for (const [id, i] of items) {
+    if (!i.fav || !i.target || !i.value || (i.tcur && i.cur && i.tcur !== i.cur)) continue;
+    if (i.value <= i.target) {
+      const k = 'pc_alert_' + id;
+      try { if (localStorage.getItem(k) === day) continue; localStorage.setItem(k, day); } catch (e) {}
+      window.pcToast?.('🎯', T('¡{0} ha llegado a tu precio objetivo!', i.name), `${fmt(i.value, i.cur)} ≤ ${fmt(i.target, i.cur)}`, 6000);
+      if ('Notification' in window && Notification.permission === 'granted') try { new Notification('Precio Cartas', { body: `${i.name}: ${fmt(i.value, i.cur)}`, icon: 'logo.jpg' }); } catch (e) {}
+    }
+  }
+}
+function colEvent(){
+  const all = [...items.values()];
+  const col = all.filter(i => i.qty > 0);
+  window.dispatchEvent(new CustomEvent('pc:col', { detail: { cards: col.reduce((s, i) => s + i.qty, 0), distinct: col.length, favs: all.filter(i => i.fav).length, items: all } }));
+  recordColValue(sumBy(col, i => i.value && i.cur ? [i.cur, i.value * i.qty] : null));
+  checkAlerts();
+}
+
+// Hoja para editar compra, estado, listas y objetivo
+document.body.insertAdjacentHTML('beforeend', `<div class="sheet" id="esheet" hidden><div class="sb" role="dialog" aria-modal="true"></div></div>`);
+$('esheet').onclick = e => { if (e.target.id === 'esheet') $('esheet').hidden = true; };
+function editItem(i){
+  const c = i.buyCur || i.cur || 'EUR';
+  const allLists = [...new Set([...items.values()].flatMap(listsOf))].sort();
+  const box = $('esheet').querySelector('.sb');
+  box.innerHTML = `<h3>✏️ ${esc(i.name)}</h3><p class="note">${esc([i.label, i.set, i.rarity].filter(Boolean).join(' · '))}${i.price ? ' · ' + T('Precio actual') + ': ' + esc(i.price) : ''}</p>
+    <div class="r2"><div><label>${T('Cantidad')}</label><input id="eqty" type="number" min="0" value="${i.qty || 0}"></div>
+      <div><label>${T('Estado de conservación')}</label><select id="econd"><option value="">—</option>${CONDS.map(x => `<option${i.cond === x ? ' selected' : ''}>${x}</option>`).join('')}</select></div></div>
+    <div class="r2"><div><label>${T('Precio de compra (por carta)')}</label><input id="ebuy" type="number" min="0" step="0.01" inputmode="decimal" value="${i.buy ?? ''}"></div>
+      <div><label>${T('Moneda')}</label><select id="ecur">${['EUR', 'USD', 'JPY', 'GBP'].map(x => `<option${x === c ? ' selected' : ''}>${x}</option>`).join('')}</select></div></div>
+    <div class="r2"><div><label>${T('Fecha de compra')}</label><input id="edate" type="date" value="${esc(i.buyDate || '')}"></div>
+      <div><label>${T('Idioma')}</label><input id="elang" value="${esc(i.lang || '')}" placeholder="ES, EN, JP…"></div></div>
+    <label>${T('Listas (separadas por comas)')}</label><input id="elists" list="elistsdl" value="${esc(listsOf(i).join(', '))}" placeholder="${T('Para vender, Mazo, Deseadas…')}">
+    <datalist id="elistsdl">${allLists.map(l => `<option value="${esc(l)}">`).join('')}</datalist>
+    <label>🎯 ${T('Precio objetivo (avísame si baja de…)')}</label><input id="etarget" type="number" min="0" step="0.01" inputmode="decimal" value="${i.target ?? ''}">
+    <p class="note">${T('El aviso aparece cuando abres la app y el precio guardado es igual o menor que tu objetivo. Para eso la carta debe estar en Favoritos.')}</p>
+    <label>${T('Notas')}</label><textarea id="enotes" rows="2">${esc(i.notes || '')}</textarea>
+    <div class="acts"><button class="gbtn soft" id="ecancel">${T('Cancelar')}</button><button class="gbtn" id="esave">${T('Guardar')}</button></div>`;
+  $('esheet').hidden = false;
+  $('ecancel').onclick = () => { $('esheet').hidden = true; };
+  $('esave').onclick = async () => {
+    const num = id => { const v = $(id).value; return v === '' ? null : Math.max(0, Number(v)); };
+    const target = num('etarget');
+    const patch = { qty: Math.max(0, parseInt($('eqty').value) || 0), cond: $('econd').value, buy: num('ebuy'), buyCur: $('ecur').value,
+      buyDate: $('edate').value, lang: $('elang').value.trim(), notes: $('enotes').value.trim(), target, tcur: i.cur || $('ecur').value,
+      lists: $('elists').value.split(',').map(x => x.trim()).filter(Boolean).slice(0, 12) };
+    if (target && !i.fav) patch.fav = true;
+    $('esave').textContent = T('Guardando…');
+    try { await save(i, patch); $('esheet').hidden = true; window.pcToast?.('✅', T('Guardado')); }
+    catch (e) { console.error(e); $('esave').textContent = T('⚠️ Error, reintenta'); }
+  };
+}
+
 function showMine(view, keep){
-  if (!keep) { backStack = []; current = null; window.scrollTo({ top: out.offsetTop - 10 }); }
+  if (!keep) { backStack = []; current = null; window.scrollTo({ top: 0 }); }
   mineView = view;
   redraw = () => showMine(mineView, true);
-  const all = [...items.values()].filter(i => view === 'fav' ? i.fav : i.qty > 0);
+  const every = [...items.values()];
+  const all = every.filter(i => view === 'fav' ? i.fav : i.qty > 0);
   const games = [...new Set(all.map(i => i.game))];
+  const lists = [...new Set(all.flatMap(listsOf))].sort();
   if (gameFilter !== 'all' && !games.includes(gameFilter)) gameFilter = 'all';
-  const list = all.filter(i => gameFilter === 'all' || i.game === gameFilter);
-  // valor total por moneda
-  const tot = {};
-  for (const i of list) if (i.value && i.cur) tot[i.cur] = (tot[i.cur] || 0) + i.value * (view === 'fav' ? 1 : i.qty);
-  const totTxt = Object.entries(tot).map(([c, v]) => money(v, c, c === 'JPY' ? 0 : 2)).join(' + ');
-  // agrupa: juego › expansión o rareza
-  const key2 = i => groupBy === 'rarity' ? (i.rarity || '—') : (i.set || T('Sin expansión'));
+  if (listFilter !== 'all' && !lists.includes(listFilter)) listFilter = 'all';
+  const toks = normName(mq).split(/\s+/).filter(Boolean);
+  const list = all.filter(i => (gameFilter === 'all' || i.game === gameFilter) && (listFilter === 'all' || listsOf(i).includes(listFilter))
+    && toks.every(k => normName([i.name, i.label, i.set, i.rarity, i.cond, i.lang, ...listsOf(i)].join(' ')).includes(k)));
+  const q = i => view === 'fav' ? 1 : i.qty;
+  // dashboard
+  const tot = sumBy(list, i => i.value && i.cur ? [i.cur, i.value * q(i)] : null);
+  const withBuy = list.filter(i => i.buy != null && i.qty > 0);
+  const inv = sumBy(withBuy, i => [i.buyCur || i.cur, i.buy * i.qty]);
+  const pl = sumBy(withBuy.filter(i => i.value && (i.buyCur || i.cur) === i.cur), i => [i.cur, (i.value - i.buy) * i.qty]);
+  const invSame = sumBy(withBuy.filter(i => i.value && (i.buyCur || i.cur) === i.cur), i => [i.cur, i.buy * i.qty]);
+  const plTxt = Object.entries(pl).map(([c, v]) => `<span class="${v >= 0 ? 'up' : 'down'}">${v >= 0 ? '+' : '−'}${fmt(Math.abs(v), c) || fmt(0.001, c)}${invSame[c] ? ` (${(v / invSame[c] * 100).toFixed(1)}%)` : ''}</span>`).join(' ') || '—';
+  const mainCur = Object.entries(tot).sort((a, b) => b[1] - a[1])[0]?.[0];
+  const top = list.filter(i => i.value && i.cur === mainCur).sort((a, b) => b.value - a.value).slice(0, 5);
+  let H = {}; try { H = JSON.parse(localStorage.getItem('pc_colhist_' + user?.uid)) || {}; } catch (e) {}
+  const hpts = Object.keys(H).sort().filter(d => H[d][mainCur]).map(d => ({ l: new Date(d).toLocaleDateString(LOCALE(), { day: 'numeric', month: 'short' }), v: H[d][mainCur] }));
+  const nCards = view === 'fav' ? list.length : list.reduce((s, i) => s + i.qty, 0);
+  const dash = view === 'col' && all.length ? `
+    <div class="kpis">
+      <div class="kpi"><span>💰 ${T('Valor actual')}</span><b>${show(tot)}</b><small>${T('precios guardados')}</small></div>
+      <div class="kpi"><span>🃏 ${T('Cartas')}</span><b>${nCards}</b><small>${T('{0} distintas', list.length)}</small></div>
+      <div class="kpi"><span>🧾 ${T('Inversión total')}</span><b>${show(inv)}</b><small>${T('{0} de {1} con precio de compra', withBuy.length, list.length)}</small></div>
+      <div class="kpi"><span>📊 ${T('Beneficio / pérdida')}</span><b>${plTxt}</b><small>${T('solo cartas con compra y precio actual')}</small></div>
+    </div>
+    ${top.length ? `<div class="gxsec"><h3>🏅 ${T('Cartas más valiosas')} <small>${mainCur}</small></h3><div class="top5">${top.map((i, k) =>
+      `<button data-open="${esc(idOf(i))}"><span class="rk">${k + 1}</span>${i.img ? `<img src="${esc(i.img)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}<span class="nm2">${esc(i.name)}</span><b>${fmt(i.value, i.cur)}</b></button>`).join('')}</div></div>` : ''}
+    <div class="gxsec"><h3>📈 ${T('Evolución del valor de la colección')} <small>${mainCur || ''}</small></h3>
+      ${hpts.length >= 2 && window.pcChart ? window.pcChart(hpts, mainCur) : `<p class="note">${T('Se guarda un punto cada día que abres la app con la sesión iniciada (en este dispositivo). En unos días verás aquí la gráfica.')}</p>`}
+      <p class="note">${T('Los precios de cada carta se actualizan cuando abres su ficha.')}</p></div>` : '';
+  // orden
+  const key2 = i => groupBy === 'rarity' ? (i.rarity || '—') : groupBy === 'cond' ? (i.cond || T('Sin estado')) : groupBy === 'none' ? '' : (i.set || T('Sin expansión'));
+  const plOf = i => i.buy != null && i.value ? (i.value - i.buy) * (i.qty || 1) : -1e12;
+  const SORTS = { num: (a, b) => (a.label || a.name).localeCompare(b.label || b.name, 'en', { numeric: true }),
+    hi: (a, b) => (b.value || 0) * q(b) - (a.value || 0) * q(a), lo: (a, b) => (a.value || 1e12) - (b.value || 1e12),
+    name: (a, b) => a.name.localeCompare(b.name), pl: (a, b) => plOf(b) - plOf(a),
+    new: (a, b) => (b.updated?.toMillis?.() || 0) - (a.updated?.toMillis?.() || 0) };
   const tree = {};
   for (const i of list) ((tree[i.game] ||= {})[key2(i)] ||= []).push(i);
-  const sumOf = arr => { const t = {}; for (const i of arr) if (i.value && i.cur) t[i.cur] = (t[i.cur] || 0) + i.value * (view === 'fav' ? 1 : i.qty);
-    return Object.entries(t).map(([c, v]) => money(v, c, c === 'JPY' ? 0 : 2)).join(' + '); };
-  const row = i => `<div class="mrow" data-id="${esc(idOf(i))}">
+  const sumOf = arr => show(sumBy(arr, i => i.value && i.cur ? [i.cur, i.value * q(i)] : null));
+  const row = i => {
+    const ch = i.prevValue && i.value && i.prevValue !== i.value ? (i.value - i.prevValue) / i.prevValue * 100 : null;
+    const ipl = i.buy != null && i.value && (i.buyCur || i.cur) === i.cur ? (i.value - i.buy) * i.qty : null;
+    const hit = i.target && i.value && i.value <= i.target;
+    return `<div class="mrow" data-id="${esc(idOf(i))}">
       ${i.img ? `<img src="${esc(i.img)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}
       <div class="mi"><button class="link mopen">${esc(i.name)}</button>
         <div class="note">${esc([i.label, groupBy === 'rarity' ? i.set : i.rarity].filter(Boolean).join(' · '))}</div>
-        <div class="note">${esc(i.price || '')}${i.updated?.toDate ? ' · ' + T('Precio guardado el {0}. Abre la carta para actualizarlo.', i.updated.toDate().toLocaleDateString(LOCALE())) : ''}</div></div>
-      <div class="mq">${view === 'col' ? `<button data-q="-1">−</button><b>${i.qty}</b><button data-q="1">+</button>` : ''}
+        <div class="note"><b>${esc(i.price || '')}</b>${ch != null ? ` <span class="${ch >= 0 ? 'up' : 'down'}">${ch >= 0 ? '▲' : '▼'}${Math.abs(ch).toFixed(1)}%</span>` : ''}
+          ${i.buy != null ? ` · ${T('Compra')}: ${fmt(i.buy, i.buyCur || i.cur) || '0'}${ipl != null ? ` <span class="${ipl >= 0 ? 'up' : 'down'}">(${ipl >= 0 ? '+' : '−'}${fmt(Math.abs(ipl), i.cur) || '0'})</span>` : ''}` : ''}
+          ${i.updated?.toDate ? ' · ' + T('Precio guardado el {0}. Abre la carta para actualizarlo.', i.updated.toDate().toLocaleDateString(LOCALE())) : ''}</div>
+        <div class="tags">${i.cond ? `<span class="tag cond">${esc(i.cond)}</span>` : ''}${i.lang ? `<span class="tag">${esc(i.lang)}</span>` : ''}${i.buyDate ? `<span class="tag">🗓 ${esc(new Date(i.buyDate).toLocaleDateString(LOCALE()))}</span>` : ''}
+          ${i.target ? `<span class="tag${hit ? ' hit' : ''}">🎯 ${fmt(i.target, i.cur || i.tcur) || ''}${hit ? ' ✓' : ''}</span>` : ''}${listsOf(i).map(l => `<span class="tag">#${esc(l)}</span>`).join('')}</div></div>
+      <div class="mq">${view === 'col' ? `<button data-q="-1" aria-label="−">−</button><b>${i.qty}</b><button data-q="1" aria-label="+">+</button>` : ''}
         <button class="mfav${i.fav ? ' on' : ''}" data-f="1" title="${T('Favoritos')}">${i.fav ? '★' : '☆'}</button>
+        <button class="medit" data-e="1" title="${T('Editar')}">✏️</button>
         <button data-del="1" title="${T('Quitar')}">🗑</button></div></div>`;
+  };
+  const favAlert = view === 'fav' && 'Notification' in window && Notification.permission === 'default' && all.some(i => i.target)
+    ? `<button class="gbtn soft" id="notif" style="margin:0 0 10px">🔔 ${T('Permitir avisos del navegador')}</button>` : '';
   out.innerHTML = `<div class="mine-page">
-    <div class="chips mtabs"><button class="chip${view === 'col' ? ' on' : ''}" data-v="col">📚 ${T('Mi colección')} (${[...items.values()].filter(i => i.qty > 0).length})</button>
-      <button class="chip${view === 'fav' ? ' on' : ''}" data-v="fav">⭐ ${T('Favoritos')} (${[...items.values()].filter(i => i.fav).length})</button></div>
-    ${all.length ? `<div class="bar mbar">
+    <div class="chips mtabs"><button class="chip${view === 'col' ? ' on' : ''}" data-v="col">📚 ${T('Mi colección')} (${every.filter(i => i.qty > 0).length})</button>
+      <button class="chip${view === 'fav' ? ' on' : ''}" data-v="fav">⭐ ${T('Favoritos')} (${every.filter(i => i.fav).length})</button></div>
+    ${dash}
+    ${view === 'fav' && all.length ? `<div class="big"><div class="lbl">${T('Valor total')} · ${T('{0} cartas', list.length)}</div><div class="val">${show(tot)}</div>
+      <div class="upd">${T('Pulsa ✏️ para poner un precio objetivo y recibir un aviso.')}</div></div>${favAlert}` : ''}
+    ${all.length ? `<div class="mtools">
+      <input id="mfind" placeholder="🔎 ${T('Buscar en mi colección')}" value="${esc(mq)}">
       <select id="mgame"><option value="all">${T('Todos los juegos')}</option>${games.map(g => `<option value="${g}"${g === gameFilter ? ' selected' : ''}>${esc(GAMES[g]?.label || g)}</option>`).join('')}</select>
-      <label>${T('Agrupar por')} <select id="mgroup"><option value="set">${T('Expansión')}</option><option value="rarity"${groupBy === 'rarity' ? ' selected' : ''}>${T('Rareza')}</option></select></label>
+      ${lists.length ? `<select id="mlist"><option value="all">${T('Todas las listas')}</option>${lists.map(l => `<option value="${esc(l)}"${l === listFilter ? ' selected' : ''}>#${esc(l)}</option>`).join('')}</select>` : ''}
+      <select id="mgroup" aria-label="${T('Agrupar por')}"><option value="set">${T('Agrupar')}: ${T('Expansión')}</option><option value="rarity"${groupBy === 'rarity' ? ' selected' : ''}>${T('Agrupar')}: ${T('Rareza')}</option><option value="cond"${groupBy === 'cond' ? ' selected' : ''}>${T('Agrupar')}: ${T('Estado')}</option><option value="none"${groupBy === 'none' ? ' selected' : ''}>${T('Sin agrupar')}</option></select>
+      <select id="msort" aria-label="${T('Ordenar')}">${[['num', 'Ordenar por número'], ['hi', 'Más valiosas primero'], ['lo', 'Más baratas primero'], ['name', 'Por nombre'], ['pl', 'Más beneficio primero'], ['new', 'Actualizadas recientemente']].map(([k, l]) => `<option value="${k}"${k === sortBy ? ' selected' : ''}>${T(l)}</option>`).join('')}</select>
     </div>
-    <div class="big"><div class="lbl">${T('Valor total')} · ${T('{0} cartas', view === 'fav' ? list.length : list.reduce((s, i) => s + i.qty, 0))}</div><div class="val">${totTxt || '—'}</div></div>
     ${Object.entries(tree).map(([g, groups]) => `<h3 class="mg">${ICONS[g] || ''} ${esc(GAMES[g]?.label || g)} <small>${sumOf(Object.values(groups).flat())}</small></h3>
-      ${Object.entries(groups).sort((a, b) => a[0].localeCompare(b[0])).map(([k, arr]) => `<details class="mset" open><summary>${esc(k)} <small>· ${T('{0} cartas', arr.length)} · ${sumOf(arr)}</small></summary>
-        ${arr.sort((a, b) => (a.label || a.name).localeCompare(b.label || b.name, 'en', { numeric: true })).map(row).join('')}</details>`).join('')}`).join('')}`
+      ${Object.entries(groups).sort((a, b) => a[0].localeCompare(b[0])).map(([k, arr]) => `<details class="mset" open><summary>${esc(k || T('Todas'))} <small>· ${T('{0} cartas', arr.length)} · ${sumOf(arr)}</small></summary>
+        ${arr.sort(SORTS[sortBy] || SORTS.num).map(row).join('')}</details>`).join('')}`).join('') || `<div class="msg">${T('Ninguna carta coincide con el filtro.')}</div>`}`
     : `<div class="msg">${T(view === 'fav' ? 'No tienes favoritos todavía.' : 'Tu colección está vacía. Busca una carta y pulsa «➕ Añadir a mi colección».')}</div>`}
   </div>`;
   out.querySelectorAll('.mtabs .chip').forEach(b => b.onclick = () => showMine(b.dataset.v, true));
   if ($('mgame')) $('mgame').onchange = e => { gameFilter = e.target.value; showMine(view, true); };
+  if ($('mlist')) $('mlist').onchange = e => { listFilter = e.target.value; showMine(view, true); };
   if ($('mgroup')) $('mgroup').onchange = e => { groupBy = e.target.value; showMine(view, true); };
+  if ($('msort')) $('msort').onchange = e => { sortBy = e.target.value; showMine(view, true); };
+  if ($('mfind')) $('mfind').oninput = e => { mq = e.target.value; clearTimeout(showMine.t); showMine.t = setTimeout(() => { showMine(view, true); const f = $('mfind'); f.focus(); f.setSelectionRange(f.value.length, f.value.length); }, 250); };
+  if ($('notif')) $('notif').onclick = () => Notification.requestPermission().then(() => showMine(view, true));
+  out.querySelectorAll('[data-open]').forEach(b => b.onclick = () => { const i = items.get(b.dataset.open); if (i) openItem(i); });
   out.querySelectorAll('.mrow').forEach(r => {
     const i = items.get(r.dataset.id); if (!i) return;
     r.querySelectorAll('[data-q]').forEach(b => b.onclick = () => save(i, { qty: Math.max(0, i.qty + Number(b.dataset.q)) }));
     r.querySelector('[data-f]').onclick = () => save(i, { fav: !i.fav });
-    r.querySelector('[data-del]').onclick = () => save(i, view === 'fav' ? { fav: false } : { qty: 0 });
+    r.querySelector('[data-e]').onclick = () => editItem(i);
+    r.querySelector('[data-del]').onclick = () => { if (view === 'col' && i.qty > 1 && !confirm(T('¿Quitar las {0} copias de «{1}»?', i.qty, i.name))) return; save(i, view === 'fav' ? { fav: false } : { qty: 0 }); };
     r.querySelector('.mopen').onclick = () => openItem(i);
   });
 }
