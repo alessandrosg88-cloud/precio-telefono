@@ -2382,11 +2382,13 @@ function afterRender(v){
     const prov = PROVIDERS.find(p => p[1].test(s.name)) || PROVIDERS.find(p => p[1].test(v.mainLabel || ''));
     const pname = prov ? prov[0] : (s.name || T('Fuente'));
     usedProv.add(pname);
-    const head = s.rows[0];
-    const mk = (s.name.match(/\(([^)]+)\)/) || [])[1] || (prov ? prov[2] : '');
+    const head = s.rows.find(r => curOf(plain(r[1])));
+    if (!head) { usedProv.delete(pname); continue; }   // secciones sin precio (p. ej. nombres en otros idiomas)
+    const inPar = (s.name.match(/\(([^)]+)\)/) || [])[1] || '';
+    const mk = [prov && new RegExp(prov[0], 'i').test(inPar) ? T(prov[2]) : (inPar || (prov ? T(prov[2]) : '')), s.name && !new RegExp('^' + pname + '$', 'i').test(s.name) ? T(s.name.replace(/\s*\([^)]*\)/, '')) : ''].filter(Boolean).join(' · ');
     const link = links.find(l => new RegExp(pname, 'i').test(l[0]))?.[1] || (prov?.[3] ? prov[3](nm) : '');
     const upd = v.updated && new RegExp(pname, 'i').test(plain(v.updated)) ? plain(v.updated) : '';
-    rowsCmp.push(`<tr><td class="src">${esc(pname)}<small>${esc(T(mk))}${upd ? ' · ' + esc(upd) : ''}</small></td>
+    rowsCmp.push(`<tr><td class="src">${esc(pname)}<small>${esc(mk)}${upd ? ' · ' + esc(upd) : ''}</small></td>
       <td><span class="pv">${head[1]}</span><small>${esc(T(head[0]))} · ${curOf(plain(head[1])) || '—'}</small></td>
       <td>${link ? `<a href="${esc(link)}" target="_blank" rel="noopener">${T('Ver')} ↗</a>` : ''}</td></tr>`);
   }
