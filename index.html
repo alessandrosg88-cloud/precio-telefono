@@ -659,6 +659,17 @@ const usd = v => money(v, 'USD');
 const money = (v, cur, d = 2) => (v == null || v === '' || Number(v) === 0) ? null : new Intl.NumberFormat(LOCALE(), { style: 'currency', currency: cur, minimumFractionDigits: d, maximumFractionDigits: d }).format(Number(v));
 const eur = v => money(v, 'EUR');
 const fecha = d => d ? new Date(d).toLocaleDateString(LOCALE()) : '';
+// reverso de carta para cuando no hay ninguna foto
+const NOIMG = 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 63 88"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6a44f2"/><stop offset=".6" stop-color="#a347e6"/><stop offset="1" stop-color="#e2569b"/></linearGradient></defs><rect width="63" height="88" rx="4" fill="url(#g)"/><rect x="4" y="4" width="55" height="80" rx="3" fill="none" stroke="#fff" stroke-opacity=".45"/><text x="31.5" y="44" font-size="18" text-anchor="middle">🃏</text><text x="31.5" y="60" font-size="6.5" font-family="system-ui,sans-serif" font-weight="700" fill="#fff" text-anchor="middle">Sin foto</text></svg>`);
+// si una foto falla: prueba la siguiente dirección posible y, al final, pone el reverso
+document.addEventListener('error', e => {
+  const img = e.target; if (img.tagName !== 'IMG' || img.src.startsWith('data:') || img.getAttribute('referrerpolicy')) return;
+  if (img.src.startsWith(PTCG) && img.src.includes('#')) {
+    const [list, sfx] = decodeURIComponent(img.src.split('#')[1]).split('§'), rest = list ? list.split('|') : [];
+    if (rest.length && rest[0]) { img.src = PTCG + rest[0] + sfx + '#' + encodeURIComponent(rest.slice(1).join('|') + '§' + sfx); return; }
+  }
+  if (img.closest('#out,#gx,.sheet,.result')) img.src = NOIMG;
+}, true);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const normCode = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 const normName = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -809,7 +820,7 @@ function render(v){
     ${backBtn()}
     <div class="result" id="result">
       <div class="pic">
-        ${v.img ? `<img src="${v.img}" alt="${esc(v.name)}"${slideDir ? ` class="slide${slideDir > 0 ? 'R' : 'L'}"` : ''}>` : '<img alt="">'}
+        <img src="${v.img || NOIMG}" alt="${esc(v.name)}"${slideDir ? ` class="slide${slideDir > 0 ? 'R' : 'L'}"` : ''}>
         ${v.alts ? `<div class="alts"><p class="replica">${T('Con este código se imprimieron varias versiones. Toca la tuya:')}</p><div class="altrow">${v.alts.map((a, k) =>
           `<button class="alt${k === 0 ? ' on' : ''}" data-k="${k}"><img src="${ygpThumb(a.url)}" alt="" loading="lazy"><span>${esc(a.label)}</span></button>`).join('')}</div></div>` : ''}
         ${v.replica ? `<p class="replica">${T('⚠️ No hay foto de esta impresión oficial: la imagen es solo de referencia (réplica de YGOPRODeck, «Not For Use in Sanctioned Tournaments»).')}</p>` : ''}
@@ -900,7 +911,7 @@ function renderGrid(title, items, { sort } = {}){
         ${sort ? `<select id="sort"><option value="num">${T('Ordenar por número')}</option><option value="hi">${T('Más caras primero')}</option><option value="lo">${T('Más baratas primero')}</option></select>` : ''}
       </div>
       <div class="list">${list.map((it, k) => `<div class="item${it.real ? ' rep' : ''}" data-k="${k}">
-          <img src="${it.img || ''}" loading="lazy" alt="">
+          <img src="${it.img || NOIMG}" loading="lazy" alt="">
           <div>${esc(it.title)}</div>${it.sub ? `<div class="note">${esc(it.sub)}</div>` : ''}
           ${it.price ? `<div class="p">${it.price}</div>` : ''}</div>`).join('')}</div>`;
     wireBack();
@@ -957,7 +968,23 @@ async function search(){
 //  POKÉMON (tcgdex.net — precios de Cardmarket actualizados a diario)
 // =====================================================================
 const PKM = 'https://api.tcgdex.net/v2/en';
-const pkmImg = (c, q) => c.image ? `${c.image}/${q}.webp` : '';
+// Foto de la carta: TCGdex; si TCGdex no la tiene (muchas promos), se prueba en pokemontcg.io
+// con las formas habituales de su código de set (sm7.5 -> sm75, sv03.5 -> sv3pt5…). Si no hay ninguna: «Sin foto».
+const PTCG = 'https://images.pokemontcg.io/';
+function ptcgCands(set, num){
+  const s = String(set).toLowerCase(), z = s.replace(/^([a-z]+)0+(\d)/, '$1$2');
+  const sets = [...new Set([s, z.replace('.', 'pt'), z.replace('.', ''), s.replace('.', ''), z, s.replace(/cc$/, 'c')])];
+  const nums = [...new Set([String(num).replace(/^0+(?=.)/, ''), String(num)])];
+  return sets.flatMap(a => nums.map(n => `${a}/${n}`));
+}
+const pkmImg = (c, q) => {
+  if (c.image) return `${c.image}/${q}.webp`;
+  const id = c.id || '', k = id.lastIndexOf('-');
+  const set = c.set?.id || (k > 0 ? id.slice(0, k) : ''), num = c.localId || (k > 0 ? id.slice(k + 1) : '');
+  if (!set || !num) return NOIMG;
+  const cs = ptcgCands(set, num), sfx = q === 'high' ? '_hires.png' : '.png';
+  return PTCG + cs[0] + sfx + '#' + encodeURIComponent(cs.slice(1).join('|') + '§' + sfx);
+};
 const pkmSets = {};
 async function pokemonSetIds(code){
   code = code.toUpperCase();
@@ -2444,7 +2471,7 @@ function afterRender(v){
   track('view', { first: firstView, game });
   const txt = plain(v.mainValue), cur = curOf(txt), val = Number(v.value);
   const code = (v.versionLabel || '').split(' · ')[0];
-  const info = { n: v.name || '', i: v.img || '', g: game, s: v.sealed ? 1 : 0, q: code && game === 'yugioh' ? code : ($('q').value.trim() || v.name || '') };
+  const info = { n: v.name || '', i: v.img && !v.img.startsWith('data:') ? v.img : '', g: game, s: v.sealed ? 1 : 0, q: code && game === 'yugioh' ? code : ($('q').value.trim() || v.name || '') };
   const h = val > 0 && cur ? record(id, val, cur, info) : LS.get(HKEY, {})[id];
 
   // chips de datos de la ficha
@@ -2830,7 +2857,7 @@ function cardFrom(v){
   return {
     game, name: v.name || '', label, rarity: v.rarity || '',
     set: (meta.split(' · ')[0] || '').trim(),
-    img: v.img || '', q: code && game === 'yugioh' ? code : ($('q').value.trim() || v.name || ''),
+    img: v.img && !v.img.startsWith('data:') ? v.img : '', q: code && game === 'yugioh' ? code : ($('q').value.trim() || v.name || ''),
     value: Number(v.value) || null, price, cur: curOf(price),
   };
 }
