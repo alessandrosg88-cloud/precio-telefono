@@ -1,0 +1,26 @@
+rules_version = '2';
+// Reglas de Firestore para Precio Cartas.
+// Cópialas en Firebase Console → Firestore Database → Reglas → Publicar.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Mi colección y favoritos: cada usuario solo lee y escribe sus propias cartas
+    match /users/{uid}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Nombres de usuario únicos: usernames/{nombre en minúsculas} = { uid, name, at }
+    // - cualquiera con sesión puede comprobar si un nombre está libre
+    // - solo se puede CREAR un nombre que no exista (si ya existe, es una actualización y se rechaza)
+    // - solo su dueño puede borrarlo (al cambiarse de nombre)
+    match /usernames/{name} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && name.matches('^[a-z0-9_.-]{3,20}$')
+        && request.resource.data.name.lower() == name;
+      allow update: if false;
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+  }
+}

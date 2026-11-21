@@ -1881,13 +1881,14 @@ function showProfile(){
   const nm = u ? (u.displayName || (u.email || '').split('@')[0]) : '';
   const L = LANGS.find(l => l[0] === LANG);
   out.innerHTML = `${u ? `<div class="prof"><div class="av">${u.photoURL ? `<img src="${esc(u.photoURL)}" alt="" referrerpolicy="no-referrer">` : esc(nm[0]?.toUpperCase() || '👤')}</div>
-      <div><div class="nm">${esc(nm)}</div><div class="em">${esc(u.email || '')}</div>
+      <div><div class="nm">${esc(nm)} <button class="link" data-a="uname" style="font-size:13px">✏️ ${T('Cambiar')}</button></div><div class="em">${esc(u.email || '')}</div>
       <div class="stats"><span><b>${api.count('col')}</b>${T('Mi colección')}</span><span><b>${api.count('fav')}</b>${T('Favoritos')}</span></div></div></div>` : loginCard()}
     ${window.GX?.heroHTML() || ''}
     <div class="menu-list">
       <button data-a="gx">🏆 ${T('Progreso, misiones y logros')}<span class="r">${window.GX?.on ? T('Nivel {0}', GX.level()) : T('Desactivado')} ›</span></button>
       ${u ? `<button data-a="col">📚 ${T('Mi colección')}<span class="r">${api.count('col')} ›</span></button>
       <button data-a="fav">⭐ ${T('Favoritos')}<span class="r">${api.count('fav')} ›</span></button>
+      <button data-a="uname">✏️ ${T('Nombre de usuario')}<span class="r">${esc(nm)} ›</span></button>
       <button data-a="refresh">🔄 ${T('Actualizar precios ahora')}<span class="r">${esc(window.pcBg?.status() || '')} ›</span></button>
       <button data-a="notif">🔔 ${T('Avisos de precio en el móvil')}<span class="r">${!('Notification' in window) ? T('No disponible') : Notification.permission === 'granted' ? T('Activados') + ' ✓' : Notification.permission === 'denied' ? T('Bloqueados') : T('Activar') + ' ›'}</span></button>` : ''}
       <button data-a="stats">📊 ${T('Estadísticas')}<span class="r">›</span></button>
@@ -1913,6 +1914,7 @@ function showProfile(){
     if (a === 'stats') GX.showStats();
     if (a === 'sealed') go2('sealed');
     if (a === 'refresh') { window.pcBg?.start(true); }
+    if (a === 'uname') api.editName();
     if (a === 'notif') {
       if (!('Notification' in window)) return window.pcToast?.('🔔', T('Tu navegador no permite avisos'), T('En iPhone: añade la app a la pantalla de inicio y ábrela desde ahí.'), 6000);
       if (Notification.permission === 'denied') return window.pcToast?.('🔕', T('Avisos bloqueados'), T('Actívalos en los ajustes del navegador para esta web.'), 6000);
@@ -2226,7 +2228,7 @@ const cardTile = (img, name, price, attrs, rank, g, pts) => `<button ${attrs}>${
 // historial de una carta guardada: el de este dispositivo + el guardado en tu cuenta (sirve en todos tus dispositivos)
 function histOf(i){
   const m = {};
-  for (const [d, v] of (Array.isArray(i.hist) ? i.hist : [])) if (v > 0) m[d] = v;
+  if (i.hist && typeof i.hist === 'object') for (const [d, v] of Object.entries(i.hist)) if (v > 0) m[d] = v;
   const h = hist()[i.game + '|' + (i.name || '') + '|' + (i.label || '')];
   if (h && (!i.cur || h.c === i.cur)) for (const [d, v] of h.p) if (v > 0) m[d] = v;
   return Object.keys(m).sort().map(d => [d, m[d]]);
@@ -2711,8 +2713,8 @@ if ('ontouchstart' in window) {
 // =====================================================================
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword,
-  createUserWithEmailAndPassword, sendPasswordResetEmail, signOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+  createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, serverTimestamp, getDoc, runTransaction } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 // Configuración pública de la app web (no es secreta: la seguridad la ponen las reglas de Firestore)
 const app = initializeApp({
@@ -2850,12 +2852,14 @@ window.cuentaCard = v => {
   const old = user && items.get(idOf(lastCard));
   if (!old || !lastCard.value) return;
   const d = new Date(), day = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  let hist = Array.isArray(old.hist) ? old.hist.filter(p => Array.isArray(p) && p.length === 2) : [];
-  if (old.cur && lastCard.cur && old.cur !== lastCard.cur) hist = [];
-  const lastH = hist.at(-1), changed = old.value !== lastCard.value, newDay = lastH?.[0] !== day;
+  // hist = { 'AAAA-MM-DD': precio } (Firestore no admite listas dentro de listas)
+  let hist = old.hist && typeof old.hist === 'object' && !Array.isArray(old.hist) ? { ...old.hist } : {};
+  if (old.cur && lastCard.cur && old.cur !== lastCard.cur) hist = {};
+  const changed = old.value !== lastCard.value, newDay = hist[day] !== lastCard.value;
   if (!changed && !newDay) return;
-  if (lastH && lastH[0] === day) hist = [...hist.slice(0, -1), [day, lastCard.value]]; else hist = [...hist, [day, lastCard.value]];
-  const patch = { hist: hist.slice(-120) };
+  hist[day] = lastCard.value;
+  const days = Object.keys(hist).sort(); for (const k of days.slice(0, Math.max(0, days.length - 120))) delete hist[k];
+  const patch = { hist };
   if (changed) Object.assign(patch, { prevValue: old.value || null, prevAt: Date.now() });
   save(lastCard, patch).catch(() => {});
 };
@@ -3068,6 +3072,68 @@ $('form').addEventListener('submit', () => { mineView = null; });
 // al cambiar el idioma, redibuja el botón de cuenta
 document.querySelectorAll('#lmenu button').forEach(b => b.addEventListener('click', () => setTimeout(drawAcct, 300)));
 
+// ---------- Nombre de usuario (único: no puede haber dos iguales) ----------
+// usernames/{nombre en minúsculas} = { uid, name }. Las reglas de Firestore solo dejan CREAR un nombre libre
+// y borrar el tuyo, así que aunque dos personas lo pidan a la vez, solo una se lo queda.
+const unameKey = n => String(n || '').trim().toLowerCase();
+const UNAME_OK = /^[a-z0-9_.-]{3,20}$/;
+async function nameFree(n){
+  const k = unameKey(n);
+  if (!UNAME_OK.test(k)) return 'bad';
+  const d = await getDoc(doc(db, 'usernames', k));
+  return !d.exists() || d.data().uid === user.uid ? 'ok' : 'taken';
+}
+async function setUsername(n){
+  const name = String(n || '').trim(), k = unameKey(name), oldK = unameKey(user.displayName);
+  if (!UNAME_OK.test(k)) throw Object.assign(new Error('bad'), { code: 'bad' });
+  if (k !== oldK) await runTransaction(db, async tx => {
+    const ref = doc(db, 'usernames', k), cur = await tx.get(ref);
+    if (cur.exists() && cur.data().uid !== user.uid) throw Object.assign(new Error('taken'), { code: 'taken' });
+    const oldRef = UNAME_OK.test(oldK) ? doc(db, 'usernames', oldK) : null;
+    const old = oldRef ? await tx.get(oldRef) : null;
+    if (!cur.exists()) tx.set(ref, { uid: user.uid, name, at: serverTimestamp() });
+    if (old?.exists() && old.data().uid === user.uid) tx.delete(oldRef);
+  });
+  await updateProfile(auth.currentUser, { displayName: name });
+  user = auth.currentUser;
+  drawAcct();
+  window.dispatchEvent(new Event('cuenta'));
+}
+function editName(){
+  const box = $('esheet').querySelector('.sb');
+  box.innerHTML = `<h3>✏️ ${T('Nombre de usuario')}</h3>
+    <p class="note">${T('Entre 3 y 20 caracteres: letras, números, punto, guion o guion bajo. No puede haber dos usuarios con el mismo nombre.')}</p>
+    <label>${T('Nombre de usuario')}</label><input id="uname" maxlength="20" autocomplete="off" autocapitalize="none" spellcheck="false" value="${esc(user.displayName || '')}">
+    <p class="note" id="unote" style="margin-top:6px;min-height:1.4em"></p>
+    <div class="acts"><button class="gbtn soft" id="ucancel">${T('Cancelar')}</button><button class="gbtn" id="usave">${T('Guardar')}</button></div>`;
+  $('esheet').hidden = false;
+  const inp = $('uname'), note = $('unote'), btn = $('usave');
+  const say = (t, cls = '') => { note.textContent = t; note.className = 'note ' + cls; };
+  const MSG = { bad: 'Solo letras sin acentos, números y . _ - (de 3 a 20).', taken: 'Ese nombre ya lo tiene otro usuario. Prueba con otro.', ok: '✓ Disponible' };
+  let t = 0, seq = 0;
+  const check = () => {
+    clearTimeout(t); const v = inp.value, me = ++seq;
+    if (unameKey(v) === unameKey(user.displayName)) return say('');
+    if (!UNAME_OK.test(unameKey(v))) return say(T(MSG.bad), 'down');
+    say(T('Comprobando…'));
+    t = setTimeout(() => nameFree(v).then(r => { if (me === seq) say(T(MSG[r]), r === 'ok' ? 'up' : 'down'); })
+      .catch(e => { if (me === seq) say(e?.code === 'permission-denied' ? T('Los nombres de usuario aún no están activados en el servidor.') : T('No se pudo comprobar. Revisa tu conexión.'), 'down'); }), 350);
+  };
+  inp.oninput = check;
+  inp.onkeydown = e => { if (e.key === 'Enter') btn.click(); };
+  $('ucancel').onclick = () => { $('esheet').hidden = true; };
+  btn.onclick = async () => {
+    btn.disabled = true; btn.textContent = T('Guardando…');
+    try { await setUsername(inp.value); $('esheet').hidden = true; window.pcToast?.('✅', T('Nombre de usuario cambiado'), '@' + user.displayName); }
+    catch (e) {
+      console.error(e);
+      say(e?.code === 'taken' ? T(MSG.taken) : e?.code === 'bad' ? T(MSG.bad) : e?.code === 'permission-denied' ? T('Los nombres de usuario aún no están activados en el servidor.') : T('No se pudo guardar. Inténtalo otra vez.'), 'down');
+      btn.disabled = false; btn.textContent = T('Guardar');
+    }
+  };
+  setTimeout(() => { inp.focus(); inp.select(); }, 50);
+}
+
 // ---- API para la versión de teléfono ----
 window.cuentaAPI = {
   get user(){ return user; },
@@ -3077,6 +3143,7 @@ window.cuentaAPI = {
   login: msg => openLogin(msg),
   show: v => { if (!user) return openLogin(T('Entra para guardar cartas en tu colección.')); showMine(v); },
   logout: () => signOut(auth),
+  editName: () => { if (!user) return openLogin(''); editName(); },
   open: i => openItem(items.get(i.__id) || i),
 };
 

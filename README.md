@@ -26,6 +26,7 @@ En el móvil puedes usar «Añadir a pantalla de inicio» para abrirla como una 
 - **Animaciones**: contador del valor de la colección, barra de XP y nivel, efecto holográfico 3D al mover la carta, esqueletos de carga, confeti al completar misiones, últimos logros en Inicio.
 - **App instalable (PWA)**: `manifest.webmanifest`, `sw.js` e iconos. Avisos de precio objetivo como notificación del móvil (Perfil → «Avisos de precio en el móvil»).
 - **Deslizar hacia abajo para refrescar** en el móvil.
+- **Nombre de usuario único** (Perfil → ✏️): no puede haber dos iguales. Necesita las reglas de `firestore.rules` publicadas en Firebase Console → Firestore → Reglas.
 
 ### Qué necesitaría un servidor (no incluido, la web sigue siendo 100 % GitHub Pages)
 - Avisos de precio y actualización de precios con la app cerrada (notificaciones push): una función programada (p. ej. Firebase Cloud Functions + Cloud Messaging, plan Blaze) que revise los precios cada día.
