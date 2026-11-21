@@ -681,8 +681,16 @@ function langBadge(img){
 }
 const otherCache = {};
 function otherPrint(name, q){
-  return (otherCache[name + '|' + q] ||= getJSON(`https://api.tcgdex.net/v2/en/cards?name=eq:${encodeURIComponent(name)}`, 2)
-    .then(l => { const w = (l || []).filter(x => x.image); return w.length ? `${w.at(-1).image}/${q}.webp` : null; }).catch(() => null));
+  // el mismo nombre escrito de otras formas: ’ / ', «-EX» / « EX»
+  const names = [...new Set([name, name.replace(/[’‘]/g, "'"), name.replace(/-(EX|GX)\b/g, ' $1'), name.replace(/ (EX|GX)\b/g, '-$1')])];
+  return (otherCache[name + '|' + q] ||= (async () => {
+    for (const n of names) {
+      const l = await getJSON(`https://api.tcgdex.net/v2/en/cards?name=eq:${encodeURIComponent(n)}`, 2).catch(() => null);
+      const w = (l || []).filter(x => x.image);
+      if (w.length) return `${w.at(-1).image}/${q}.webp`;
+    }
+    return null;
+  })());
 }
 function imgMiss(e){
   const img = e.target; if (img.tagName !== 'IMG' || img.src.startsWith('data:') || img.getAttribute('referrerpolicy')) return;
