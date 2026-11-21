@@ -662,14 +662,18 @@ const fecha = d => d ? new Date(d).toLocaleDateString(LOCALE()) : '';
 // reverso de carta para cuando no hay ninguna foto
 const NOIMG = 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 63 88"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6a44f2"/><stop offset=".6" stop-color="#a347e6"/><stop offset="1" stop-color="#e2569b"/></linearGradient></defs><rect width="63" height="88" rx="4" fill="url(#g)"/><rect x="4" y="4" width="55" height="80" rx="3" fill="none" stroke="#fff" stroke-opacity=".45"/><text x="31.5" y="44" font-size="18" text-anchor="middle">🃏</text><text x="31.5" y="60" font-size="6.5" font-family="system-ui,sans-serif" font-weight="700" fill="#fff" text-anchor="middle">Sin foto</text></svg>`);
 // si una foto falla: prueba la siguiente dirección posible y, al final, pone el reverso
-document.addEventListener('error', e => {
+function imgMiss(e){
   const img = e.target; if (img.tagName !== 'IMG' || img.src.startsWith('data:') || img.getAttribute('referrerpolicy')) return;
+  // pokemontcg.io no da error si no tiene la carta: devuelve un reverso de 640×892
+  if (e.type === 'load' && !(img.src.startsWith(PTCG) && img.naturalWidth === 640 && img.naturalHeight === 892)) return;
   if (img.src.startsWith(PTCG) && img.src.includes('#')) {
     const [list, sfx] = decodeURIComponent(img.src.split('#')[1]).split('§'), rest = list ? list.split('|') : [];
     if (rest.length && rest[0]) { img.src = PTCG + rest[0] + sfx + '#' + encodeURIComponent(rest.slice(1).join('|') + '§' + sfx); return; }
   }
-  if (img.closest('#out,#gx,.sheet,.result')) img.src = NOIMG;
-}, true);
+  if (img.closest('#out,#gx,.sheet,.result') || img.src.startsWith(PTCG)) img.src = NOIMG;
+}
+document.addEventListener('error', imgMiss, true);
+document.addEventListener('load', imgMiss, true);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const normCode = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 const normName = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
