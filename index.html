@@ -10,7 +10,10 @@
 <link rel="icon" href="logo.jpg">
 <link rel="apple-touch-icon" href="logo.jpg">
 <meta name="theme-color" content="#6a44f2">
-<script>try{var t=localStorage.getItem('pc_theme');if(t=='light'||t=='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>try{var t=localStorage.getItem('pc_theme');if(t=='light'||t=='dark')document.documentElement.dataset.theme=t}catch(e){}
+// ?bg=1: copia invisible de la app que actualiza los precios de tus cartas en segundo plano
+window.PC_BG = /[?&]bg=1\b/.test(location.search) && window.parent !== window;</script>
+<link rel="manifest" href="/precio-telefono/manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -467,6 +470,45 @@
   .tabbar button{font-size:10px}
   @media (min-width:900px){ .wrap{max-width:980px} .quick{grid-template-columns:repeat(8,1fr)} }
   @media (min-width:760px){ .tabbar{left:50%;right:auto;width:600px;transform:translateX(-50%);bottom:14px;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow)} body{padding-bottom:110px} }
+  /* ---- App más dinámica (nov. 2026) ---- */
+  body{overscroll-behavior-y:contain}
+  @keyframes shimmer{from{background-position:-200% 0}to{background-position:200% 0}}
+  .sk,.top5 img,.mvr img,.list .item img,.tile img,.mrow img{background:linear-gradient(90deg,var(--line) 25%,var(--accent-soft) 50%,var(--line) 75%) 0 0/200% 100%;animation:shimmer 1.3s linear infinite}
+  .skel-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;grid-template-columns:260px 1fr;gap:22px}
+  .sk{border-radius:10px} .sk-img{aspect-ratio:63/88;border-radius:12px} .sk-col{display:flex;flex-direction:column;gap:12px}
+  img.ld.ld.ld{animation:none;background:var(--line)}
+  .sk-l{height:14px;width:100%} .sk-big{height:64px;border-radius:14px;margin:6px 0}
+  @media (max-width:640px){ .skel-card{grid-template-columns:1fr} .sk-img{width:62%;margin:0 auto} }
+  .spark{display:block;width:100%;height:20px;margin-top:3px;overflow:visible}
+  .spark path{fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+  .spark.up path{stroke:var(--good)} .spark.down path{stroke:var(--bad)}
+  .mrow .spark{display:inline-block;width:56px;height:14px;margin:0 4px 0 6px;vertical-align:middle}
+  .top5 .gi{position:absolute;top:2px;right:2px;z-index:1;background:var(--card);border-radius:99px;font-size:12px;line-height:1;padding:3px 4px;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+  .hmedals{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+  .hmedal{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:4px 10px 4px 4px;border-radius:99px;background:var(--gold-soft);color:var(--warn)}
+  .hmedal i{font-style:normal;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:var(--card)}
+  .hmedal.more{padding:4px 10px;background:var(--accent-soft);color:var(--accent)}
+  #gx.intro .xpbar i{animation:grow .9s .25s cubic-bezier(.2,.8,.2,1) both;transform-origin:left}
+  #gx.intro .ring{animation:pop .6s .15s cubic-bezier(.2,1.6,.4,1) both}
+  #gx.intro .top5 button{animation:fadeUp .4s ease both} #gx.intro .top5 button:nth-child(2){animation-delay:.05s} #gx.intro .top5 button:nth-child(3){animation-delay:.1s} #gx.intro .top5 button:nth-child(n+4){animation-delay:.15s}
+  #gx.intro .spark path{stroke-dasharray:300;animation:draw 1.2s .3s ease both}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+  @keyframes draw{from{stroke-dashoffset:300}to{stroke-dashoffset:0}}
+  .tiltw{position:relative;display:block;border-radius:10px;transform:perspective(800px) rotateX(var(--rx,0)) rotateY(var(--ry,0));transition:transform .45s cubic-bezier(.2,.8,.2,1);touch-action:pan-y;will-change:transform}
+  .tiltw.on{transition:transform .08s linear;box-shadow:0 24px 40px -18px rgba(40,20,120,.55)}
+  .tiltw .holo{position:absolute;inset:0;border-radius:10px;pointer-events:none;opacity:0;transition:opacity .3s;mix-blend-mode:color-dodge;
+    background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.55),rgba(255,255,255,0) 45%),
+      linear-gradient(115deg,transparent 20%,rgba(255,0,180,.28) 36%,rgba(0,220,255,.28) 50%,rgba(255,230,0,.28) 64%,transparent 80%) var(--mx,50%) var(--my,50%)/250% 250%}
+  .tiltw.on .holo{opacity:.85}
+  .bgpill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));z-index:40;background:var(--card);color:var(--text);border:1px solid var(--line);box-shadow:var(--shadow),0 8px 24px rgba(0,0,0,.12);border-radius:99px;padding:8px 16px 10px;font-size:12.5px;font-weight:700;overflow:hidden;white-space:nowrap}
+  .bgpill[hidden]{display:none} .bgpill.out{opacity:0;transition:opacity .3s}
+  .bgpill i{position:absolute;left:0;bottom:0;height:3px;background:var(--grad);transition:width .4s}
+  @media (min-width:760px){ .bgpill{bottom:110px} }
+  .bgframe{position:fixed;left:-10000px;top:0;width:420px;height:800px;border:0;visibility:hidden;pointer-events:none}
+  .ptr{position:fixed;top:6px;left:50%;z-index:70;transform:translate(-50%,-60px);width:38px;height:38px;border-radius:50%;background:var(--card);box-shadow:0 4px 14px rgba(0,0,0,.2);display:grid;place-items:center;color:var(--accent);font-size:20px;font-weight:800;opacity:0;transition:opacity .15s}
+  .ptr.show{opacity:1} .ptr.ready{background:var(--accent);color:#fff}
+  .ptr.spin span{animation:spin .7s linear infinite} @keyframes spin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion: reduce){ .sk,.top5 img,.mvr img,.list .item img,.tile img,.mrow img{animation:none} #gx.intro *{animation:none!important} }
 </style>
 </head>
 <body>
@@ -636,7 +678,11 @@ async function getJSON(url, tries = 4){
   }
 }
 
-function loading(t = T('Buscando…')){ out.innerHTML = `<div class="msg">${t}</div>`; }
+// mientras carga: esqueleto con la forma de la ficha (en vez de un hueco vacío)
+function loading(t = T('Buscando…')){ out.innerHTML = `<div class="msg">${t}</div>
+  <div class="skel-card" aria-hidden="true"><div class="sk sk-img"></div><div class="sk-col">
+    <div class="sk sk-l" style="width:70%"></div><div class="sk sk-l" style="width:45%"></div>
+    <div class="sk sk-big"></div><div class="sk sk-l"></div><div class="sk sk-l" style="width:85%"></div><div class="sk sk-l" style="width:60%"></div></div></div>`; }
 function error(t){ out.innerHTML = `<div class="msg err">${t}</div>`; }
 function toTop(){ if (out.getBoundingClientRect().top < 0) out.scrollIntoView({ block: 'start' }); }
 function remember(fn){ backStack.push(fn); }
@@ -1841,7 +1887,9 @@ function showProfile(){
     <div class="menu-list">
       <button data-a="gx">🏆 ${T('Progreso, misiones y logros')}<span class="r">${window.GX?.on ? T('Nivel {0}', GX.level()) : T('Desactivado')} ›</span></button>
       ${u ? `<button data-a="col">📚 ${T('Mi colección')}<span class="r">${api.count('col')} ›</span></button>
-      <button data-a="fav">⭐ ${T('Favoritos')}<span class="r">${api.count('fav')} ›</span></button>` : ''}
+      <button data-a="fav">⭐ ${T('Favoritos')}<span class="r">${api.count('fav')} ›</span></button>
+      <button data-a="refresh">🔄 ${T('Actualizar precios ahora')}<span class="r">${esc(window.pcBg?.status() || '')} ›</span></button>
+      <button data-a="notif">🔔 ${T('Avisos de precio en el móvil')}<span class="r">${!('Notification' in window) ? T('No disponible') : Notification.permission === 'granted' ? T('Activados') + ' ✓' : Notification.permission === 'denied' ? T('Bloqueados') : T('Activar') + ' ›'}</span></button>` : ''}
       <button data-a="stats">📊 ${T('Estadísticas')}<span class="r">›</span></button>
       <button data-a="sealed">📦 ${T('Productos sellados')}<span class="r">›</span></button>
       <button data-a="guide">${T('📖 Cómo se juega a {0}', GAMES[game].label)}<span class="r">›</span></button>
@@ -1864,6 +1912,12 @@ function showProfile(){
     if (a === 'gx') GX.showProgress();
     if (a === 'stats') GX.showStats();
     if (a === 'sealed') go2('sealed');
+    if (a === 'refresh') { window.pcBg?.start(true); }
+    if (a === 'notif') {
+      if (!('Notification' in window)) return window.pcToast?.('🔔', T('Tu navegador no permite avisos'), T('En iPhone: añade la app a la pantalla de inicio y ábrela desde ahí.'), 6000);
+      if (Notification.permission === 'denied') return window.pcToast?.('🔕', T('Avisos bloqueados'), T('Actívalos en los ajustes del navegador para esta web.'), 6000);
+      Notification.requestPermission().then(p => { if (p === 'granted') window.pcNotify?.(T('🔔 Avisos activados'), T('Te avisaremos cuando una carta favorita llegue a tu precio objetivo.'), 'welcome'); showProfile(); });
+    }
   });
   const gh = out.querySelector('.gxh'); if (gh) gh.onclick = () => GX.showProgress();
   out.querySelectorAll('[data-th]').forEach(b => b.onclick = () => { GX.setTheme(b.dataset.th); showProfile(); });
@@ -1915,6 +1969,7 @@ $('themeBtn').onclick = () => { const i = THEMES.findIndex(x => x[0] === theme);
 // ---------------------------------------------------------------- TOASTS / CONFETI
 const tbox = document.createElement('div'); tbox.className = 'toasts'; document.body.appendChild(tbox);
 function toast(icon, title, sub = '', ms = 3200){
+  if (window.PC_BG) return;
   const el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status');
   el.innerHTML = `<span class="ti">${icon}</span><span><b>${esc(title)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</span>`;
   tbox.appendChild(el);
@@ -1922,17 +1977,17 @@ function toast(icon, title, sub = '', ms = 3200){
   setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 320); }, ms);
 }
 function xpFloat(n){
-  if (reduced) return;
+  if (reduced || window.PC_BG) return;
   const el = document.createElement('div'); el.className = 'xpf'; el.textContent = `+${n} XP`;
   document.body.appendChild(el); setTimeout(() => el.remove(), 1150);
 }
-function confetti(){
-  if (reduced) return;
+function confetti(n = 110){
+  if (reduced || window.PC_BG) return;
   const c = document.createElement('canvas'); c.id = 'confetti'; document.body.appendChild(c);
   const ctx = c.getContext('2d'), dpr = devicePixelRatio || 1;
   c.width = innerWidth * dpr; c.height = innerHeight * dpr; ctx.scale(dpr, dpr);
   const cols = ['#6a44f2', '#a347e6', '#e2569b', '#f2b01e', '#0e9f6e', '#38bdf8'];
-  const ps = Array.from({ length: 110 }, () => ({ x: innerWidth / 2 + (Math.random() - .5) * 80, y: innerHeight * .35,
+  const ps = Array.from({ length: n }, () => ({ x: innerWidth / 2 + (Math.random() - .5) * 80, y: innerHeight * .35,
     vx: (Math.random() - .5) * 11, vy: -Math.random() * 11 - 4, r: Math.random() * 6 + 4, a: Math.random() * 6, va: (Math.random() - .5) * .3, c: cols[Math.random() * cols.length | 0] }));
   const t0 = performance.now();
   (function f(t){
@@ -2025,7 +2080,7 @@ function roll(){
 // límites diarios para que la XP no se consiga repitiendo lo mismo
 const CAP = { search: 20, view: 50, sealed: 9, center: 30, chart: 20, compare: 20 };
 function track(ev, data = {}){
-  if (!S.on) return;
+  if (!S.on || window.PC_BG) return;   // la actualización en segundo plano no da XP
   roll(); touchDay();
   S.c[ev] = (S.c[ev] || 0) + (data.n || 1);
   const XP = { search: 2, view: data.first ? 5 : 1, add: data.isNew ? 20 : 5, newcard: 0, fav: 5, sealed: 3, center: 10, chart: 3, buy: 10, target: 5, compare: 2 };
@@ -2040,7 +2095,7 @@ function track(ev, data = {}){
     if (m.ev === 'gameweek') box.p[m.id] = Object.keys(S.w.games).length;
     else if (m.max) box.p[m.id] = Math.max(box.p[m.id] || 0, S.streak);
     else if (m.ev === ev) box.p[m.id] = (box.p[m.id] || 0) + (data.n || 1);
-    if ((box.p[m.id] || 0) >= m.n) { box.done[m.id] = 1; gain(m.xp); toast(m.i, T('Misión completada'), T(m.t, m.n) + ` · +${m.xp} XP`); }
+    if ((box.p[m.id] || 0) >= m.n) { box.done[m.id] = 1; gain(m.xp); confetti(45); toast(m.i, T('Misión completada'), T(m.t, m.n) + ` · +${m.xp} XP`); }
   };
   todays().forEach(m => bump(m, S.d));
   WEEKLY.forEach(m => bump(m, S.w));
@@ -2058,7 +2113,7 @@ function checkGoals(){
     g.done = Date.now(); gain(100); confetti(); toast('🏆', T('¡Objetivo completado!'), `${g.set || GAMES[g.game]?.label} · ${g.n}`, 4500);
   }
 }
-window.addEventListener('pc:col', e => { colStats = e.detail; if (S.on) { checkGoals(); checkAch(); store(); drawHero(); } });
+window.addEventListener('pc:col', e => { colStats = e.detail; if (S.on && !window.PC_BG) { checkGoals(); checkAch(); store(); drawHero(); } });
 window.addEventListener('pc:save', e => {
   const b = e.detail.before || {}, a = e.detail.after || {};
   const dq = (a.qty || 0) - (b.qty || 0);
@@ -2167,7 +2222,15 @@ function colChart(cur){
   const pts = Object.keys(H).sort().filter(d => H[d][cur]).map(d => ({ l: new Date(d).toLocaleDateString(LOCALE(), { day: 'numeric', month: 'short' }), v: H[d][cur] }));
   return pts.length >= 2 ? chartHTML(pts, cur) : '';
 }
-const cardTile = (img, name, price, attrs, rank) => `<button ${attrs}>${rank ? `<span class="rk">${rank}</span>` : ''}${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}<span class="nm2">${esc(name)}</span><b>${price || ''}</b></button>`;
+const cardTile = (img, name, price, attrs, rank, g, pts) => `<button ${attrs}>${rank ? `<span class="rk">${rank}</span>` : ''}${g && ICONS[g] ? `<span class="gi" title="${esc(GAMES[g]?.label || '')}">${ICONS[g]}</span>` : ''}${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}<span class="nm2">${esc(name)}</span><b>${price || ''}</b>${sparkHTML(pts)}</button>`;
+// historial de una carta guardada: el de este dispositivo + el guardado en tu cuenta (sirve en todos tus dispositivos)
+function histOf(i){
+  const m = {};
+  for (const [d, v] of (Array.isArray(i.hist) ? i.hist : [])) if (v > 0) m[d] = v;
+  const h = hist()[i.game + '|' + (i.name || '') + '|' + (i.label || '')];
+  if (h && (!i.cur || h.c === i.cur)) for (const [d, v] of h.p) if (v > 0) m[d] = v;
+  return Object.keys(m).sort().map(d => [d, m[d]]);
+}
 const moverRow = m => `<button class="mvr" data-g="${esc(m.g)}" data-q="${esc(m.q || m.n)}">
   ${m.i ? `<img src="${esc(m.i)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}
   <span class="mvn"><b>${esc(m.n)}</b><small>${ICONS[m.g] || ''} ${T('desde el {0}', new Date(m.from).toLocaleDateString(LOCALE(), { day: 'numeric', month: 'short' }))}</small></span>
@@ -2216,18 +2279,23 @@ function homeHTML(){
   ${S.on ? `${heroHTML()}
   <div class="gxsec"><h3>☀️ ${T('Misiones de hoy')} <small>${ms.filter(m => S.d.done[m.id]).length}/${ms.length}</small></h3>${ms.map(m => misHTML(m, S.d)).join('')}
     ${goals.map(g => { const v = Math.min(goalProg(g), g.n); return `<div class="mis"><span class="mi-ico">🏆</span><div class="mi-b">${esc(g.set || GAMES[g.game]?.label)}<div class="pbar"><i style="width:${v / g.n * 100}%"></i></div></div><span class="mi-x">${v}/${g.n}</span></div>`; }).join('')}
+    ${(() => { const last = ACH.filter(a => S.ach[a[0]]).sort((a, b) => S.ach[b[0]] - S.ach[a[0]]).slice(0, 4);
+      return last.length ? `<div class="hmedals">${last.map(([id, ico, name]) => `<span class="hmedal" title="${esc(T(name))}"><i>${ico}</i>${T(name)}</span>`).join('')}<span class="hmedal more">${ACH.filter(a => S.ach[a[0]]).length}/${ACH.length} 🎖️</span></div>` : ''; })()}
     <button class="hmore" data-go="progress">${T('Todas las misiones y logros')} ›</button></div>` : ''}
 
-  ${top.length ? `<div class="gxsec"><h3>✨ ${T('Tus cartas destacadas')} <small>${cs.cur}</small></h3><div class="top5">${top.map((i, k) => cardTile(i.img, i.name, fm(i.value, i.cur), `data-col="${esc(i.__id)}"`, k + 1)).join('')}</div></div>` : ''}
-  ${rec.length ? `<div class="gxsec"><h3>🕒 ${T('Vistas recientemente')}</h3><div class="top5">${rec.map(r => cardTile(r.i, r.n, r.p.length ? fm(r.p.at(-1)[1], r.c) : '', `data-g="${esc(r.g)}" data-rq="${esc(r.q || r.n)}" data-s="${r.s ? 1 : 0}"`)).join('')}</div></div>` : ''}
+  ${top.length ? `<div class="gxsec"><h3>✨ ${T('Tus cartas destacadas')} <small>${cs.cur}</small></h3><div class="top5">${top.map((i, k) => cardTile(i.img, i.name, fm(i.value, i.cur), `data-col="${esc(i.__id)}"`, k + 1, i.game, histOf(i))).join('')}</div></div>` : ''}
+  ${rec.length ? `<div class="gxsec"><h3>🕒 ${T('Vistas recientemente')}</h3><div class="top5">${rec.map(r => cardTile(r.i, r.n, r.p.length ? fm(r.p.at(-1)[1], r.c) : '', `data-g="${esc(r.g)}" data-rq="${esc(r.q || r.n)}" data-s="${r.s ? 1 : 0}"`, 0, r.g, r.p)).join('')}</div></div>` : ''}
 
   <div class="gxsec"><h3>📈 ${T('Evolución del mercado')} <small>${T('cartas que sigues')}</small></h3>
     ${mv.length ? mv.map(moverRow).join('') : `<p class="note">${T('Aquí verás qué cartas suben y bajan. Se calcula con precios reales que vas consultando: abre tus cartas en días distintos y aparecerán sus cambios.')}</p>`}
     <button class="hmore" data-go="stats">${T('Ver estadísticas')} ›</button></div>`;
 }
+let homeOnce = false;
 function drawHome(){
-  const box = $('gx'); if (!box) return;
+  const box = $('gx'); if (!box || window.PC_BG) return;
   box.innerHTML = homeHTML();
+  if (!homeOnce) { homeOnce = true; box.classList.add('intro'); setTimeout(() => box.classList.remove('intro'), 1400); }
+  countUp(box.querySelector('.hval > b'));
   wireCommon(box);
   const hb = box.querySelector('.gxh'); if (hb) hb.onclick = () => go2('progress');
   if ($('hLogin')) $('hLogin').onclick = () => window.cuentaAPI?.login('');
@@ -2268,6 +2336,31 @@ function showStats(){
 window.GX = { drawHome, showStats, track, showProgress, heroHTML: () => S.on ? heroHTML() : '', get on(){ return S.on; }, level: () => levelOf(S.xp), title: () => titleOf(levelOf(S.xp)), xp: () => S.xp, themes: THEMES, setTheme, get theme(){ return theme; } };
 
 // ---------------------------------------------------------------- GRÁFICAS
+// mini gráfica de tendencia (sparkline): pts = [[día, valor], …]
+function sparkHTML(pts){
+  if (!pts || pts.length < 2) return '';
+  const vs = pts.slice(-30).map(p => p[1]), W = 80, H = 22;
+  let mn = Math.min(...vs), mx = Math.max(...vs); if (mn === mx) { mn -= 1; mx += 1; }
+  const d = vs.map((v, k) => `${k ? 'L' : 'M'}${(k / (vs.length - 1) * W).toFixed(1)},${(2 + (1 - (v - mn) / (mx - mn)) * (H - 4)).toFixed(1)}`).join(' ');
+  const up = vs.at(-1) >= vs[0];
+  return `<svg class="spark ${up ? 'up' : 'down'}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${d}"/></svg>`;
+}
+window.pcSpark = sparkHTML;
+window.pcHistOf = i => histOf(i);
+// el número del valor de la colección sube/baja animado hasta su cifra
+function countUp(el){
+  if (!el) return;
+  const cs = colSummary(), curs = Object.keys(cs.tot);
+  if (curs.length !== 1) return;
+  const c = curs[0], to = cs.tot[c], key = 'pc_hval_' + c;
+  let from = 0; try { from = Number(sessionStorage.getItem(key)) || 0; sessionStorage.setItem(key, to); } catch (e) {}
+  if (reduced || Math.abs(from - to) < 0.005) return;
+  const t0 = performance.now(), dur = 900;
+  (function f(t){ if (!el.isConnected) return;
+    const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = fm(from + (to - from) * e, c);
+    if (k < 1) requestAnimationFrame(f); })(t0);
+}
 // pts = [{ l: etiqueta, v: número }]
 function chartHTML(pts, cur){
   const W = 300, H = 120, vs = pts.map(p => p.v);
@@ -2407,6 +2500,26 @@ function afterRender(v){
   big.insertAdjacentHTML('afterend', evo + cmp);
   $('fxEvo').addEventListener('toggle', e => { if (e.target.open) track('chart'); });
   $('fxCmp').addEventListener('toggle', e => { if (e.target.open) track('compare'); });
+  tilt(out.querySelector('.result .pic > img'));
+}
+
+// ---------------------------------------------------------------- EFECTO HOLOGRÁFICO 3D EN LA CARTA
+// la imagen se inclina siguiendo el dedo o el ratón, con un brillo que se mueve como una carta foil
+function tilt(img){
+  if (!img || reduced || window.PC_BG || img.parentElement.classList.contains('tiltw')) return;
+  const w = document.createElement('span'); w.className = 'tiltw';
+  img.replaceWith(w); w.append(img); w.insertAdjacentHTML('beforeend', '<span class="holo"></span>');
+  let raf = 0;
+  const move = e => {
+    const r = w.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    if (x < 0 || x > 1 || y < 0 || y > 1) return;
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => { w.style.setProperty('--rx', ((.5 - y) * 16).toFixed(2) + 'deg'); w.style.setProperty('--ry', ((x - .5) * 18).toFixed(2) + 'deg');
+      w.style.setProperty('--mx', (x * 100).toFixed(1) + '%'); w.style.setProperty('--my', (y * 100).toFixed(1) + '%'); w.classList.add('on'); });
+  };
+  const reset = () => { cancelAnimationFrame(raf); w.classList.remove('on'); w.style.removeProperty('--rx'); w.style.removeProperty('--ry'); };
+  w.addEventListener('pointermove', move); w.addEventListener('pointerdown', move);
+  w.addEventListener('pointerleave', reset); w.addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') reset(); }); w.addEventListener('pointercancel', reset);
 }
 
 // ---------------------------------------------------------------- ENGANCHES CON LA APP
@@ -2444,7 +2557,144 @@ $('form').addEventListener('submit', () => { gq = ''; });
 
 drawHero();
 // primera visita del día: suma a la racha (si la gamificación está activa)
-if (S.on && S.last !== dayKey()) setTimeout(() => { roll(); touchDay(); store(); drawHero(); }, 900);
+if (S.on && !window.PC_BG && S.last !== dayKey()) setTimeout(() => { roll(); touchDay(); store(); drawHero(); }, 900);
+})();
+</script>
+<script>
+// =====================================================================
+//  APP MÁS DINÁMICA (noviembre 2026)
+//  1) Actualización automática de precios: una vez al día, una copia invisible de la app (?bg=1)
+//     vuelve a abrir cada carta de tu colección y favoritos con las mismas fuentes de siempre.
+//     Así el historial, «Evolución del mercado» y los avisos se llenan solos. No se inventa nada.
+//  2) Avisos del móvil (notificaciones) y app instalable (manifest + service worker)
+//  3) Deslizar hacia abajo para refrescar
+// =====================================================================
+(function(){
+const pad = n => String(n).padStart(2, '0');
+const dayKey = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const waitFor = async (ok, ms) => { const t = Date.now(); while (!ok()) { if (Date.now() - t > ms) return false; await sleep(150); } return true; };
+// el brillo de «cargando» de las imágenes se apaga cuando la imagen ya llegó (o falló)
+const loaded = e => { if (e.target.tagName === 'IMG') e.target.classList.add('ld'); };
+document.addEventListener('load', loaded, true); document.addEventListener('error', loaded, true);
+const HERE = location.origin + location.pathname;   // ojo: <base> apunta a precio-cartas, por eso URLs absolutas
+
+// ---------------------------------------------------------------- AVISOS
+async function notify(title, body, tag){
+  if (window.PC_BG || !('Notification' in window) || Notification.permission !== 'granted') return;
+  const icon = location.origin + '/precio-telefono/icon-192.png';
+  try { const reg = await navigator.serviceWorker?.getRegistration(HERE);
+    if (reg) return await reg.showNotification(title, { body, icon, badge: icon, tag, data: { url: HERE } }); } catch (e) {}
+  try { new Notification(title, { body, icon, tag }); } catch (e) {}
+}
+window.pcNotify = notify;
+
+// ---------------------------------------------------------------- APP INSTALABLE
+if (!window.PC_BG && 'serviceWorker' in navigator && location.protocol === 'https:')
+  navigator.serviceWorker.register(location.pathname.replace(/[^/]*$/, '') + 'sw.js').catch(() => {});
+
+// ---------------------------------------------------------------- COPIA INVISIBLE: actualiza cada carta
+if (window.PC_BG) {
+  const post = m => { try { parent.postMessage({ pcbg: 1, ...m }, location.origin); } catch (e) {} };
+  let lastV = null;
+  const _render = render;
+  render = function(v){ lastV = v; return _render.apply(this, arguments); };
+  const same = (v, i) => !!v && (v.name || '') === (i.name || '') && (v.versionLabel || '') === (i.label || '');
+  async function one(i){
+    if (!GAMES[i.game]) return false;
+    if (game !== i.game) document.querySelector(`.tab[data-game="${i.game}"]`)?.click();
+    $('q').value = i.q || i.name; lastV = null;
+    await Promise.race([search(), sleep(25000)]);
+    await waitFor(() => lastV || out.querySelector('.list .item,.msg.err'), 8000);
+    if (!lastV) {   // varios resultados: abre el que tiene el mismo nombre
+      const el = [...out.querySelectorAll('.list .item')].find(e => normName(e.querySelector('div')?.textContent) === normName(i.name));
+      if (!el) return false;
+      el.click(); await waitFor(() => lastV, 20000);
+    }
+    // si se abrió otra versión (otra rareza o edición), busca la tuya entre las versiones
+    if (lastV && !same(lastV, i) && current?.items?.length > 1) {
+      const score = x => { const l = current.label(x) || {}; return [...String(l.t || '').split(' · '), l.r].filter(Boolean).filter(p => (i.label || '').includes(p)).length; };
+      const order = current.items.map((x, k) => [k, score(x)]).filter(a => a[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 3);
+      for (const [k] of order) { if (same(lastV, i)) break; current.index = k; lastV = null; await Promise.race([drawCurrent(), sleep(20000)]); }
+    }
+    return same(lastV, i);   // solo si es exactamente tu carta se guarda su precio (lo hace la ficha)
+  }
+  (async () => {
+    if (!await waitFor(() => window.cuentaAPI?.ready, 25000)) return post({ t: 'done', n: 0, ch: 0 });
+    const list = cuentaAPI.list().filter(i => (i.qty > 0 || i.fav) && i.name && !i.sealed)
+      .sort((a, b) => (a.updated?.toMillis?.() || 0) - (b.updated?.toMillis?.() || 0)).slice(0, 60);
+    post({ t: 'prog', k: 0, n: list.length });
+    let ch = 0, k = 0;
+    for (const i of list) {
+      try { if (await one(i) && Number(lastV.value) && Number(lastV.value) !== i.value) ch++; } catch (e) { console.warn(e); }
+      post({ t: 'prog', k: ++k, n: list.length });
+      await sleep(600);
+    }
+    await sleep(2000);   // deja terminar de guardar en la cuenta
+    post({ t: 'done', n: list.length, ch });
+  })();
+  return;
+}
+
+// ---------------------------------------------------------------- VENTANA PRINCIPAL: lanza la copia invisible
+const KEY = 'pc_bg_day';
+const pill = document.createElement('div'); pill.className = 'bgpill'; pill.hidden = true; pill.setAttribute('role', 'status');
+document.body.appendChild(pill);
+let fr = null, st = '', killT = 0;
+const today = () => { try { return localStorage.getItem(KEY) === dayKey(); } catch (e) { return false; } };
+function show(txt, p){ pill.hidden = false; pill.innerHTML = `<span>${esc(txt)}</span><i style="width:${Math.round((p || 0) * 100)}%"></i>`; }
+function stop(){ if (fr) { fr.remove(); fr = null; } clearTimeout(killT); pill.classList.add('out'); setTimeout(() => { pill.hidden = true; pill.classList.remove('out'); }, 300); }
+function start(force){
+  if (fr) return window.pcToast?.('🔄', T('Ya se están actualizando los precios'));
+  const api = window.cuentaAPI;
+  if (!api?.user) { if (force) api?.login(T('Entra para guardar cartas en tu colección.')); return; }
+  if (!force && today()) return;
+  if (!api.list().some(i => i.qty > 0 || i.fav)) { if (force) window.pcToast?.('📚', T('Tu colección está vacía. Busca una carta y añádela.')); return; }
+  try { localStorage.setItem(KEY, dayKey()); } catch (e) {}
+  fr = document.createElement('iframe');
+  fr.src = HERE + '?bg=1'; fr.className = 'bgframe'; fr.tabIndex = -1; fr.setAttribute('aria-hidden', 'true'); fr.title = 'bg';
+  document.body.appendChild(fr);
+  st = '…'; show('🔄 ' + T('Actualizando precios…'), 0);
+  killT = setTimeout(stop, 12 * 60e3);
+}
+addEventListener('message', e => {
+  if (e.origin !== location.origin || !e.data?.pcbg || !fr || e.source !== fr.contentWindow) return;
+  const m = e.data;
+  if (m.t === 'prog') { st = `${m.k}/${m.n}`; show(`🔄 ${T('Actualizando precios')} ${m.k}/${m.n}`, m.n ? m.k / m.n : 0); }
+  if (m.t === 'done') {
+    stop();
+    if (m.n) window.pcToast?.('✅', T('Precios actualizados'), m.ch ? T('{0} de {1} cartas han cambiado de precio', m.ch, m.n) : T('{0} cartas revisadas, sin cambios', m.n), 5000);
+    if (view === 'home') window.GX?.drawHome(); else if (view === 'me' && !current) showProfile();
+  }
+});
+window.pcBg = { start, status: () => fr ? st : today() ? T('Hoy') + ' ✓' : '' };
+// arranca sola una vez al día, unos segundos después de abrir la app con la sesión iniciada
+addEventListener('pc:col', function once(){ removeEventListener('pc:col', once); setTimeout(() => { if (document.visibilityState === 'visible') start(false); }, 5000); });
+
+// ---------------------------------------------------------------- DESLIZAR HACIA ABAJO PARA REFRESCAR
+if ('ontouchstart' in window) {
+  const ind = document.createElement('div'); ind.className = 'ptr'; ind.innerHTML = '<span>↻</span>'; document.body.appendChild(ind);
+  let y0 = null, d = 0;
+  const reset = () => { ind.classList.remove('show', 'ready'); ind.style.transform = ''; };
+  addEventListener('touchstart', e => {
+    y0 = scrollY <= 0 && e.touches.length === 1 && !e.target.closest('.sheet,.login,.scan,.rail,.top5,.pchart,.tiltw,input,select,textarea') ? e.touches[0].clientY : null; d = 0;
+  }, { passive: true });
+  addEventListener('touchmove', e => {
+    if (y0 == null) return;
+    d = Math.min(Math.max(0, e.touches[0].clientY - y0) * .5, 90);
+    if (!d || scrollY > 0) return reset();
+    ind.classList.add('show'); ind.classList.toggle('ready', d >= 60);
+    ind.style.transform = `translate(-50%, ${d}px) rotate(${d * 4}deg)`;
+  }, { passive: true });
+  addEventListener('touchend', () => {
+    if (y0 == null) return; y0 = null;
+    if (d < 60) return reset();
+    ind.classList.add('spin'); setTimeout(() => { ind.classList.remove('spin'); reset(); }, 900);
+    if ($('refresh')) return $('refresh').click();                  // ficha de carta: precio de nuevo
+    if (view === 'home') { start(true); return window.GX?.drawHome(); } // inicio: actualiza toda la colección
+    if (typeof redraw === 'function') redraw();
+  });
+}
 })();
 </script>
 <!-- Cuentas de usuario: Mi colección y Favoritos (Firebase) -->
@@ -2476,6 +2726,7 @@ const db = getFirestore(app);
 let user = null;
 let items = new Map();     // id -> datos de la carta guardada
 let unsub = null;
+let itemsReady = false;    // ya llegó la colección desde Firestore
 let lastCard = null;       // última carta dibujada (para el bloque "Mi colección" de la ficha)
 
 // ---------- Botón de cuenta (arriba, junto al idioma) ----------
@@ -2553,8 +2804,9 @@ onAuthStateChanged(auth, u => {
   setTimeout(() => window.dispatchEvent(new Event('cuenta')));
   user = u; items = new Map();
   if (unsub) { unsub(); unsub = null; }
+  itemsReady = false;
   if (u) unsub = onSnapshot(collection(db, 'users', u.uid, 'items'), snap => {
-    items = new Map(snap.docs.map(d => [d.id, d.data()]));
+    items = new Map(snap.docs.map(d => [d.id, d.data()])); itemsReady = true;
     drawAcct(); drawMine(); colEvent();
     if (mineView) showMine(mineView, true);
   });
@@ -2591,8 +2843,18 @@ window.cuentaCard = v => {
   lastCard = cardFrom(v);
   drawMine();
   // si ya la tienes guardada, actualiza su precio con el de ahora
+  // y apunta un punto al día en su historial (guardado en tu cuenta: sirve en todos tus dispositivos)
   const old = user && items.get(idOf(lastCard));
-  if (old && lastCard.value && old.value !== lastCard.value) save(lastCard, { prevValue: old.value || null, prevAt: Date.now() }).catch(() => {});
+  if (!old || !lastCard.value) return;
+  const d = new Date(), day = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  let hist = Array.isArray(old.hist) ? old.hist.filter(p => Array.isArray(p) && p.length === 2) : [];
+  if (old.cur && lastCard.cur && old.cur !== lastCard.cur) hist = [];
+  const lastH = hist.at(-1), changed = old.value !== lastCard.value, newDay = lastH?.[0] !== day;
+  if (!changed && !newDay) return;
+  if (lastH && lastH[0] === day) hist = [...hist.slice(0, -1), [day, lastCard.value]]; else hist = [...hist, [day, lastCard.value]];
+  const patch = { hist: hist.slice(-120) };
+  if (changed) Object.assign(patch, { prevValue: old.value || null, prevAt: Date.now() });
+  save(lastCard, patch).catch(() => {});
 };
 function drawMine(){
   const box = $('mine'); if (!box || !lastCard) return;
@@ -2632,6 +2894,7 @@ function recordColValue(tot){
 }
 // avisos de precio objetivo (mientras la app está abierta: no hay servidor de notificaciones)
 function checkAlerts(){
+  if (window.PC_BG) return;   // los avisa la ventana principal
   const day = new Date().toDateString();
   for (const [id, i] of items) {
     if (!i.fav || !i.target || !i.value || (i.tcur && i.cur && i.tcur !== i.cur)) continue;
@@ -2639,7 +2902,7 @@ function checkAlerts(){
       const k = 'pc_alert_' + id;
       try { if (localStorage.getItem(k) === day) continue; localStorage.setItem(k, day); } catch (e) {}
       window.pcToast?.('🎯', T('¡{0} ha llegado a tu precio objetivo!', i.name), `${fmt(i.value, i.cur)} ≤ ${fmt(i.target, i.cur)}`, 6000);
-      if ('Notification' in window && Notification.permission === 'granted') try { new Notification('Precio Cartas', { body: `${i.name}: ${fmt(i.value, i.cur)}`, icon: 'logo.jpg' }); } catch (e) {}
+      window.pcNotify?.(T('🎯 ¡Precio objetivo alcanzado!'), `${i.name}: ${fmt(i.value, i.cur)} ≤ ${fmt(i.target, i.cur)}`, 'alert-' + id);
     }
   }
 }
@@ -2742,7 +3005,7 @@ function showMine(view, keep){
       ${i.img ? `<img src="${esc(i.img)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}
       <div class="mi"><button class="link mopen">${esc(i.name)}</button>
         <div class="note">${esc([i.label, groupBy === 'rarity' ? i.set : i.rarity].filter(Boolean).join(' · '))}</div>
-        <div class="note"><b>${esc(i.price || '')}</b>${ch != null ? ` <span class="${ch >= 0 ? 'up' : 'down'}">${ch >= 0 ? '▲' : '▼'}${Math.abs(ch).toFixed(1)}%</span>` : ''}
+        <div class="note"><b>${esc(i.price || '')}</b>${window.pcSpark ? window.pcSpark(window.pcHistOf?.(i)) : ''}${ch != null ? ` <span class="${ch >= 0 ? 'up' : 'down'}">${ch >= 0 ? '▲' : '▼'}${Math.abs(ch).toFixed(1)}%</span>` : ''}
           ${i.buy != null ? ` · ${T('Compra')}: ${fmt(i.buy, i.buyCur || i.cur) || '0'}${ipl != null ? ` <span class="${ipl >= 0 ? 'up' : 'down'}">(${ipl >= 0 ? '+' : '−'}${fmt(Math.abs(ipl), i.cur) || '0'})</span>` : ''}` : ''}
           ${i.updated?.toDate ? ' · ' + T('Precio guardado el {0}. Abre la carta para actualizarlo.', i.updated.toDate().toLocaleDateString(LOCALE())) : ''}</div>
         <div class="tags">${i.cond ? `<span class="tag cond">${esc(i.cond)}</span>` : ''}${i.lang ? `<span class="tag">${esc(i.lang)}</span>` : ''}${i.buyDate ? `<span class="tag">🗓 ${esc(new Date(i.buyDate).toLocaleDateString(LOCALE()))}</span>` : ''}
@@ -2805,6 +3068,8 @@ document.querySelectorAll('#lmenu button').forEach(b => b.addEventListener('clic
 // ---- API para la versión de teléfono ----
 window.cuentaAPI = {
   get user(){ return user; },
+  get ready(){ return !!user && itemsReady; },
+  list: () => [...items].map(([id, d]) => ({ ...d, __id: id })),
   count: k => [...items.values()].filter(i => k === 'fav' ? i.fav : i.qty > 0).length,
   login: msg => openLogin(msg),
   show: v => { if (!user) return openLogin(T('Entra para guardar cartas en tu colección.')); showMine(v); },

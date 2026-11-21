@@ -18,8 +18,17 @@ En el móvil puedes usar «Añadir a pantalla de inicio» para abrirla como una 
 - **Estadísticas**: cartas y valor por juego, rareza, estado y expansión; las cartas que más suben y bajan.
 - **Sellados**: nuevas categorías Tins y Cajas de colección; historial de precio también para productos sellados.
 
+## ⚡ Más dinámica (noviembre 2026)
+
+- **Precios que se actualizan solos**: una vez al día, al abrir la app con la sesión iniciada, una copia invisible de la app vuelve a consultar cada carta de tu colección y favoritos (máx. 60 al día, las más antiguas primero). También desde Perfil → «Actualizar precios ahora» o deslizando hacia abajo en Inicio.
+- **Historial en tu cuenta**: cada carta guardada apunta un precio al día en Firestore (`hist`), así la evolución se ve en todos tus dispositivos.
+- **Mini gráficas** (sparklines) en cartas destacadas, vistas recientemente y Mi colección.
+- **Animaciones**: contador del valor de la colección, barra de XP y nivel, efecto holográfico 3D al mover la carta, esqueletos de carga, confeti al completar misiones, últimos logros en Inicio.
+- **App instalable (PWA)**: `manifest.webmanifest`, `sw.js` e iconos. Avisos de precio objetivo como notificación del móvil (Perfil → «Avisos de precio en el móvil»).
+- **Deslizar hacia abajo para refrescar** en el móvil.
+
 ### Qué necesitaría un servidor (no incluido, la web sigue siendo 100 % GitHub Pages)
-- Avisos de precio con la app cerrada (notificaciones push): una función programada (p. ej. Firebase Cloud Functions + Cloud Messaging, plan Blaze) que revise los precios cada día.
+- Avisos de precio y actualización de precios con la app cerrada (notificaciones push): una función programada (p. ej. Firebase Cloud Functions + Cloud Messaging, plan Blaze) que revise los precios cada día.
 - Historial de precios compartido entre dispositivos y de todas las cartas: guardar instantáneas diarias en Firestore o en `data/` con la GitHub Action que ya actualiza los precios.
 - Precios de eBay / PriceCharting integrados: requieren sus API con clave privada, que no puede ir en el frontend; habría que llamarlas desde un backend.
 - Reconocimiento de cartas por imagen (no solo el código): un servicio de visión artificial en servidor.
