@@ -670,12 +670,19 @@ const withAlts = urls => { urls = [...new Set(urls.filter(Boolean))]; return url
 // si la foto que se encontró es de otro idioma, lo dice encima de la imagen
 const LANG_PHOTO = { fr: ['🇫🇷', 'francés'], de: ['🇩🇪', 'alemán'], it: ['🇮🇹', 'italiano'], es: ['🇪🇸', 'español'], pt: ['🇵🇹', 'portugués'], ja: ['🇯🇵', 'japonés'] };
 function langBadge(img){
-  const m = img.src.match(/^https:\/\/assets\.tcgdex\.net\/([a-z-]+)\//), l = m && LANG_PHOTO[m[1]];
+  const m = img.src.match(/^https:\/\/assets\.tcgdex\.net\/([a-z-]+)\//);
+  const l = img.src.includes('#pcother') ? ['🔁', 'otra edición', 1] : m && LANG_PHOTO[m[1]];
   const old = img.parentElement?.querySelector(':scope > .lbadge');
   if (!l) return old?.remove();
   if (old) return;
   const big = img.closest('.tiltw,.result');
-  img.insertAdjacentHTML('afterend', `<span class="lbadge${big ? ' big' : ''}" title="${esc(T('Foto en {0}', T(l[1])))}">${l[0]} ${big ? esc(T('Foto en {0}', T(l[1]))) : esc(T(l[1]))}</span>`);
+  const full = l[2] ? T('Foto de otra edición de esta carta') : T('Foto en {0}', T(l[1]));
+  img.insertAdjacentHTML('afterend', `<span class="lbadge${big ? ' big' : ''}" title="${esc(full)}">${l[0]} ${big ? esc(full) : esc(T(l[1]))}</span>`);
+}
+const otherCache = {};
+function otherPrint(name, q){
+  return (otherCache[name + '|' + q] ||= getJSON(`https://api.tcgdex.net/v2/en/cards?name=eq:${encodeURIComponent(name)}`, 2)
+    .then(l => { const w = (l || []).filter(x => x.image); return w.length ? `${w.at(-1).image}/${q}.webp` : null; }).catch(() => null));
 }
 function imgMiss(e){
   const img = e.target; if (img.tagName !== 'IMG' || img.src.startsWith('data:') || img.getAttribute('referrerpolicy')) return;
@@ -684,6 +691,12 @@ function imgMiss(e){
   const h = img.src.indexOf('#pcalt=');
   if (h > 0) {
     const rest = decodeURIComponent(img.src.slice(h + 7)).split('|').filter(Boolean);
+    if (rest[0]?.startsWith('pcname:')) {   // foto de otra edición de la misma carta (se busca por nombre)
+      const [, q, ...nm] = rest[0].split(':'), name = nm.join(':'), after = rest.slice(1);
+      img.src = NOIMG.replace('Sin%20foto', '%E2%80%A6');
+      otherPrint(name, q).then(u => { if (img.isConnected) img.src = u ? u + '#pcother' + (after.length ? '&pcalt=' + encodeURIComponent(after.join('|')) : '') : NOIMG; });
+      return;
+    }
     if (rest.length) { img.src = withAlts(rest); return; }
   }
   // un fallo suelto (red lenta, demasiadas fotos a la vez): se reintenta una vez
@@ -1019,13 +1032,15 @@ const pkmImg = (c, q) => {
   const sfx = q === 'high' ? '_hires.png' : '.png', sl = String(set).toLowerCase();
   const n3 = /^\d+$/.test(num) ? String(num).padStart(3, '0') : num, SET = String(set).toUpperCase();
   const serie = (sl.startsWith('cel') ? 'swsh' : PKM_SERIES.find(p => sl.startsWith(p))) || '';
-  if (TCGP.test(set)) return withAlts([`${LIMITLESS.replace('tpci/', 'pocket/')}${set}/${set}_${n3}_EN${q === 'high' ? '' : '_SM'}.webp`]);
+  if (TCGP.test(set)) return withAlts([`${LIMITLESS.replace('tpci/', 'pocket/')}${set}/${set}_${n3}_EN${q === 'high' ? '' : '_SM'}.webp`, c.name ? `pcname:${q}:${c.name}` : '']);
   return withAlts([
     sl === 'cel25cc' && CEL25CC[num] ? PTCG + 'cel25c/' + CEL25CC[num] + sfx : '',
     ...ptcgCands(set, num).map(x => PTCG + x + sfx),
     `${LIMITLESS}${SET}/${SET}_${n3}_R_EN_${q === 'high' ? 'LG' : 'SM'}.png`,
     // la misma carta en otro idioma (TCGdex a veces tiene la foto en francés, alemán… pero no en inglés)
     ...(serie ? PKM_LANGS.map(l => `https://assets.tcgdex.net/${l}/${serie}/${set}/${num}/${q}.webp`) : []),
+    // último recurso: la misma carta (mismo nombre) de otra edición
+    c.name ? `pcname:${q}:${c.name}` : '',
   ]);
 };
 const pkmSets = {};
