@@ -2613,6 +2613,9 @@ if (window.PC_BG) {
     }
     // si se abrió otra versión (otra rareza o edición), busca la tuya entre las versiones
     if (lastV && !same(lastV, i) && current?.items?.length > 1) {
+      // espera a que se carguen los datos de las demás versiones (hasta entonces solo se conoce su id)
+      await waitFor(() => !current || current.items.every(x => !x?.id || (current.label(x) || {}).t !== x.id), 15000);
+      if (!current) return false;
       const score = x => { const l = current.label(x) || {}; return [...String(l.t || '').split(' · '), l.r].filter(Boolean).filter(p => (i.label || '').includes(p)).length; };
       const order = current.items.map((x, k) => [k, score(x)]).filter(a => a[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 3);
       for (const [k] of order) { if (same(lastV, i)) break; current.index = k; lastV = null; await Promise.race([drawCurrent(), sleep(20000)]); }
