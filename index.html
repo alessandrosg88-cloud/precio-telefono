@@ -477,6 +477,9 @@ window.PC_BG = /[?&]bg=1\b/.test(location.search) && window.parent !== window;</
   .skel-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;grid-template-columns:260px 1fr;gap:22px}
   .sk{border-radius:10px} .sk-img{aspect-ratio:63/88;border-radius:12px} .sk-col{display:flex;flex-direction:column;gap:12px}
   img.ld.ld.ld{animation:none;background:var(--line)}
+  .list .item,.tile{position:relative}
+  .lbadge{position:absolute;left:6px;top:6px;z-index:2;background:rgba(20,12,50,.82);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;pointer-events:none;white-space:nowrap}
+  .lbadge.big{left:10px;top:10px;font-size:12.5px;padding:4px 10px}
   .sk-l{height:14px;width:100%} .sk-big{height:64px;border-radius:14px;margin:6px 0}
   @media (max-width:640px){ .skel-card{grid-template-columns:1fr} .sk-img{width:62%;margin:0 auto} }
   .spark{display:block;width:100%;height:20px;margin-top:3px;overflow:visible}
@@ -664,10 +667,20 @@ const NOIMG = 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www
 // si una foto falla: prueba la siguiente dirección posible y, al final, pone el reverso
 // foto con direcciones de reserva: url#pcalt=otra1|otra2… (el navegador ignora lo que va detrás de #)
 const withAlts = urls => { urls = [...new Set(urls.filter(Boolean))]; return urls.length > 1 ? urls[0] + '#pcalt=' + encodeURIComponent(urls.slice(1).join('|')) : urls[0] || NOIMG; };
+// si la foto que se encontró es de otro idioma, lo dice encima de la imagen
+const LANG_PHOTO = { fr: ['🇫🇷', 'francés'], de: ['🇩🇪', 'alemán'], it: ['🇮🇹', 'italiano'], es: ['🇪🇸', 'español'], pt: ['🇵🇹', 'portugués'], ja: ['🇯🇵', 'japonés'] };
+function langBadge(img){
+  const m = img.src.match(/^https:\/\/assets\.tcgdex\.net\/([a-z-]+)\//), l = m && LANG_PHOTO[m[1]];
+  const old = img.parentElement?.querySelector(':scope > .lbadge');
+  if (!l) return old?.remove();
+  if (old) return;
+  const big = img.closest('.tiltw,.result');
+  img.insertAdjacentHTML('afterend', `<span class="lbadge${big ? ' big' : ''}" title="${esc(T('Foto en {0}', T(l[1])))}">${l[0]} ${big ? esc(T('Foto en {0}', T(l[1]))) : esc(T(l[1]))}</span>`);
+}
 function imgMiss(e){
   const img = e.target; if (img.tagName !== 'IMG' || img.src.startsWith('data:') || img.getAttribute('referrerpolicy')) return;
   // pokemontcg.io no da error si no tiene la carta: devuelve un reverso de 640×892
-  if (e.type === 'load' && !(img.src.startsWith(PTCG) && img.naturalWidth === 640 && img.naturalHeight === 892)) return;
+  if (e.type === 'load' && !(img.src.startsWith(PTCG) && img.naturalWidth === 640 && img.naturalHeight === 892)) return langBadge(img);
   const h = img.src.indexOf('#pcalt=');
   if (h > 0) {
     const rest = decodeURIComponent(img.src.slice(h + 7)).split('|').filter(Boolean);
@@ -980,6 +993,13 @@ const PKM = 'https://api.tcgdex.net/v2/en';
 // Foto de la carta: TCGdex; si TCGdex no la tiene (muchas promos), se prueba en pokemontcg.io
 // con las formas habituales de su código de set (sm7.5 -> sm75, sv03.5 -> sv3pt5…). Si no hay ninguna: «Sin foto».
 const PTCG = 'https://images.pokemontcg.io/';
+const LIMITLESS = 'https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/tpci/';
+const PKM_SERIES = ['swsh', 'hgss', 'sv', 'sm', 'xy', 'bw', 'me', 'dp', 'pl', 'ex', 'neo', 'gym', 'base', 'ecard', 'pop'];
+const PKM_LANGS = ['fr', 'de', 'it', 'es', 'pt'];
+// Celebrations · Classic Collection: TCGdex CC001… = pokemontcg.io «número original_letra» (comprobadas una a una)
+const CEL25CC = { CC001: '2_A', CC002: '4_A', CC003: '15_A', CC004: '73_A', CC005: '8_A', CC006: '15_B', CC007: '15_C', CC008: '24_A', CC009: '20_A',
+  CC010: '66_A', CC011: '9_A', CC012: '86_A', CC013: '88_A', CC014: '93_A', CC015: '17_A', CC016: '15_D', CC017: '109_A', CC018: '145_A', CC019: '107_A',
+  CC020: '113_A', CC021: '114_A', CC022: '54_A', CC023: '97_A', CC024: '76_A', CC025: '60_A' };
 function ptcgCands(set, num){
   const s = String(set).toLowerCase(), z = s.replace(/^([a-z]+)0+(\d)/, '$1$2');
   const sets = [...new Set([s, z.replace('.', 'pt'), z.replace('.', ''), s.replace('.', ''), z, s.replace(/cc$/, 'c')])];
@@ -991,8 +1011,16 @@ const pkmImg = (c, q) => {
   const id = c.id || '', k = id.lastIndexOf('-');
   const set = c.set?.id || (k > 0 ? id.slice(0, k) : ''), num = c.localId || (k > 0 ? id.slice(k + 1) : '');
   if (!set || !num) return NOIMG;
-  const sfx = q === 'high' ? '_hires.png' : '.png';
-  return withAlts(ptcgCands(set, num).map(x => PTCG + x + sfx));
+  const sfx = q === 'high' ? '_hires.png' : '.png', sl = String(set).toLowerCase();
+  const n3 = /^\d+$/.test(num) ? String(num).padStart(3, '0') : num, SET = String(set).toUpperCase();
+  const serie = (sl.startsWith('cel') ? 'swsh' : PKM_SERIES.find(p => sl.startsWith(p))) || '';
+  return withAlts([
+    sl === 'cel25cc' && CEL25CC[num] ? PTCG + 'cel25c/' + CEL25CC[num] + sfx : '',
+    ...ptcgCands(set, num).map(x => PTCG + x + sfx),
+    `${LIMITLESS}${SET}/${SET}_${n3}_R_EN_${q === 'high' ? 'LG' : 'SM'}.png`,
+    // la misma carta en otro idioma (TCGdex a veces tiene la foto en francés, alemán… pero no en inglés)
+    ...(serie ? PKM_LANGS.map(l => `https://assets.tcgdex.net/${l}/${serie}/${set}/${num}/${q}.webp`) : []),
+  ]);
 };
 const pkmSets = {};
 async function pokemonSetIds(code){
