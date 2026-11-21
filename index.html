@@ -1566,6 +1566,7 @@ async function loadLocal(key){
     c.nn = normName(c.n);
     c.b = normName(c.n.replace(/\(.*?\)|\[.*?\]/g, '')).trim(); // nombre sin "(Alternate Art)"…
     for (const k of new Set([c.k, c.k1])) if (k) (d.byCode[k] ||= []).push(c);
+    if (c.b) (d.byB ||= {})[c.b] ? d.byB[c.b].push(c) : (d.byB[c.b] = [c]);
   }
   return (localData[key] = d);
 }
@@ -1578,7 +1579,9 @@ const tcgImg = (c, big) => {
   const sibs = c.k1 && d?.byCode?.[c.k1] ? d.byCode[c.k1].filter(x => x !== c && x.b === c.b && x.id).slice(0, 2).map(x => tcgUrl(x.id, big)) : [];
   const own = code && game === 'digimon' ? [`https://images.digimoncard.io/images/cards/${code}.jpg`]
     : code && game === 'onepiece' ? [`https://optcgapi.com/media/static/Card_Images/${code}.jpg`] : [];
-  return withAlts([tcgUrl(c.id, big), ...sibs, ...own]);
+  // último recurso: la misma carta (mismo nombre) de otra expansión o edición, marcada como «otra edición»
+  const other = c.b && d?.byB?.[c.b] ? d.byB[c.b].filter(x => x !== c && x.id && x.k1 !== c.k1).slice(-2).map(x => tcgUrl(x.id, big) + '#pcother') : [];
+  return withAlts([tcgUrl(c.id, big), ...sibs, ...own, ...other]);
 };
 const yen = v => money(v, 'JPY', 0);
 // Rareza + tipo de versión sacado del nombre: "SEC · Alt Art", "SEC · Manga", "SR · Parallel"…
