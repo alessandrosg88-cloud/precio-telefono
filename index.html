@@ -2772,7 +2772,8 @@ function start(force){
   if (!api.list().some(i => i.qty > 0 || i.fav)) { if (force) window.pcToast?.('📚', T('Tu colección está vacía. Busca una carta y añádela.')); return; }
   try { localStorage.setItem(KEY, dayKey()); } catch (e) {}
   fr = document.createElement('iframe');
-  fr.src = HERE + '?bg=1&t=' + Date.now();   // siempre la última versión de la app (sin caché) fr.className = 'bgframe'; fr.tabIndex = -1; fr.setAttribute('aria-hidden', 'true'); fr.title = 'bg';
+  fr.src = HERE + '?bg=1&t=' + Date.now();   // siempre la última versión de la app (sin caché)
+  fr.className = 'bgframe'; fr.tabIndex = -1; fr.setAttribute('aria-hidden', 'true'); fr.title = 'bg';
   document.body.appendChild(fr);
   st = '…'; show('🔄 ' + T('Actualizando precios…'), 0);
   killT = setTimeout(stop, 12 * 60e3);
