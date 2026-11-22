@@ -671,12 +671,12 @@ const withAlts = urls => { urls = [...new Set(urls.filter(Boolean))]; return url
 const LANG_PHOTO = { fr: ['🇫🇷', 'francés'], de: ['🇩🇪', 'alemán'], it: ['🇮🇹', 'italiano'], es: ['🇪🇸', 'español'], pt: ['🇵🇹', 'portugués'], ja: ['🇯🇵', 'japonés'] };
 function langBadge(img){
   const m = img.src.startsWith('https://ws-tcg.com/') ? [0, 'ja'] : img.src.match(/^https:\/\/assets\.tcgdex\.net\/([a-z-]+)\//);
-  const l = img.src.includes('#pcother') ? ['🔁', 'otra edición', 1] : m && LANG_PHOTO[m[1]];
+  const l = img.src.includes('#pcother') ? ['🔁', 'otra edición', 1] : img.src.includes('#pcsample') ? ['🔖', 'muestra', 2] : m && LANG_PHOTO[m[1]];
   const old = img.parentElement?.querySelector(':scope > .lbadge');
   if (!l) return old?.remove();
   if (old) return;
   const big = img.closest('.tiltw,.result');
-  const full = l[2] ? T('Foto de otra edición de esta carta') : T('Foto en {0}', T(l[1]));
+  const full = l[2] === 2 ? T('Imagen de muestra (con sello SAMPLE)') : l[2] ? T('Foto de otra edición de esta carta') : T('Foto en {0}', T(l[1]));
   img.insertAdjacentHTML('afterend', `<span class="lbadge${big ? ' big' : ''}" title="${esc(full)}">${l[0]} ${big ? esc(full) : esc(T(l[1]))}</span>`);
 }
 const otherCache = {};
@@ -1587,7 +1587,7 @@ const tcgImg = (c, big, key = game) => {
   const code = String(c.c || '').split(' ')[0];
   const sibs = c.k1 && d?.byCode?.[c.k1] ? d.byCode[c.k1].filter(x => x !== c && x.b === c.b && x.id).slice(0, 2).map(x => tcgUrl(x.id, big)) : [];
   const own = code && key === 'digimon' ? [`https://images.digimoncard.io/images/cards/${code}.jpg`]
-    : code && key === 'onepiece' ? [`https://optcgapi.com/media/static/Card_Images/${code}.jpg`]
+    : code && key === 'onepiece' ? [`https://optcgapi.com/media/static/Card_Images/${code}.jpg`, `${LIMITLESS.replace('tpci/', 'one-piece/')}${code.split('-')[0]}/${code}_EN.webp#pcsample`]
     : code && key === 'weiss' ? [wsJp(code)] : [];
   // último recurso: la misma carta (mismo nombre) de otra expansión o edición, marcada como «otra edición»
   const other = c.b && d?.byB?.[c.b] ? d.byB[c.b].filter(x => x !== c && x.id && (x.k1 !== c.k1 || !c.k1)).slice(-2).map(x => tcgUrl(x.id, big) + '#pcother') : [];
