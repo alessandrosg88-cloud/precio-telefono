@@ -670,7 +670,7 @@ const withAlts = urls => { urls = [...new Set(urls.filter(Boolean))]; return url
 // si la foto que se encontró es de otro idioma, lo dice encima de la imagen
 const LANG_PHOTO = { fr: ['🇫🇷', 'francés'], de: ['🇩🇪', 'alemán'], it: ['🇮🇹', 'italiano'], es: ['🇪🇸', 'español'], pt: ['🇵🇹', 'portugués'], ja: ['🇯🇵', 'japonés'] };
 function langBadge(img){
-  const m = img.src.match(/^https:\/\/assets\.tcgdex\.net\/([a-z-]+)\//);
+  const m = img.src.startsWith('https://ws-tcg.com/') ? [0, 'ja'] : img.src.match(/^https:\/\/assets\.tcgdex\.net\/([a-z-]+)\//);
   const l = img.src.includes('#pcother') ? ['🔁', 'otra edición', 1] : m && LANG_PHOTO[m[1]];
   const old = img.parentElement?.querySelector(':scope > .lbadge');
   if (!l) return old?.remove();
@@ -1572,6 +1572,12 @@ async function loadLocal(key){
 }
 // Foto: TCGplayer. TCGplayer no tiene foto de algunos productos (promos, cartas de presentación…):
 // entonces se prueba con otra versión de la misma carta (mismo código) y, en Digimon y One Piece, con su base de datos por código.
+// Weiß Schwarz: la misma carta en la web oficial japonesa (KC/SE28-E01 -> kc_se28_01)
+function wsJp(code){
+  const m = String(code).match(/^([A-Z0-9]+)\/([A-Z0-9]+)-([A-Z]*?)(\d+[A-Z]*)$/i); if (!m) return '';
+  const pre = m[3].toUpperCase().replace(/E$/, ''), a = m[1].toLowerCase(), b = m[2].toLowerCase();
+  return `https://ws-tcg.com/wordpress/wp-content/images/cardlist/${a[0]}/${a}_${b}/${a}_${b}_${(pre + m[4]).toLowerCase()}.png`;
+}
 const tcgUrl = (id, big) => `https://tcgplayer-cdn.tcgplayer.com/product/${id}_${big ? 'in_1000x1000' : '200w'}.jpg`;
 const tcgImg = (c, big, key = game) => {
   const d = localData[key];
@@ -1581,7 +1587,8 @@ const tcgImg = (c, big, key = game) => {
   const code = String(c.c || '').split(' ')[0];
   const sibs = c.k1 && d?.byCode?.[c.k1] ? d.byCode[c.k1].filter(x => x !== c && x.b === c.b && x.id).slice(0, 2).map(x => tcgUrl(x.id, big)) : [];
   const own = code && key === 'digimon' ? [`https://images.digimoncard.io/images/cards/${code}.jpg`]
-    : code && key === 'onepiece' ? [`https://optcgapi.com/media/static/Card_Images/${code}.jpg`] : [];
+    : code && key === 'onepiece' ? [`https://optcgapi.com/media/static/Card_Images/${code}.jpg`]
+    : code && key === 'weiss' ? [wsJp(code)] : [];
   // último recurso: la misma carta (mismo nombre) de otra expansión o edición, marcada como «otra edición»
   const other = c.b && d?.byB?.[c.b] ? d.byB[c.b].filter(x => x !== c && x.id && (x.k1 !== c.k1 || !c.k1)).slice(-2).map(x => tcgUrl(x.id, big) + '#pcother') : [];
   return withAlts([tcgUrl(c.id, big), ...sibs, ...own, ...other]);
