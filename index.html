@@ -1573,15 +1573,15 @@ async function loadLocal(key){
 // Foto: TCGplayer. TCGplayer no tiene foto de algunos productos (promos, cartas de presentación…):
 // entonces se prueba con otra versión de la misma carta (mismo código) y, en Digimon y One Piece, con su base de datos por código.
 const tcgUrl = (id, big) => `https://tcgplayer-cdn.tcgplayer.com/product/${id}_${big ? 'in_1000x1000' : '200w'}.jpg`;
-const tcgImg = (c, big) => {
-  const d = localData[game];
+const tcgImg = (c, big, key = game) => {
+  const d = localData[key];
   // Duel Masters: Torekakaku; si no tiene la foto, la de otra impresión de la misma carta (mismo nombre)
   if (c.y !== undefined) return withAlts([`https://torekakaku.com/dm/image/${c.id}.jpg`,
     ...(c.b && d?.byB?.[c.b] ? d.byB[c.b].filter(x => x !== c && x.id).slice(-3).map(x => `https://torekakaku.com/dm/image/${x.id}.jpg#pcother`) : [])]);
   const code = String(c.c || '').split(' ')[0];
   const sibs = c.k1 && d?.byCode?.[c.k1] ? d.byCode[c.k1].filter(x => x !== c && x.b === c.b && x.id).slice(0, 2).map(x => tcgUrl(x.id, big)) : [];
-  const own = code && game === 'digimon' ? [`https://images.digimoncard.io/images/cards/${code}.jpg`]
-    : code && game === 'onepiece' ? [`https://optcgapi.com/media/static/Card_Images/${code}.jpg`] : [];
+  const own = code && key === 'digimon' ? [`https://images.digimoncard.io/images/cards/${code}.jpg`]
+    : code && key === 'onepiece' ? [`https://optcgapi.com/media/static/Card_Images/${code}.jpg`] : [];
   // último recurso: la misma carta (mismo nombre) de otra expansión o edición, marcada como «otra edición»
   const other = c.b && d?.byB?.[c.b] ? d.byB[c.b].filter(x => x !== c && x.id && (x.k1 !== c.k1 || !c.k1)).slice(-2).map(x => tcgUrl(x.id, big) + '#pcother') : [];
   return withAlts([tcgUrl(c.id, big), ...sibs, ...own, ...other]);
