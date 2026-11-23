@@ -2886,6 +2886,7 @@ document.body.insertAdjacentHTML('beforeend', `<div class="login" id="login" hid
   <h2>👤 Precio Cartas</h2>
   <button class="gbtn google" id="lgoogle"></button>
   <p class="lor" id="lor"></p>
+  <input id="luser" maxlength="20" autocomplete="username" autocapitalize="none" spellcheck="false" hidden>
   <input id="lemail" type="email" autocomplete="email">
   <input id="lpass" type="password" autocomplete="current-password">
   <div class="lrow"><button class="gbtn" id="lin"></button><button class="gbtn soft" id="lnew"></button></div>
@@ -2896,6 +2897,7 @@ function openLogin(msg = ''){
   $('lgoogle').textContent = T('Entrar con Google');
   $('lor').textContent = T('o con tu email');
   $('lemail').placeholder = T('Email'); $('lpass').placeholder = T('Contraseña');
+  $('luser').placeholder = T('Nombre de usuario'); $('luser').hidden = true;
   $('lin').textContent = T('Entrar'); $('lnew').textContent = T('Crear cuenta');
   $('lforgot').textContent = T('¿Olvidaste la contraseña?');
   $('lmsg').textContent = msg; $('lmsg').className = 'lmsg';
@@ -2916,7 +2918,39 @@ const fail = e => { if (e?.code === 'auth/popup-closed-by-user' || e?.code === '
 const done = () => closeLogin();
 $('lgoogle').onclick = () => signInWithPopup(auth, new GoogleAuthProvider()).then(done, fail);
 $('lin').onclick = () => signInWithEmailAndPassword(auth, $('lemail').value.trim(), $('lpass').value).then(done, fail);
-$('lnew').onclick = () => createUserWithEmailAndPassword(auth, $('lemail').value.trim(), $('lpass').value).then(done, fail);
+// Crear cuenta: la primera vez que se pulsa aparece el campo «Nombre de usuario»; la segunda crea la cuenta
+// con email + contraseña y guarda el nombre (único) en usernames/ y en el perfil.
+$('lnew').onclick = async () => {
+  const uf = $('luser');
+  if (uf.hidden) {
+    uf.hidden = false; uf.focus();
+    $('lmsg').textContent = T('Elige tu nombre de usuario y pulsa otra vez «Crear cuenta».'); $('lmsg').className = 'lmsg';
+    return;
+  }
+  const name = uf.value.trim();
+  if (!UNAME_OK.test(unameKey(name))) {
+    $('lmsg').textContent = T('Nombre de usuario') + ': ' + T('Solo letras sin acentos, números y . _ - (de 3 a 20).'); $('lmsg').className = 'lmsg err';
+    return uf.focus();
+  }
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, $('lemail').value.trim(), $('lpass').value);
+    user = cred.user;
+    done();
+    try { await setUsername(name); window.pcToast?.('✅', T('Cuenta creada'), '@' + name); }
+    catch (e) { if (e?.code !== 'permission-denied') { editName(); $('unote').textContent = e?.code === 'taken' ? T('Ese nombre ya lo tiene otro usuario. Prueba con otro.') : ''; } }
+  } catch (e) { fail(e); }
+};
+$('luser').onkeydown = e => { if (e.key === 'Enter') $('lnew').click(); };
+// quien entra sin nombre de usuario (cuentas antiguas de email) elige uno al entrar, una vez por sesión
+let askedName = false;
+async function askName(){
+  if (askedName || !user || user.displayName) return;
+  askedName = true;
+  try { await nameFree('prueba'); } catch (e) { return; } // los nombres aún no están activados en el servidor
+  const wait = () => !$('login').hidden || document.querySelector('.sb-ov');
+  const go = () => wait() ? setTimeout(go, 600) : (user && !user.displayName && editName());
+  go();
+}
 $('lpass').onkeydown = e => { if (e.key === 'Enter') $('lin').click(); };
 $('lforgot').onclick = () => {
   const em = $('lemail').value.trim();
@@ -2926,6 +2960,7 @@ $('lforgot').onclick = () => {
 
 // ---------- Sesión y datos ----------
 onAuthStateChanged(auth, u => {
+  if (u && !u.displayName) setTimeout(askName, 1500);
   setTimeout(() => window.dispatchEvent(new Event('cuenta')));
   user = u; items = new Map();
   if (unsub) { unsub(); unsub = null; }
@@ -3269,6 +3304,6 @@ window.cuentaAPI = {
 
 </script>
 <!-- Sobre diario con una carta (bronce, plata u oro) -->
-<script type="module" src="sobre.js?v=5"></script>
+<script type="module" src="sobre.js?v=6"></script>
 </body>
 </html>
