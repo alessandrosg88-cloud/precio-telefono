@@ -273,9 +273,14 @@ window.PC_BG = /[?&]bg=1\b/.test(location.search) && window.parent !== window;</
   .tabbar button .i{font-size:23px;line-height:1;filter:grayscale(1);opacity:.75;transition:transform .12s}
   .tabbar button.on{color:var(--text)}
   .tabbar button.on .i{filter:none;opacity:1;transform:scale(1.12)}
-  .tabbar button.scan .i{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#f58529,#dd2a7b 50%,#515bd4);color:#fff;filter:none;opacity:1;font-size:24px;box-shadow:0 4px 14px rgba(221,42,123,.35);margin-top:-18px}
+  .tabbar button.tabscan .i{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#f58529,#dd2a7b 50%,#515bd4);color:#fff;filter:none;opacity:1;font-size:24px;box-shadow:0 4px 14px rgba(221,42,123,.35);margin-top:-18px}
   .tabbar .badge{position:absolute;margin:-2px 0 0 22px;background:#ef4444;color:#fff;border-radius:999px;font-size:10px;padding:0 5px;min-width:16px;line-height:16px}
   .tabbar button{position:relative}
+  /* 7 columnas iguales: el botón de Centrado PSA (4º) queda siempre en el centro */
+  .tabbar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));justify-items:stretch}
+  .tabbar button{min-width:0;width:100%}
+  .tabbar button > span:not(.i):not(.badge){max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tabbar button.tabscan{justify-content:center}
   /* perfil */
   .prof{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:4px 0 14px}
   .prof .av{width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#f58529,#dd2a7b,#515bd4);display:grid;place-items:center;font-size:28px;color:#fff;flex:none;overflow:hidden}
@@ -316,7 +321,7 @@ window.PC_BG = /[?&]bg=1\b/.test(location.search) && window.parent !== window;</
   .big{background:linear-gradient(135deg,var(--accent-soft),color-mix(in srgb,var(--gold-soft) 55%,var(--accent-soft)));border-radius:16px}
   .rar{background:var(--gold-soft);color:var(--warn)}
   .tabbar{background:color-mix(in srgb,var(--card) 86%,transparent);backdrop-filter:saturate(1.6) blur(16px);-webkit-backdrop-filter:saturate(1.6) blur(16px)}
-  .tabbar button.scan .i{background:var(--grad);box-shadow:0 6px 18px -4px rgba(106,68,242,.55)}
+  .tabbar button.tabscan .i{background:var(--grad);box-shadow:0 6px 18px -4px rgba(106,68,242,.55)}
   .tabbar button.on .i{animation:pop .35s ease}
   .prof .av{background:var(--grad)}
   #out > *{animation:fadeUp .28s ease both}
@@ -1963,7 +1968,7 @@ const TABS = [['home', '🏠', 'Inicio'], ['search', '🔎', 'Buscar'], ['sealed
 let view = 'home';
 function drawTabbar(){
   const api = window.cuentaAPI, n = api?.user ? api.count('col') : 0;
-  $('tabbar').innerHTML = TABS.map(([k, ico, lbl]) => `<button data-v="${k}" class="${k === 'cen' ? 'scan' : ''}${k === view ? ' on' : ''}" aria-label="${(window.sbT || T)(k === 'vir' ? 'Colección virtual' : lbl)}">
+  $('tabbar').innerHTML = TABS.map(([k, ico, lbl]) => `<button data-v="${k}" class="${k === 'cen' ? 'tabscan' : ''}${k === view ? ' on' : ''}" aria-label="${(window.sbT || T)(k === 'vir' ? 'Colección virtual' : lbl)}">
     <span class="i">${ico}</span>${k === 'cen' ? '' : `<span>${(window.sbT || T)(lbl)}</span>`}${k === 'col' && n ? `<span class="badge">${n}</span>` : ''}</button>`).join('');
   $('tabbar').querySelectorAll('button').forEach(b => b.onclick = () => go2(b.dataset.v));
 }
@@ -2802,7 +2807,7 @@ if ('ontouchstart' in window) {
   let y0 = null, d = 0;
   const reset = () => { ind.classList.remove('show', 'ready'); ind.style.transform = ''; };
   addEventListener('touchstart', e => {
-    y0 = scrollY <= 0 && e.touches.length === 1 && !e.target.closest('.sheet,.login,.scan,.rail,.top5,.pchart,.tiltw,input,select,textarea') ? e.touches[0].clientY : null; d = 0;
+    y0 = scrollY <= 0 && e.touches.length === 1 && !e.target.closest('.sheet,.login,.scan,.tabscan,.rail,.top5,.pchart,.tiltw,input,select,textarea') ? e.touches[0].clientY : null; d = 0;
   }, { passive: true });
   addEventListener('touchmove', e => {
     if (y0 == null) return;
