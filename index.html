@@ -2451,7 +2451,9 @@ function showStats(){
   if ($('sLogin')) $('sLogin').onclick = () => window.cuentaAPI?.login('');
 }
 
-window.GX = { drawHome, showStats, track, showProgress, heroHTML: () => S.on ? heroHTML() : '', get on(){ return S.on; }, level: () => levelOf(S.xp), title: () => titleOf(levelOf(S.xp)), xp: () => S.xp, themes: THEMES, setTheme, get theme(){ return theme; } };
+window.GX = { drawHome, showStats, track, showProgress,
+  // racha de hoy (contando la visita de hoy) y mejor racha: las usa también el sobre diario (sobre.js)
+  streak: () => !S.last ? 1 : S.last === dayKey() ? S.streak : ago(S.last) === 1 ? S.streak + 1 : 1, best: () => S.best, heroHTML: () => S.on ? heroHTML() : '', get on(){ return S.on; }, level: () => levelOf(S.xp), title: () => titleOf(levelOf(S.xp)), xp: () => S.xp, themes: THEMES, setTheme, get theme(){ return theme; } };
 
 // ---------------------------------------------------------------- GRÁFICAS
 // mini gráfica de tendencia (sparkline): pts = [[día, valor], …]
@@ -3266,6 +3268,6 @@ window.cuentaAPI = {
 
 </script>
 <!-- Sobre diario con una carta (bronce, plata u oro) -->
-<script type="module" src="sobre.js?v=4"></script>
+<script type="module" src="sobre.js?v=5"></script>
 </body>
 </html>
