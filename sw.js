@@ -1,7 +1,7 @@
 // Service worker de Precio Cartas (versión teléfono)
 // - Permite instalar la web como app y mostrar avisos de precio en el móvil.
 // - Siempre pide la página a internet primero (precios al día); si no hay conexión, abre la última copia guardada.
-const CACHE = 'pc-shell-v1';
+const CACHE = 'pc-shell-v2';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => e.waitUntil((async () => {
@@ -14,7 +14,7 @@ self.addEventListener('fetch', e => {
   if (req.mode !== 'navigate' || new URL(req.url).origin !== location.origin) return;
   e.respondWith((async () => {
     try {
-      const res = await fetch(req);
+      const res = await fetch(req, { cache: 'no-store' });
       if (res.ok && !new URL(req.url).search) (await caches.open(CACHE)).put(req, res.clone());
       return res;
     } catch (err) {
