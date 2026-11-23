@@ -1959,12 +1959,12 @@ const MOB = {
 };
 const _T = T;
 T = (s, ...a) => _T(MOB[LANG]?.[s] ?? s, ...a);
-const TABS = [['home', '🏠', 'Inicio'], ['search', '🔎', 'Buscar'], ['sealed', '📦', 'Selladas'], ['cen', '📐', '📐 Centrado PSA'], ['col', '📚', 'Colección'], ['me', '👤', 'Perfil']];
+const TABS = [['home', '🏠', 'Inicio'], ['search', '🔎', 'Buscar'], ['sealed', '📦', 'Selladas'], ['cen', '📐', '📐 Centrado PSA'], ['col', '📚', 'Colección'], ['vir', '🎴', 'Virtual'], ['me', '👤', 'Perfil']];
 let view = 'home';
 function drawTabbar(){
   const api = window.cuentaAPI, n = api?.user ? api.count('col') : 0;
-  $('tabbar').innerHTML = TABS.map(([k, ico, lbl]) => `<button data-v="${k}" class="${k === 'cen' ? 'scan' : ''}${k === view ? ' on' : ''}" aria-label="${T(lbl)}">
-    <span class="i">${ico}</span>${k === 'cen' ? '' : `<span>${T(lbl)}</span>`}${k === 'col' && n ? `<span class="badge">${n}</span>` : ''}</button>`).join('');
+  $('tabbar').innerHTML = TABS.map(([k, ico, lbl]) => `<button data-v="${k}" class="${k === 'cen' ? 'scan' : ''}${k === view ? ' on' : ''}" aria-label="${(window.sbT || T)(k === 'vir' ? 'Colección virtual' : lbl)}">
+    <span class="i">${ico}</span>${k === 'cen' ? '' : `<span>${(window.sbT || T)(lbl)}</span>`}${k === 'col' && n ? `<span class="badge">${n}</span>` : ''}</button>`).join('');
   $('tabbar').querySelectorAll('button').forEach(b => b.onclick = () => go2(b.dataset.v));
 }
 function setView(v){
@@ -1983,6 +1983,7 @@ function go2(v){
   if (v === 'guide') { setView('me'); return showGuide(game); }
   if (v === 'sealed') { setView('sealed'); return showSealed(game); }
   if (v === 'col') { setView('col'); if (window.cuentaAPI?.user) return window.cuentaAPI.show('col'); out.innerHTML = loginCard(); return wireLogin(); }
+  if (v === 'vir') { setView('vir'); out.innerHTML = ''; return window.SOBRE?.show(); }
   if (v === 'me') { setView('me'); return showProfile(); }
   if (v === 'cen') { setView('cen'); return showCentering(); }
 }
@@ -3265,6 +3266,6 @@ window.cuentaAPI = {
 
 </script>
 <!-- Sobre diario con una carta (bronce, plata u oro) -->
-<script type="module" src="sobre.js?v=1"></script>
+<script type="module" src="sobre.js?v=2"></script>
 </body>
 </html>
