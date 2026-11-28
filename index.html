@@ -2940,7 +2940,8 @@ const PROVIDERS = [
   ['TCGplayer', /tcgplayer/i, 'EE. UU.', (n) => `https://www.tcgplayer.com/search/all/product?q=${encodeURIComponent(n)}`],
   ['eBay', /ebay/i, 'Internacional', (n) => `https://www.ebay.es/sch/i.html?_nkw=${encodeURIComponent(n + ' ' + GAMES[game].label)}&LH_Sold=1&LH_Complete=1`],
   ['PriceCharting', /pricecharting/i, 'EE. UU.', (n) => `https://www.pricecharting.com/search-products?q=${encodeURIComponent(n)}&type=prices`],
-  ['Torekakaku', /torekakaku|japón/i, 'Japón', null],
+  ['BIGWEB', /bigweb/i, 'Japón', null],
+  ['Torekakaku', /torekakaku/i, 'Japón', null],
   ['Scryfall', /scryfall/i, 'Cardmarket / TCGplayer', null],
 ];
 // "1.234,56 €" / "$1,234.56" / "¥12,000" -> número
