@@ -136,6 +136,10 @@ window.PC_BG = /[?&]bg=1\b/.test(location.search) && window.parent !== window;</
   .strb{display:inline-block;vertical-align:middle;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:800}
   .tile.str,.chip.strc{border-color:#7a5cff}
   .oft.t2{top:20px}
+  /* etiquetas (Overframe, GMR, Starlight, sello) también en las miniaturas pequeñas de la colección y del mercado */
+  .mthumb{position:relative;display:inline-block;flex:none;line-height:0}
+  .mthumb .oft{top:auto;bottom:3px;left:50%;font-size:7.5px;padding:1px 4px;line-height:1.2;letter-spacing:0;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  .mthumb .oft.t2{top:auto;bottom:15px}
   .ofrib.st,.oft.st,.stb,.rar.str2{color:#fff;background:linear-gradient(90deg,#b3121f,#e0462f,#f2b632);text-shadow:0 1px 2px rgba(0,0,0,.4)}
   .stb{display:inline-block;vertical-align:middle;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:800}
   .chip.stc{border-color:#e0462f}
@@ -1567,6 +1571,12 @@ const STR_BADGE = '<span class="strb" title="Starlight Rare">✨ Starlight Rare<
 // etiquetas pequeñas sobre la miniatura de una versión (puede llevar dos: Starlight + Overframe)
 const tileTags = (of, gmr, str, st) => [st && [' st', 'Sello'], of && ['', 'Overframe'], gmr && [' gmr', 'GMR'], str && [' str', 'Starlight']].filter(Boolean).slice(0, 2)
   .map(([c, t], k) => `<span class="oft${c}${k ? ' t2' : ''}">${t}</span>`).join('');
+// etiquetas de una carta guardada o vista: { of, gmr, str, st } (Overframe, GMR, Starlight, con sello)
+const specialOf = x => { if (!x || (x.game || x.g) !== 'yugioh') return null;
+  const t = [x.label, x.rarity, x.id].filter(Boolean).join(' ');
+  const r = { of: !!(x.of || x.tg?.of) || isOF(t), gmr: isGMR(t), str: isStR(t), st: isStamp(t) };
+  return r.of || r.gmr || r.str || r.st ? r : null; };
+const thumbTags = x => { const t = specialOf(x); return t ? tileTags(t.of, t.gmr, t.str, t.st) : ''; };
 let pendingLabel = null; // versión guardada en la colección que hay que abrir (ver openItem)
 const printCache = {};
 async function ygoPrints(name){
@@ -2665,7 +2675,7 @@ function histOf(i){
   return Object.keys(m).sort().map(d => [d, m[d]]);
 }
 const moverRow = m => `<button class="mvr" data-g="${esc(m.g)}" data-q="${esc(m.q || m.n)}">
-  ${m.i ? `<img src="${esc(m.i)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}
+  <span class="mthumb">${m.i ? `<img src="${esc(m.i)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}${thumbTags(m)}</span>
   <span class="mvn"><b>${esc(m.n)}</b><small>${ICONS[m.g] || ''} ${T('desde el {0}', new Date(m.from).toLocaleDateString(LOCALE(), { day: 'numeric', month: 'short' }))}</small></span>
   <span class="mvp"><b>${fm(m.p.at(-1)[1], m.c)}</b><small class="${m.ch >= 0 ? 'up' : 'down'}">${m.ch >= 0 ? '▲' : '▼'} ${Math.abs(m.ch).toFixed(1)}%</small></span></button>`;
 function wireCommon(root){
@@ -2717,8 +2727,8 @@ function homeHTML(){
       return last.length ? `<div class="hmedals">${last.map(([id, ico, name]) => `<span class="hmedal" title="${esc(T(name))}"><i>${ico}</i>${T(name)}</span>`).join('')}<span class="hmedal more">${ACH.filter(a => S.ach[a[0]]).length}/${ACH.length} 🎖️</span></div>` : ''; })()}
     <button class="hmore" data-go="progress">${T('Todas las misiones y logros')} ›</button></div>` : ''}
 
-  ${top.length ? `<div class="gxsec"><h3>✨ ${T('Tus cartas destacadas')} <small>${cs.cur}</small></h3><div class="top5">${top.map((i, k) => cardTile(i.img, i.name, fm(i.value, i.cur), `data-col="${esc(i.__id)}"`, k + 1, i.game, histOf(i), i.game === 'yugioh' && { of: i.of || isOF(i.label), gmr: isGMR(i.rarity || i.label), str: isStR(i.rarity || i.label), st: isStamp(i.label) })).join('')}</div></div>` : ''}
-  ${rec.length ? `<div class="gxsec"><h3>🕒 ${T('Vistas recientemente')}</h3><div class="top5">${rec.map(r => cardTile(r.i, r.n, r.p.length ? fm(r.p.at(-1)[1], r.c) : '', `data-g="${esc(r.g)}" data-rq="${esc(r.q || r.n)}" data-s="${r.s ? 1 : 0}"`, 0, r.g, r.p)).join('')}</div></div>` : ''}
+  ${top.length ? `<div class="gxsec"><h3>✨ ${T('Tus cartas destacadas')} <small>${cs.cur}</small></h3><div class="top5">${top.map((i, k) => cardTile(i.img, i.name, fm(i.value, i.cur), `data-col="${esc(i.__id)}"`, k + 1, i.game, histOf(i), specialOf(i))).join('')}</div></div>` : ''}
+  ${rec.length ? `<div class="gxsec"><h3>🕒 ${T('Vistas recientemente')}</h3><div class="top5">${rec.map(r => cardTile(r.i, r.n, r.p.length ? fm(r.p.at(-1)[1], r.c) : '', `data-g="${esc(r.g)}" data-rq="${esc(r.q || r.n)}" data-s="${r.s ? 1 : 0}"`, 0, r.g, r.p, specialOf(r))).join('')}</div></div>` : ''}
 
   <div class="gxsec"><h3>📈 ${T('Evolución del mercado')} <small>${T('cartas que sigues')}</small></h3>
     ${mv.length ? mv.map(moverRow).join('') : `<p class="note">${T('Aquí verás qué cartas suben y bajan. Se calcula con precios reales que vas consultando: abre tus cartas en días distintos y aparecerán sus cambios.')}</p>`}
@@ -2878,7 +2888,8 @@ function afterRender(v){
   track('view', { first: firstView, game });
   const txt = plain(v.mainValue), cur = curOf(txt), val = Number(v.value);
   const code = (v.versionLabel || '').split(' · ')[0];
-  const info = { n: v.name || '', i: v.img && !v.img.startsWith('data:') ? v.img : '', g: game, s: v.sealed ? 1 : 0, q: code && game === 'yugioh' ? code : ($('q').value.trim() || v.name || '') };
+  const info = { n: v.name || '', i: v.img && !v.img.startsWith('data:') ? v.img : '', g: game, s: v.sealed ? 1 : 0, q: code && game === 'yugioh' ? code : ($('q').value.trim() || v.name || ''),
+    ...(v.overframe || v.gmr || v.str || v.stamp ? { tg: { of: !!v.overframe, gmr: !!v.gmr, str: !!v.str, st: !!v.stamp } } : {}) };
   const h = val > 0 && cur ? record(id, val, cur, info) : LS.get(HKEY, {})[id];
 
   // chips de datos de la ficha
@@ -3468,7 +3479,7 @@ function showMine(view, keep){
       <div class="kpi"><span>📊 ${T('Beneficio / pérdida')}</span><b>${plTxt}</b><small>${T('solo cartas con compra y precio actual')}</small></div>
     </div>
     ${top.length ? `<div class="gxsec"><h3>🏅 ${T('Cartas más valiosas')} <small>${mainCur}</small></h3><div class="top5">${top.map((i, k) =>
-      `<button data-open="${esc(idOf(i))}"><span class="rk">${k + 1}</span>${i.img ? `<img src="${esc(i.img)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}<span class="nm2">${esc(i.name)}</span><b>${fmt(i.value, i.cur)}</b></button>`).join('')}</div></div>` : ''}
+      `<button data-open="${esc(idOf(i))}">${thumbTags(i)}<span class="rk">${k + 1}</span>${i.img ? `<img src="${esc(i.img)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}<span class="nm2">${esc(i.name)}</span><b>${fmt(i.value, i.cur)}</b></button>`).join('')}</div></div>` : ''}
     <div class="gxsec"><h3>📈 ${T('Evolución del valor de la colección')} <small>${mainCur || ''}</small></h3>
       ${hpts.length >= 2 && window.pcChart ? window.pcChart(hpts, mainCur) : `<p class="note">${T('Se guarda un punto cada día que abres la app con la sesión iniciada (en este dispositivo). En unos días verás aquí la gráfica.')}</p>`}
       <p class="note">${T('Los precios de cada carta se actualizan cuando abres su ficha.')}</p></div>` : '';
@@ -3488,7 +3499,7 @@ function showMine(view, keep){
     const ipl = i.buy != null && i.value && (i.buyCur || i.cur) === i.cur ? (i.value - i.buy) * i.qty : null;
     const hit = i.target && i.value && i.value <= i.target;
     return `<div class="mrow" data-id="${esc(idOf(i))}">
-      ${i.img ? `<img src="${esc(i.img)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}
+      <span class="mthumb">${i.img ? `<img src="${esc(i.img)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}${thumbTags(i)}</span>
       <div class="mi"><button class="link mopen">${esc(i.name)}</button>${i.game === 'yugioh' && (i.of || isOF(i.label)) ? ' ' + OF_BADGE : ''}${i.game === 'yugioh' && isGMR(i.rarity || i.label) ? ' ' + GMR_BADGE : ''}${i.game === 'yugioh' && isStR(i.rarity || i.label) ? ' ' + STR_BADGE : ''}${i.game === 'yugioh' && isStamp(i.label) ? ' ' + STAMP_BADGE(i.set) : ''}
         <div class="note">${esc(ofText([i.label, groupBy === 'rarity' ? i.set : i.rarity].filter(Boolean).join(' · ')))}</div>
         <div class="note"><b>${esc(i.price || '')}</b>${window.pcSpark ? window.pcSpark(window.pcHistOf?.(i)) : ''}${ch != null ? ` <span class="${ch >= 0 ? 'up' : 'down'}">${ch >= 0 ? '▲' : '▼'}${Math.abs(ch).toFixed(1)}%</span>` : ''}
