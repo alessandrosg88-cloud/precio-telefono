@@ -33,3 +33,9 @@ En el móvil puedes usar «Añadir a pantalla de inicio» para abrirla como una 
 - Historial de precios compartido entre dispositivos y de todas las cartas: guardar instantáneas diarias en Firestore o en `data/` con la GitHub Action que ya actualiza los precios.
 - Precios de eBay / PriceCharting integrados: requieren sus API con clave privada, que no puede ir en el frontend; habría que llamarlas desde un backend.
 - Reconocimiento de cartas por imagen (no solo el código): un servicio de visión artificial en servidor.
+
+## 🃏 Yu-Gi-Oh! (noviembre 2026, igual que la web)
+
+- **Overframe, Starlight, Grand Master Rare y cartas con sello del World Championship** («Emblazoned») como versiones aparte, con su etiqueta, su foto y su precio; botones grandes en la ficha para cambiar entre las versiones del mismo código. En la colección, filtros y «Agrupar: Especiales aparte».
+- **Códigos japoneses y de Asia** (LOSP-JP004…), códigos con letra (LDK2-ENK01), con un cero de más (LEDD-ENA001) o con la O cambiada por 0 (EG01-EN001); **expansiones y mazos por código o nombre** (EGO1, LDK2-ENY, «legendary decks 2»), completadas con Yugipedia; botón «Añadir todas a mi colección».
+- **Mazos** (en Reglas): «¿Qué mazo puedo hacer?» con tu colección (mazos completos, por arquetipo y de torneo, con las cartas que te faltan), constructor con tus cartas y buscador de mazos de torneo. Usa `mazos.js` y `data/decks.json` de la web.

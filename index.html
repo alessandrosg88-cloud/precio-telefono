@@ -118,6 +118,40 @@ window.PC_BG = /[?&]bg=1\b/.test(location.search) && window.parent !== window;</
   .msg.err{color:var(--bad)}
   .result{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;display:grid;grid-template-columns:260px 1fr;gap:22px;touch-action:pan-y}
   .pic{position:relative}
+  /* Overframe (Extended Art) */
+  .ofribs{position:absolute;top:8px;left:8px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;pointer-events:none}
+  .ofrib{padding:3px 9px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.02em;
+    color:#1b1030;background:linear-gradient(90deg,#ffd76a,#ff9de2,#9ad8ff);box-shadow:0 2px 8px rgba(0,0,0,.35);pointer-events:none}
+  .oft{position:absolute;top:4px;left:50%;transform:translateX(-50%);z-index:2;padding:1px 6px;border-radius:999px;font-size:9.5px;font-weight:800;
+    text-transform:uppercase;letter-spacing:.03em;color:#1b1030;background:linear-gradient(90deg,#ffd76a,#ff9de2,#9ad8ff);white-space:nowrap;pointer-events:none}
+  .tile.of{border-color:#e0a3ff}
+  .ofb{display:inline-block;vertical-align:middle;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:800;color:#1b1030;
+    background:linear-gradient(90deg,#ffd76a,#ff9de2,#9ad8ff)}
+  .rar.ofr{color:#1b1030;background:linear-gradient(90deg,#ffd76a,#ff9de2,#9ad8ff)}
+  .chip.ofc{border-color:#e0a3ff}
+  .ofrib.gmr,.oft.gmr,.gmrb,.rar.gmrr{color:#2a1a00;background:linear-gradient(90deg,#fff1a8,#f2b632,#c98a12)}
+  .gmrb{display:inline-block;vertical-align:middle;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:800}
+  .tile.gmr,.chip.gmrc{border-color:#f2b632}
+  .ofrib.str,.oft.str,.strb,.rar.strr{color:#fff;background:linear-gradient(90deg,#3b2a8f,#7a5cff,#40c4ff);text-shadow:0 1px 2px rgba(0,0,0,.4)}
+  .strb{display:inline-block;vertical-align:middle;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:800}
+  .tile.str,.chip.strc{border-color:#7a5cff}
+  .oft.t2{top:20px}
+  .ofrib.st,.oft.st,.stb,.rar.str2{color:#fff;background:linear-gradient(90deg,#b3121f,#e0462f,#f2b632);text-shadow:0 1px 2px rgba(0,0,0,.4)}
+  .stb{display:inline-block;vertical-align:middle;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:800}
+  .chip.stc{border-color:#e0462f}
+  .gchips{margin:0 0 12px}
+  .addall{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 12px}
+  .mkinds{margin:0 0 12px}
+  .vspec:empty{display:none} .vspec{margin:0 0 12px}
+  .vspecs{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+  .vs{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:2px solid var(--line);background:var(--card);color:var(--text);border-radius:12px;padding:8px 10px;cursor:pointer;font:inherit}
+  .vs b{font-size:13px} .vs span{font-size:11.5px;color:var(--muted)} .vs i{font-style:normal;font-weight:800;font-size:14px;color:var(--good)}
+  .vs.st{border-color:#e0462f} .vs.of{border-color:#e0a3ff} .vs.gmr{border-color:#f2b632} .vs.str{border-color:#7a5cff}
+  .vs.on{background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent) inset}
+  .mkinds .k-st{border-color:#e0462f} .mkinds .k-of{border-color:#e0a3ff} .mkinds .k-gmr{border-color:#f2b632} .mkinds .k-str{border-color:#7a5cff}
+  .top5 .oft.t2{top:40px}
+  .top5 .oft{top:24px}
+  .ofnote{font-size:12.5px;color:var(--muted);margin:-4px 0 12px}
   .pic img{width:100%;border-radius:10px;display:block;min-height:120px;background:var(--line)}
   .pic.loading img{opacity:.35}
   .altrow{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 2px}
@@ -570,7 +604,7 @@ window.PC_BG = /[?&]bg=1\b/.test(location.search) && window.parent !== window;</
 <script src="i18n-keys.js?v=14"></script>
 <script src="i18n.js?v=14"></script>
 <script src="guias.js?v=5"></script>
-<script src="como-se-usa.js?v=5"></script>
+<script src="como-se-usa.js?v=7"></script>
 <script src="centrado.js?v=1"></script>
 <script>
 // =====================================================================
@@ -799,7 +833,24 @@ function jump(i){
 }
 
 // Selector de rareza / versión: botones con cada rareza + desplegable con todas las versiones
+// Botones grandes con las versiones del mismo código cuando alguna es especial
+// (con sello, Overframe, GMR, Starlight): así se ve de un vistazo y se cambia con un toque.
+function drawSpecial(){
+  const box = $('vspec'); if (!box) return;
+  if (!current || current.items.length < 2) { box.innerHTML = ''; return; }
+  const labels = current.items.map(current.label), i = current.index;
+  const code = String(labels[i]?.t || '').split(' · ')[0];
+  const ks = labels.map((l, k) => k).filter(k => String(labels[k]?.t || '').split(' · ')[0] === code);
+  if (ks.length < 2 || !ks.some(k => labels[k].st || labels[k].of || labels[k].gmr || labels[k].str)) { box.innerHTML = ''; return; }
+  const name = l => [l.st && '🏅 ' + T('Con sello'), l.of && '🖼️ Overframe', l.gmr && '🏆 GMR', l.str && '✨ Starlight'].filter(Boolean).join(' · ') || T('Normal');
+  const alt = l => /alternate art/i.test(l.t) ? ' · ' + T('ilustración alternativa') : '';
+  box.innerHTML = `<p class="lbl2">${T('Versiones de {0}', esc(code))}</p><div class="vspecs">${ks.map(k => { const l = labels[k];
+    return `<button class="vs${k === i ? ' on' : ''}${l.st ? ' st' : l.of ? ' of' : l.gmr ? ' gmr' : l.str ? ' str' : ''}" data-k="${k}">
+      <b>${name(l)}</b><span>${esc(l.r || '')}${alt(l)}</span><i>${l.p || '—'}</i></button>`; }).join('')}</div>`;
+  box.querySelectorAll('.vs').forEach(b => b.onclick = () => jump(Number(b.dataset.k)));
+}
 function drawPicker(){
+  drawSpecial();
   const box = $('vpick'); if (!box || !current) return;
   const n = current.items.length, i = current.index;
   if (n < 2) { box.innerHTML = ''; return; }
@@ -808,20 +859,23 @@ function drawPicker(){
   labels.forEach((l, k) => { if (l.r && !rars.some(x => x.r === l.r)) rars.push({ r: l.r, k, count: 0 }); });
   labels.forEach(l => { const x = rars.find(x => x.r === l.r); if (x) x.count++; });
   const curR = labels[i].r;
+  const nOF = labels.filter(l => l.of).length, nST = labels.filter(l => l.st).length;
   box.innerHTML = `
     <p class="lbl2">${T('Desliza para ver todas las versiones ({0})', n)}</p>
     <div class="rail" id="rail">${labels.map((l, k) =>
-      `<button class="tile${k === i ? ' on' : ''}${l.rep ? ' rep' : ''}" data-k="${k}" title="${esc([l.t, l.r].filter(Boolean).join(' · '))}">
-        ${l.i ? `<img src="${l.i}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}
+      `<button class="tile${k === i ? ' on' : ''}${l.rep ? ' rep' : ''}${l.of ? ' of' : ''}${l.gmr ? ' gmr' : ''}${l.str ? ' str' : ''}" data-k="${k}" title="${esc(ofText([l.t, l.r].filter(Boolean).join(' · ')))}">
+        ${tileTags(l.of, l.gmr, l.str, l.st)}${l.i ? `<img src="${l.i}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}
         <span class="tr">${esc(l.r || '—')}</span><span class="tp">${l.p || '·'}</span></button>`).join('')}</div>
-    ${rars.length > 1 && rars.length <= 20 ? `<p class="lbl2">${T('Todas las rarezas de esta carta ({0})', rars.length)}</p><div class="chips">${rars.map(x =>
-      `<button class="chip${x.r === curR ? ' on' : ''}" data-r="${esc(x.r)}">${esc(x.r)}${x.count > 1 ? `<small>×${x.count}</small>` : ''}</button>`).join('')}</div>` : ''}
+    ${(rars.length > 1 && rars.length <= 20) || nOF || nST ? `<p class="lbl2">${T('Todas las rarezas de esta carta ({0})', rars.length)}</p><div class="chips">${nST ? `<button class="chip stc${labels[i].st ? ' on' : ''}" data-x="st">🏅 ${T('Con sello')}<small>×${nST}</small></button>` : ''}${nOF ? `<button class="chip ofc${labels[i].of ? ' on' : ''}" data-x="of">🖼️ Overframe<small>×${nOF}</small></button>` : ''}${rars.length <= 20 ? rars.map(x =>
+      `<button class="chip${x.r === curR ? ' on' : ''}${isGMR(x.r) ? ' gmrc' : isStR(x.r) ? ' strc' : ''}" data-r="${esc(x.r)}">${isGMR(x.r) ? '🏆 ' : isStR(x.r) ? '✨ ' : ''}${esc(x.r)}${x.count > 1 ? `<small>×${x.count}</small>` : ''}</button>`).join('') : ''}</div>` : ''}
     <p class="lbl2">${T('Elige la versión')}</p>
     <select id="vsel">${labels.map((l, k) =>
-      `<option value="${k}"${k === i ? ' selected' : ''}>${k + 1}. ${esc([l.t, l.r && !String(l.t).includes(l.r) ? l.r : ''].filter(Boolean).join(' · '))}${l.p ? ' — ' + l.p : ''}</option>`).join('')}</select>`;
+      `<option value="${k}"${k === i ? ' selected' : ''}>${k + 1}. ${l.st ? '🏅 ' : ''}${l.str ? '✨ ' : ''}${l.of ? '🖼️ ' : l.gmr ? '🏆 ' : ''}${esc(ofText([l.t, l.r && !String(l.t).includes(l.r) ? l.r : ''].filter(Boolean).join(' · ')))}${l.p ? ' — ' + l.p : ''}</option>`).join('')}</select>`;
   box.querySelectorAll('.chip').forEach(b => b.onclick = () => {
-    const r = b.dataset.r;
-    const ks = labels.map((l, k) => l.r === r ? k : -1).filter(k => k >= 0);
+    const r = b.dataset.r, x = b.dataset.x;
+    const ks = labels.map((l, k) => (x ? l[x] : l.r === r) ? k : -1).filter(k => k >= 0);
+    const isCur = x ? labels[i][x] : curR === r;
+    if (x) return jump(isCur ? ks[(ks.indexOf(i) + 1) % ks.length] : ks[0]);
     // si ya estás en esa rareza, pasa a la siguiente versión de la misma rareza
     const next = curR === r ? ks[(ks.indexOf(i) + 1) % ks.length] : ks[0];
     jump(next);
@@ -869,12 +923,13 @@ function render(v){
     <div class="result" id="result">
       <div class="pic">
         <img src="${v.img || NOIMG}" alt="${esc(v.name)}"${slideDir ? ` class="slide${slideDir > 0 ? 'R' : 'L'}"` : ''}>
+        ${v.overframe || v.gmr || v.str || v.stamp ? `<span class="ofribs">${v.stamp ? `<span class="ofrib st">🏅 ${esc(v.stamp)}</span>` : ''}${v.str ? '<span class="ofrib str">✨ Starlight Rare</span>' : ''}${v.overframe ? '<span class="ofrib">🖼️ Overframe</span>' : ''}${v.gmr ? '<span class="ofrib gmr">🏆 Grand Master Rare</span>' : ''}</span>` : ''}
         ${v.alts ? `<div class="alts"><p class="replica">${T('Con este código se imprimieron varias versiones. Toca la tuya:')}</p><div class="altrow">${v.alts.map((a, k) =>
           `<button class="alt${k === 0 ? ' on' : ''}" data-k="${k}"><img src="${ygpThumb(a.url)}" alt="" loading="lazy"><span>${esc(a.label)}</span></button>`).join('')}</div></div>` : ''}
         ${v.replica ? `<p class="replica">${T('⚠️ No hay foto de esta impresión oficial: la imagen es solo de referencia (réplica de YGOPRODeck, «Not For Use in Sanctioned Tournaments»).')}</p>` : ''}
         ${n > 1 ? `<div class="nav">
             <button class="arrow" id="prev" aria-label="${T('Versión anterior')}">‹</button>
-            <div class="vlabel"><b>${T('Versión {0} de {1}', i + 1, n)}</b>${esc(v.versionLabel || v.rarity || '')}</div>
+            <div class="vlabel"><b>${T('Versión {0} de {1}', i + 1, n)}</b>${v.stamp ? '🏅 ' : ''}${v.str ? '✨ ' : ''}${v.overframe ? '🖼️ ' : v.gmr ? '🏆 ' : ''}${esc(ofText(v.versionLabel || v.rarity || ''))}</div>
             <button class="arrow" id="next" aria-label="${T('Versión siguiente')}">›</button>
           </div>${dots}` : ''}
       </div>
@@ -882,7 +937,11 @@ function render(v){
         <p class="name">${esc(v.name)}</p>
         ${v.subname ? `<p class="meta">${esc(v.subname)}</p>` : ''}
         <p class="meta">${v.meta}</p>
-        ${v.rarity ? `<span class="rar">✦ ${esc(v.rarity)}</span>` : ''}
+        ${v.rarity ? `<span class="rar">✦ ${esc(v.rarity)}</span>` : ''}${v.overframe ? ` <span class="rar ofr">🖼️ Overframe</span>` : ''}${v.gmr ? ` <span class="rar gmrr">🏆 GMR</span>` : ''}${v.str ? ` <span class="rar strr">✨ Starlight</span>` : ''}${v.stamp ? ` <span class="rar str2">🏅 ${esc(v.stamp)}</span>` : ''}
+        ${v.stamp ? `<p class="ofnote">${T('Con el sello del Yu-Gi-Oh! World Championship estampado en el cuadro del efecto. Tiene un precio distinto al de la versión sin sello.')}</p>` : ''}
+        ${v.gmr ? `<p class="ofnote">${T('Grand Master Rare: tirada muy corta con número de serie. Casi no hay ventas, así que a veces no hay precio público. Puedes añadirla igual a tu colección y poner tu precio de compra con ✏️.')}</p>` : ''}
+        ${v.overframe ? `<p class="ofnote">${T('Versión Overframe (Extended Art): el dibujo sale del marco. Tiene un precio distinto al de la versión normal.')}${v.ofNoScan ? ' ' + T('Yugipedia aún no tiene foto de la versión Overframe: la imagen es la de la normal.') : ''}</p>` : ''}
+        <div class="vspec" id="vspec"></div>
         <div class="picker" id="vpick"></div>
         <div class="big"><div class="lbl">${T(v.mainLabel)}</div><div class="val">${v.mainValue || T('Sin precio')}</div>
           ${v.approx ? `<div class="approx">${T(v.approx)}</div>` : ''}
@@ -951,14 +1010,19 @@ document.addEventListener('keydown', e => {
 
 // Rejilla de cartas (resultados de búsqueda o expansión entera)
 // items: [{ img, title, sub, price, open }]
-function renderGrid(title, items, { sort } = {}){
+function renderGrid(title, items, { sort, chips, addAll } = {}){
+  let chip = -1, armed = false;
   const draw = list => {
     redraw = () => $('q').value.trim() ? search() : (out.innerHTML = ''); // al cambiar idioma se vuelve a buscar
     out.innerHTML = `${backBtn()}
       <div class="bar"><h2>${title}</h2>
         ${sort ? `<select id="sort"><option value="num">${T('Ordenar por número')}</option><option value="hi">${T('Más caras primero')}</option><option value="lo">${T('Más baratas primero')}</option></select>` : ''}
       </div>
-      <div class="list">${list.map((it, k) => `<div class="item${it.real ? ' rep' : ''}" data-k="${k}">
+      ${addAll && window.cuentaAPI?.addMany && items.some(i => i.col) ? `<div class="addall"><button class="gbtn" id="addall">${T('➕ Añadir las {0} a mi colección', pool().filter(i => i.col).length)}</button>
+        <span class="note">${T('Las que ya tienes no se duplican. Las nuevas se marcan con la lista #{0}.', esc(addAll))}</span></div>` : ''}
+      ${chips?.length ? `<div class="chips gchips"><button class="chip${chip < 0 ? ' on' : ''}" data-c="-1">${T('Todas')} <small>${items.length}</small></button>${chips.map((c, k) =>
+        `<button class="chip${chip === k ? ' on' : ''}" data-c="${k}">${c.t} <small>${items.filter(c.f).length}</small></button>`).join('')}</div>` : ''}
+      <div class="list">${list.map((it, k) => `<div class="item${it.real ? ' rep' : ''}" data-k="${k}">${it.tags || ''}
           <img src="${it.img || NOIMG}" loading="lazy" alt="">
           <div>${esc(it.title)}</div>${it.sub ? `<div class="note">${esc(it.sub)}</div>` : ''}
           ${it.price ? `<div class="p">${it.price}</div>` : ''}</div>`).join('')}</div>`;
@@ -972,10 +1036,24 @@ function renderGrid(title, items, { sort } = {}){
       $('sort').value = sortMode;
       $('sort').onchange = e => { sortMode = e.target.value; draw(sorted()); };
     }
+    out.querySelectorAll('.gchips .chip').forEach(b => b.onclick = () => { chip = Number(b.dataset.c); armed = false; draw(sorted()); });
+    const ab = $('addall');
+    if (ab) ab.onclick = async () => {
+      const api = window.cuentaAPI;
+      if (!api?.user) return api?.login(T('Entra para guardar cartas en tu colección.'));
+      const todo = pool().filter(i => i.col);
+      if (!armed) { armed = true; ab.textContent = T('Pulsa otra vez para añadir {0} cartas', todo.length); return; }
+      ab.disabled = true; let k = 0;
+      const cards = [];
+      for (const it of todo) { try { cards.push(await it.col()); } catch (e) {} ab.textContent = T('Preparando {0}/{1}…', ++k, todo.length); }
+      const n = await api.addMany(cards, addAll, (a, b) => { ab.textContent = T('Guardando {0}/{1}…', a, b); });
+      ab.textContent = T('✓ {0} cartas añadidas ({1} ya las tenías)', n, cards.length - n);
+    };
   };
   let sortMode = 'num';
   setTimeout(toTop);
-  const sorted = () => sortMode === 'num' ? items : [...items].sort((a, b) =>
+  function pool(){ return chip >= 0 && chips?.[chip] ? items.filter(chips[chip].f) : items; }
+  const sorted = () => sortMode === 'num' ? pool() : [...pool()].sort((a, b) =>
     sortMode === 'hi' ? (b.v ?? -1) - (a.v ?? -1) : (a.v ?? 1e9) - (b.v ?? 1e9));
   draw(items);
 }
@@ -1182,7 +1260,7 @@ const RAR_ABBR = { 'Common': ['C', 'SP'], 'Short Print': ['SP', 'C'], 'Rare': ['
   'Duel Terminal Normal Parallel Rare': ['DNPR'], 'Duel Terminal Super Parallel Rare': ['DSPR'], 'Duel Terminal Ultra Parallel Rare': ['DUPR'],
   'Duel Terminal Normal Rare Parallel Rare': ['DNRPR'], 'Duel Terminal Rare Parallel Rare': ['DRPR'],
   'Normal Parallel Rare': ['NPR'], 'Super Parallel Rare': ['SPR'], 'Ultra Parallel Rare': ['UPR'], 'Ultra Rare (Pharaoh\'s Rare)': ['URPR'],
-  '10000 Secret Rare': ['10000ScR'], 'Ghost Secret Rare': ['GScR'],
+  '10000 Secret Rare': ['10000ScR'], 'Ghost Secret Rare': ['GScR'], 'Grand Master Rare': ['GMR'],
   // nombres que usa TCGplayer
   "Prismatic Collector's Rare": ['PCR', 'CR'], 'Prismatic Ultimate Rare': ['PUR', 'UtR'], 'Starfoil Rare': ['SFR'], 'Starfoil': ['SFR'],
   'Parallel Rare': ['NPR', 'SPR', 'UPR', 'PR'], 'Duel Terminal Technology Common': ['DNPR', 'C'], 'Duel Terminal Technology Ultra Rare': ['DUPR', 'UR'],
@@ -1200,7 +1278,9 @@ async function ygpScans(name, setPrefix){
     return all.map(f => {
       const base = f.name.replace(/\.[a-z]+$/i, '');
       const t = base.slice(ygpKey(name).length + 1).split('-');
-      return { url: f.url, file: f.name, set: t[0], reg: t[1], rar: t[2], ed: t[3], extra: t.slice(4) };
+      // las cartas japonesas no llevan edición: "X-LOCH-JP-UR-EA" -> "EA" es un extra, no la edición
+      const hasEd = /^(1E|UE|LE|DT)$/.test(t[3] || '');
+      return { url: f.url, file: f.name, set: t[0], reg: t[1], rar: t[2], ed: hasEd ? t[3] : undefined, extra: hasEd ? t.slice(4) : t.slice(3) };
     }).filter(x => x.set && x.reg && !x.extra.includes('OP') && x.rar !== 'OP' && x.ed !== 'OP');
   })().catch(() => (delete scanCache[pre], []));
 }
@@ -1211,17 +1291,19 @@ function ygpRegion(code){
 }
 // Elige el escaneo que corresponde a esa impresión (o null si Yugipedia no lo tiene)
 // Todas las impresiones reales que encajan con ese código y rareza (p. ej. LOB-EN001: original, reimpresión y 25 aniversario)
-function scanGroup(scans, code, rarity){
-  const best = pickScan(scans, code, rarity);
+function scanGroup(scans, code, rarity, of){
+  const best = pickScan(scans, code, rarity, of);
   if (!best) return [];
-  const g = scans.filter(x => x.set === best.set && x.reg === best.reg && x.rar === best.rar && !x.extra.some(e => /^(German|Italian|French|Spanish|Portuguese|GC|OP)$/.test(e)));
+  const ea = best.extra.includes('EA');
+  const g = scans.filter(x => x.set === best.set && x.reg === best.reg && x.rar === best.rar && x.extra.includes('EA') === ea && !x.extra.some(e => /^(German|Italian|French|Spanish|Portuguese|GC|OP)$/.test(e)));
   const ord = x => (x.extra.length ? 10 : 0) + ({ '1E': 0, 'UE': 1, 'LE': 2 }[x.ed] ?? 3);
   return [best, ...g.filter(x => x !== best).sort((a, b) => ord(a) - ord(b))];
 }
 const ED_NAME = { '1E': '1ª edición', 'UE': 'Edición ilimitada', 'LE': 'Edición limitada', 'DT': 'Duel Terminal' };
 const EXTRA_NAME = { 'Reprint': 'Reimpresión', '25thAnniversaryEdition': '25 aniversario' };
 const scanLabel = x => [T(ED_NAME[x.ed] || x.ed || ''), ...x.extra.map(e => T(EXTRA_NAME[e] || e))].filter(Boolean).join(' · ');
-function pickScan(scans, code, rarity){
+// of = true: versión Overframe (Yugipedia la marca con «-EA»); false: la normal; undefined: cualquiera
+function pickScan(scans, code, rarity, of){
   if (!scans?.length) return null;
   const set = code ? String(code).toUpperCase().split('-')[0] : null;
   const reg = code ? ygpRegion(code) : 'EN';
@@ -1232,7 +1314,10 @@ function pickScan(scans, code, rarity){
     let sc = 0;
     if (x.reg === reg) sc += 8; else if (['EN', 'NA', 'EU'].includes(x.reg) && ['EN', 'NA', 'EU'].includes(reg)) sc += 3; else if (code) continue;
     if (ab.length) { if (ab[0] === x.rar) sc += 6; else if (ab.includes(x.rar)) sc += 4; else continue; } // otra rareza = otra carta
-    if (!x.extra.length) sc += 2;
+    const ea = x.extra.includes('EA');
+    if (of === false && ea) continue;           // la normal nunca enseña la foto Overframe
+    if (of && ea) sc += 10;                     // la Overframe, su foto (si Yugipedia la tiene)
+    if (!x.extra.filter(e => e !== 'EA').length) sc += 2;
     if (x.ed === '1E') sc += 1;
     if (sc > bs) { bs = sc; best = x; }
   }
@@ -1243,9 +1328,9 @@ const ygpThumb = u => { const m = u?.match(/^(https:\/\/img\.yugipedia\.com\/)(.
 document.addEventListener('error', e => { const im = e.target;
   if (im?.tagName === 'IMG' && /img\.yugipedia\.com\/thumb\//.test(im.src)) im.src = im.src.replace('/thumb/', '/').replace(/\/[^/]+$/, ''); }, true);
 const withTimeout = (p, ms) => Promise.race([p, new Promise(ok => setTimeout(() => ok(null), ms))]);
-async function ygoRealImg(c, code, rarity, small){
+async function ygoRealImg(c, code, rarity, small, of){
   const prefix = code ? String(code).toUpperCase().split('-')[0] : null;
-  const s = pickScan(await ygpScans(c.name, prefix), code, rarity);
+  const s = pickScan(await ygpScans(c.name, prefix), code, rarity, of);
   return s ? (small ? ygpThumb(s.url) : s.url) : null;
 }
 // Idioma según el código impreso: LOB-DE001 / LOB-G001 (alemán), -FR/-F, -IT/-I, -PT/-P, -SP/-S
@@ -1289,12 +1374,136 @@ async function searchYugiohLocal(q){
   return { cards: r?.data || [], hit };
 }
 
+// ---- Códigos japoneses y de otras regiones del OCG (LOSP-JP004, LOCH-KR001, RC04-AE001…) ----
+// Cardmarket y TCGplayer solo venden cartas del TCG, así que estos códigos se buscan en las listas de
+// cada expansión de Yugipedia (código, nombre en inglés, rarezas y si es Overframe).
+const OCG_REG = { JP: 'japonesa', JA: 'japonesa (Asia)', KR: 'coreana', AE: 'asiática en inglés', SC: 'china (simplificada)', TC: 'china (tradicional)' };
+const ABBR_RAR = Object.fromEntries(Object.entries(RAR_ABBR).map(([r, a]) => [a[0], r]).reverse());
+const setListCache = {};
+function parseSetList(text){
+  const out = [];
+  for (const b of String(text).matchAll(/\{\{Set list\|([^\n]*)\n([\s\S]*?)\n\}\}/g)) {
+    const par = {};
+    for (const x of b[1].split('|')) { const i = x.indexOf('='); if (i > 0) par[x.slice(0, i).trim()] = x.slice(i + 1).trim(); }
+    const defR = (par.rarities || '').split(',').map(r => r.trim()).filter(Boolean);
+    for (const line of b[2].split('\n')) {
+      const [main, opt = ''] = line.split('//');
+      const f = main.split(';').map(x => x.trim());
+      if (!f[0] || !f[1]) continue;
+      const rs = (f[2] ? f[2].split(',').map(r => r.trim()).filter(Boolean) : defR).map(r => ABBR_RAR[r] || r);
+      out.push({ code: f[0].toUpperCase(), name: f[1], rs: rs.length ? rs : ['—'], ea: /extended art|overframe/i.test(opt + ' ' + (par.options || '')) });
+    }
+  }
+  return out;
+}
+async function ocgLookup(code){
+  const r = await getJSON(YGP_ASK + encodeURIComponent(`[[Card number::${code}]]|limit=5`)).catch(() => null);
+  const pages = [...new Set(Object.values(r?.query?.results || {}).map(x => x.fulltext.split('#')[0]))];
+  for (const page of pages) {
+    const list = await (setListCache[page] ||= getJSON('https://yugipedia.com/api.php?action=query&prop=revisions&rvprop=content&rvslots=main&format=json&origin=*&titles=' + encodeURIComponent(page))
+      .then(j => parseSetList(Object.values(j?.query?.pages || {})[0]?.revisions?.[0]?.slots?.main?.['*'] || '')).catch(() => (delete setListCache[page], [])));
+    const hits = list.filter(x => x.code === code);
+    if (hits.length) return { setName: page.replace(/^Set Card Lists:/, '').replace(/\s*\((OCG|TCG)-[A-Z]+\)\s*$/, ''), hits };
+  }
+  return null;
+}
+// carta de YGOPRODeck por su nombre en inglés (sin la aclaración entre paréntesis si hace falta: «Obelisk the Tormentor (original)»)
+const ygoByNameCache = {};
+function ygoCardByName(en){
+  return ygoByNameCache[en] ||= (async () => {
+    let c = (await getJSON(`${YGO}/cardinfo.php?name=${encodeURIComponent(en)}`).catch(() => null))?.data?.[0];
+    if (!c && /\(/.test(en)) c = (await getJSON(`${YGO}/cardinfo.php?name=${encodeURIComponent(en.replace(/\s*\(.*\)\s*$/, ''))}`).catch(() => null))?.data?.[0];
+    return c || null;
+  })();
+}
+// todas las cartas de una expansión según Yugipedia (para completar lo que le falta a YGOPRODeck)
+async function ygpSetEntries(prefix, setName){
+  const r = await getJSON(YGP_ASK + encodeURIComponent(`[[Card number::~${prefix}-EN*]]|limit=100`)).catch(() => null);
+  const pages = [...new Set(Object.values(r?.query?.results || {}).map(x => x.fulltext.split('#')[0]))].filter(p => /\(TCG-EN\)/.test(p));
+  const clean = p => p.replace(/^Set Card Lists:/, '').replace(/\s*\((OCG|TCG)-[A-Z]+\)\s*$/, '');
+  const page = pages.find(p => clean(p).toLowerCase() === String(setName || '').toLowerCase()) || pages[0];
+  if (!page) return [];
+  const list = await (setListCache[page] ||= getJSON('https://yugipedia.com/api.php?action=query&prop=revisions&rvprop=content&rvslots=main&format=json&origin=*&titles=' + encodeURIComponent(page))
+    .then(j => parseSetList(Object.values(j?.query?.pages || {})[0]?.revisions?.[0]?.slots?.main?.['*'] || '')).catch(() => (delete setListCache[page], [])));
+  return list.filter(x => x.code.startsWith(prefix.toUpperCase() + '-'));
+}
+async function searchYugiohOCG(code){
+  const f = await ocgLookup(code);
+  if (!f) return error(T('No encontré ese código en las listas de Yugipedia. Revisa que esté bien escrito (ej. LOSP-JP004).'));
+  const en = f.hits[0].name;
+  const card = await ygoCardByName(en);
+  if (!card) return error(T('{0} es «{1}», una carta que no está en la base de datos de YGOPRODeck.', code, en));
+  // si TCGplayer vende esa impresión (aunque YGOPRODeck no la tenga), se abre con su precio
+  if (!OCG_REG[ygpRegion(code)] && ygoVersions(card, await withTimeout(ygoPrints(card.name), 4000)).some(s => normCode(s.set_code) === normCode(code)))
+    return openYugioh(card, code);
+  return openYugiohOCG(card, code, f);
+}
+const ygoLabelOf = s => s ? `${s.set_code} · ${s.set_rarity}${s.variant ? ' · ' + s.variant : ''}` : '';
+async function openYugiohOCG(c, code, f){
+  const [scans0, pr] = await Promise.all([withTimeout(ygpScans(c.name), 4000), withTimeout(ygoPrints(c.name), 4000)]);
+  const scans = scans0 || [];
+  const reg = ygpRegion(code);
+  const items = [];
+  for (const h of f.hits) for (const r of h.rs) items.push({ set_code: code, set_rarity: r, set_name: f.setName, prints: [], ...(OCG_REG[reg] ? { ocg: reg } : { ygp: true }), ...(h.ea ? { variant: 'Extended Art' } : {}) });
+  const want = pendingLabel; pendingLabel = null;
+  const idx = want ? items.findIndex(s => ygoLabelOf(s).toUpperCase() === String(want).toUpperCase()) : -1;
+  // referencia: la versión inglesa (TCG) más parecida, con su precio
+  const enV = ygoVersions(c, pr).filter(s => s.prints?.length && shownPrice(s.prints));
+  const ref = s => { const same = enV.filter(e => isOF(e) === isOF(s)); const pool = same.length ? same : enV;
+    const e = pool.find(e => e.set_rarity === s.set_rarity) || pool.find(e => isStR(e) && /prismatic secret/i.test(s.set_rarity))
+      || [...pool].sort((a, b) => shownPrice(a.prints).n - shownPrice(b.prints).n)[0];
+    return e ? { label: ofText(ygoLabelOf(e)), price: shownPrice(e.prints).t } : null; };
+  const scanOf = s => pickScan(scans, s.set_code, s.set_rarity, isOF(s));
+  return showVersions(items, idx < 0 ? 0 : idx, async s => yugiohView(c, s, scanOf(s), [], null, { ocgRef: ref(s) }),
+    s => { const x = scanOf(s); return { r: s.set_rarity, of: isOF(s), gmr: isGMR(s), str: isStR(s), t: s.set_code + (s.variant ? ' · ' + s.variant : ''), p: '', n: null,
+      i: x ? ygpThumb(x.url) : c.card_images?.[0]?.image_url_small, rep: !x }; });
+}
+
+// Expansiones por nombre (YGOPRODeck). Acepta números en vez de romanos y sin la s final: «legendary deck 2» = «Legendary Decks II»
+let ygoSetList = null;
+async function ygoSetsByName(q){
+  const ROM = { 1: 'i', 2: 'ii', 3: 'iii', 4: 'iv', 5: 'v', 6: 'vi', 7: 'vii', 8: 'viii', 9: 'ix', 10: 'x', 22: 'ii' };
+  const w = x => String(x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(/[^a-z0-9]+/).filter(Boolean)
+    .map(t => (ROM[t] || t).replace(/s$/, ''));
+  const qw = w(q); if (!qw.length || qw.join('').length < 3) return [];
+  ygoSetList ||= getJSON(`${YGO}/cardsets.php`).catch(() => (ygoSetList = null, []));
+  const all = (await ygoSetList) || [];
+  const hits = all.filter(x => { const sw = w(x.set_name); return qw.every(t => sw.some(y => y === t || (t.length > 2 && y.startsWith(t)))); });
+  return hits.sort((a, b) => String(b.tcg_date || '').localeCompare(String(a.tcg_date || '')));
+}
+// Expansiones por su código (EGO1, LDK2…). Tolera las letras que se confunden con números: EG01 = EGO1, LD1 = LDI…
+const codeKey = c => String(c || '').toUpperCase().replace(/O/g, '0').replace(/[IL]/g, '1').replace(/S/g, '5').replace(/B/g, '8').replace(/Z/g, '2');
+async function ygoSetsByCode(prefix){
+  ygoSetList ||= getJSON(`${YGO}/cardsets.php`).catch(() => (ygoSetList = null, []));
+  const all = (await ygoSetList) || [];
+  const P = String(prefix).toUpperCase();
+  const exact = all.filter(x => String(x.set_code).toUpperCase() === P);
+  if (exact.length) return exact;
+  const near = all.filter(x => codeKey(x.set_code) === codeKey(P));
+  if (near.length || P.length < 4) return near;
+  // una letra de más o de menos (LODK2 -> LDK2)
+  const k = codeKey(P), oneOff = (a, b) => { if (Math.abs(a.length - b.length) !== 1) return false;
+    const [l, s] = a.length > b.length ? [a, b] : [b, a]; for (let i = 0; i < l.length; i++) if (l.slice(0, i) + l.slice(i + 1) === s) return true; return false; };
+  return all.filter(x => oneOff(codeKey(x.set_code), k));
+}
 async function searchYugioh(q){
-  const m = q.toUpperCase().replace(/\s+/g, '').match(/^([A-Z0-9]+)-([A-Z]{0,2})(\d+)$/);
+  // solo el código de la expansión («EGO1», «EG01-EN», «LDK2»): enseña todas sus cartas
+  // con una letra de mazo detrás («LDK2-ENY» = el mazo de Yugi) solo se enseñan esas cartas
+  const sc = q.toUpperCase().replace(/\s+/g, '').match(/^([A-Z0-9]{2,5})(?:-([A-Z]{0,2})([A-Z]?))?$/);
+  if (sc && (/\d/.test(sc[1]) || q.includes('-'))) { const sets = await ygoSetsByCode(sc[1]);
+    if (sets.length === 1) return openYugiohSet(sets[0].set_name, sc[3] ? `${sets[0].set_code}-${sc[2] || 'EN'}${sc[3]}` : '');
+    if (sets.length > 1) return renderGrid(T('{0} expansiones', sets.length), sets.map(x => ({ img: x.set_image || '', title: x.set_name,
+      sub: [x.set_code, x.tcg_date, T('{0} cartas', x.num_of_cards)].filter(Boolean).join(' · '), price: '', v: null, open: () => openYugiohSet(x.set_name, sc[3] ? `${x.set_code}-${sc[2] || 'EN'}${sc[3]}` : '') }))); }
+  // el número puede llevar una letra delante: LDK2-ENK01 / ENY01 / ENJ01 (Legendary Decks II), YGLD-ENA01, DPKB-ENA01…
+  const m = q.toUpperCase().replace(/\s+/g, '').match(/^([A-Z0-9]+)-([A-Z]{0,2})([A-Z]?\d+)$/);
+  if (m && OCG_REG[m[2]]) return searchYugiohOCG(q.toUpperCase().replace(/\s+/g, ''));
   if (m) {
     const typed = q.toUpperCase().replace(/\s+/g, '');
     const lang = CODE_LANG[m[2]] || null;
-    const tries = [typed, `${m[1]}-EN${m[3]}`, `${m[1]}-${m[3]}`, `${m[1]}-E${m[3]}`];
+    // el número con 2 o 3 cifras: LEDD-ENA001 -> LEDD-ENA01 (y al revés), por si se escribe con un cero de más o de menos
+    const [, L = '', D = ''] = m[3].match(/^([A-Z]?)(\d+)$/) || [];
+    const nums = [...new Set([m[3], ...[2, 3].map(w => L + String(Number(D)).padStart(w, '0'))])];
+    const tries = nums.flatMap(n => [`${m[1]}-${m[2]}${n}`, `${m[1]}-EN${n}`, `${m[1]}-${n}`, `${m[1]}-E${n}`]);
     for (const code of [...new Set(tries)]) {
       const info = await getJSON(`${YGO}/cardsetsinfo.php?setcode=${encodeURIComponent(code)}`).catch(() => null);
       if (info && info.id) {
@@ -1302,10 +1511,23 @@ async function searchYugioh(q){
         return openYugioh(card, code, info.set_rarity, lang ? { lang, code: typed } : null);
       }
     }
+    // ¿la expansión está mal escrita (EG01 en vez de EGO1)? prueba con los códigos de expansión parecidos
+    for (const x of (await ygoSetsByCode(m[1])).filter(x => String(x.set_code).toUpperCase() !== m[1]))
+      for (const n of nums) for (const code of [`${x.set_code}-${m[2] || 'EN'}${n}`, `${x.set_code}-EN${n}`]) {
+        const info = await getJSON(`${YGO}/cardsetsinfo.php?setcode=${encodeURIComponent(code)}`).catch(() => null);
+        if (info && info.id) { const card = (await getJSON(`${YGO}/cardinfo.php?id=${info.id}`))?.data?.[0];
+          return openYugioh(card, code, info.set_rarity, lang ? { lang, code: typed } : null); }
+      }
+    // YGOPRODeck no lo tiene (p. ej. LC01-EN001, Obelisco de la Legendary Collection): lista de la expansión en Yugipedia
+    for (const n of nums) { const code = `${m[1]}-${m[2]}${n}`; if (await ocgLookup(code)) return searchYugiohOCG(code); }
     return error(T('No encontré ese código. Revisa que esté bien escrito (ej. LOB-EN001).'));
   }
   const r = await getJSON(`${YGO}/cardinfo.php?fname=${encodeURIComponent(q)}`);
   let cards = r?.data || [], hit = {};
+  // ¿es el nombre de una expansión? («legendary decks 2», «Legendary Decks II»…): enseña sus cartas
+  if (!cards.length) { const sets = await ygoSetsByName(q); if (sets.length === 1) return openYugiohSet(sets[0].set_name);
+    if (sets.length > 1) return renderGrid(T('{0} expansiones', sets.length), sets.slice(0, 60).map(x => ({ img: x.set_image || '', title: x.set_name,
+      sub: [x.set_code, x.tcg_date, T('{0} cartas', x.num_of_cards)].filter(Boolean).join(' · '), price: '', v: null, open: () => openYugiohSet(x.set_name) }))); }
   if (!cards.length) ({ cards, hit } = await searchYugiohLocal(q)); // no está en inglés: alemán, francés, italiano, portugués o español
   if (!cards.length) return error(T('No encontré esa carta. Prueba con el código o con su nombre en inglés, alemán, francés, italiano, portugués o español.'));
   const loc = c => hit[c.id] ? { lang: hit[c.id].lang } : null;
@@ -1322,6 +1544,27 @@ async function searchYugioh(q){
 const ygoNorm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   .replace(/\(.*?\)|\[.*?\]/g, ' ').replace(/[^a-z0-9]+/g, ' ').trim();
 const ygoShard = n => ygoNorm(n).replace(/ /g, '').slice(0, 2).padEnd(2, '_');
+// «Overframe» (en inglés «Extended Art»): el dibujo sale del marco. Es otra versión de la carta, con otro precio.
+// TCGplayer la llama «Extended Art» y así se guarda en la colección; en pantalla se enseña como Overframe.
+// ofx: Starlight / Grand Master Rare de un código que tiene Overframe: también lo son, aunque TCGplayer no lo ponga
+// (p. ej. MAMS-EN013: Ultra Rare, Starlight y GMR Overframe según la lista de Yugipedia)
+const isOF = s => typeof s === 'string' ? /extended art|overframe/i.test(s) : !!s?.ofx || /extended art|overframe/i.test(s?.variant || '');
+const ofText = t => String(t || '').replace(/Extended Art/g, 'Overframe').replace(/Emblazoned/g, 'Con sello');
+// «Emblazoned» (TCGplayer): con el sello del World Championship estampado en el cuadro del efecto (p. ej. 26LP-EN002)
+const isStamp = s => /emblazoned/i.test(typeof s === 'string' ? s : s?.variant || '');
+const stampName = setName => { const y = String(setName || '').match(/World Championship (\d{4})/i); return y ? `Sello WCS ${y[1]}` : 'Con sello'; };
+const STAMP_BADGE = (setName) => `<span class="stb" title="Con el sello del World Championship estampado en el cuadro del efecto">🏅 ${stampName(setName)}</span>`;
+const OF_BADGE = '<span class="ofb" title="Overframe (Extended Art): el dibujo sale del marco">🖼️ Overframe</span>';
+// Grand Master Rare: tirada muy corta con número de serie
+const isGMR = s => /grand master rare/i.test(typeof s === 'string' ? s : s?.set_rarity || s?.rarity || '');
+const GMR_BADGE = '<span class="gmrb" title="Grand Master Rare: tirada muy corta con número de serie">🏆 Grand Master Rare</span>';
+// Starlight Rare: la rareza más brillante (y cara) de las expansiones normales
+const isStR = s => /starlight rare/i.test(typeof s === 'string' ? s : s?.set_rarity || s?.rarity || '');
+const STR_BADGE = '<span class="strb" title="Starlight Rare">✨ Starlight Rare</span>';
+// etiquetas pequeñas sobre la miniatura de una versión (puede llevar dos: Starlight + Overframe)
+const tileTags = (of, gmr, str, st) => [st && [' st', 'Sello'], of && ['', 'Overframe'], gmr && [' gmr', 'GMR'], str && [' str', 'Starlight']].filter(Boolean).slice(0, 2)
+  .map(([c, t], k) => `<span class="oft${c}${k ? ' t2' : ''}">${t}</span>`).join('');
+let pendingLabel = null; // versión guardada en la colección que hay que abrir (ver openItem)
 const printCache = {};
 async function ygoPrints(name){
   const k = ygoShard(name);
@@ -1343,8 +1586,10 @@ function ygoVersions(c, pr){
     // una versión por rareza y variante de arte (p. ej. RA04-EN106 Dark Magician: Arkana, 6th Art, 7th Art…)
     const byR = {};
     for (const e of byCode[k]) (byR[(e.r || '—') + '|' + (e.v || '')] ||= []).push(e);
+    const hasOF = byCode[k].some(e => /extended art/i.test(e.v || ''));
     for (const [key, prints] of Object.entries(byR)) { const [r, variant] = key.split('|');
-      out.push({ set_code: code, set_rarity: r, set_name: setName, prints, ...(variant ? { variant } : {}) }); }
+      const ofx = (hasOF && /starlight|grand master/i.test(r) && !/extended art/i.test(variant)) || prints.some(e => e.of);
+      out.push({ set_code: code, set_rarity: r, set_name: setName, prints, ...(variant ? { variant } : {}), ...(ofx ? { ofx: true } : {}) }); }
   };
   for (const s of ysets) {
     const k = normCode(s.set_code);
@@ -1362,7 +1607,9 @@ function ygoVersions(c, pr){
 const versionPrice = s => { const v = (s?.prints || []).map(printPrice).filter(Boolean); return v.length ? Math.min(...v) : null; };
 // Precio a mostrar: Cardmarket (€) si lo hay; si no, TCGplayer ($). { t: texto, n: número aprox. en € para ordenar }
 const shownPrice = prints => {
-  const e = (prints || []).map(x => x.e).filter(Boolean);
+  // Grand Master Rare: si el € de Cardmarket no se parece al $ de TCGplayer, era el precio de otra versión
+  const okE = x => { if (!x.e || !isGMR(x.r)) return !!x.e; const u = printPrice(x); return !u || (x.e / u <= 3 && x.e / u >= 0.2); };
+  const e = (prints || []).filter(okE).map(x => x.e);
   if (e.length) { const v = Math.min(...e); return { t: ((prints || []).some(x => x.ea) ? '~' : '') + eur(v), n: v, e: true }; }
   const u = (prints || []).map(printPrice).filter(Boolean);
   return u.length ? { t: usd(Math.min(...u)), n: Math.min(...u) * 0.92 } : null;
@@ -1376,7 +1623,8 @@ function printsFor(pr, s){
   return r.length ? r : (same.length && new Set(same.map(e => e.r)).size === 1 ? same : []);
 }
 // precio de mercado más bajo entre sus ediciones (1st Edition, Unlimited…)
-const printPrice = e => { const v = Object.values(e?.p || {}).map(x => x[0]).filter(Boolean); return v.length ? Math.min(...v) : null; };
+// (si el mínimo es muchísimo mayor que el de mercado, el de mercado es un error: pasa con las Grand Master Rare)
+const printPrice = e => { const v = Object.values(e?.p || {}).map(([m, l]) => m && l && l > m * 5 ? l : m || l).filter(Boolean); return v.length ? Math.min(...v) : null; };
 const is25 = e => /25th Anniversary/i.test(e?.g || '');
 const ED_TCG = { '1st Edition': '1ª edición', 'Unlimited': 'Edición ilimitada', 'Limited': 'Edición limitada' };
 
@@ -1387,22 +1635,25 @@ async function openYugioh(c, code, rarity, local = null, variant = null){
   // escaneos reales de todas las impresiones de la carta (una sola consulta) + precios por impresión
   const [scans0, pr] = await Promise.all([withTimeout(ygpScans(c.name), 4000), withTimeout(ygoPrints(c.name), 4000)]);
   const scans = scans0 || [];
-  const real = s => s && pickScan(scans, s.set_code, s.set_rarity);
+  const real = s => s && pickScan(scans, s.set_code, s.set_rarity, isOF(s));
   const vers = ygoVersions(c, pr);
   const items = vers.length ? vers : [null];
   // primero la edición buscada (por código; la rareza de YGOPRODeck puede no coincidir con la real)
   const cc = code && normCode(code);
-  let idx = cc ? items.findIndex(s => s && normCode(s.set_code) === cc && (!rarity || s.set_rarity === rarity) && (!variant || s.variant === variant)) : -1;
+  // desde la colección: abre exactamente la versión guardada (p. ej. la Overframe y no la normal)
+  const want = pendingLabel; pendingLabel = null;
+  let idx = want ? items.findIndex(s => s && ygoLabelOf(s).toUpperCase() === String(want).toUpperCase()) : -1;
+  if (idx < 0 && cc) idx = items.findIndex(s => s && normCode(s.set_code) === cc && (!rarity || s.set_rarity === rarity) && (!variant || s.variant === variant));
   if (idx < 0 && cc) idx = items.findIndex(s => s && normCode(s.set_code) === cc && (!rarity || s.set_rarity === rarity));
   if (idx < 0 && cc) idx = items.findIndex(s => s && normCode(s.set_code) === cc);
   const locNames = await names;
   // código en el idioma de la carta para la versión buscada (LOB-EN001 -> LOB-DE001)
   const locCode = s => local?.code && s && normCode(s.set_code) === cc ? local.code : null;
-  const realLoc = s => { const lc = locCode(s); return (lc && pickScan(scans, lc, s.set_rarity)) || real(s); };
+  const realLoc = s => { const lc = locCode(s); return (lc && pickScan(scans, lc, s.set_rarity, isOF(s))) || real(s); };
   return showVersions(items, idx < 0 ? 0 : idx, async s => yugiohView(c, s, realLoc(s) || (!s && pickScan(scans, null, null)),
-      s && !locCode(s) ? scanGroup(scans, s.set_code, s.set_rarity) : [], pr, { names: locNames, lang: local?.lang, code: locCode(s) }),
+      s && !locCode(s) ? scanGroup(scans, s.set_code, s.set_rarity, isOF(s)) : [], pr, { names: locNames, lang: local?.lang, code: locCode(s) }),
     s => { const x = real(s); const i = x ? ygpThumb(x.url) : c.card_images?.[0]?.image_url_small;
-      return s ? { r: s.set_rarity, t: s.set_code + (s.variant ? ' · ' + s.variant : ''), p: s.prints?.length ? (shownPrice(s.prints)?.t || '') : (Number(s.set_price) ? '≈ ' + usd(s.set_price) : ''), i, rep: !x } : { r: '', t: c.name, i, rep: !x }; });
+      return s ? { r: s.set_rarity, of: isOF(s), gmr: isGMR(s), str: isStR(s), st: isStamp(s), t: s.set_code + (s.variant ? ' · ' + s.variant : ''), p: s.prints?.length ? (shownPrice(s.prints)?.t || '') : (Number(s.set_price) ? '≈ ' + usd(s.set_price) : ''), i, rep: !x } : { r: '', t: c.name, i, rep: !x }; });
 }
 
 function yugiohView(c, set, scan, group = [], pr = null, loc = {}){
@@ -1428,6 +1679,13 @@ function yugiohView(c, set, scan, group = [], pr = null, loc = {}){
       rows.push([[set.set_code, ps.length > 1 ? (is25(e) ? T('25 aniversario') : e.g) : '', T(ED_TCG[ed] || ed)].filter(Boolean).join(' · '),
         usd(m || low) + (low && m ? ` <small>(${T('desde')} ${usd(low)})</small>` : '')]);
   } else if (set && Number(set.set_price)) rows.push(['#Esta edición'], [`${set.set_code} (${set.set_rarity}) · YGOPRODeck`, usd(set.set_price)]);
+  if (set?.ocg) {
+    rows.push(['#Carta {0} (OCG)'.replace('{0}', OCG_REG[set.ocg] || set.ocg)], [T('Expansión'), esc(set.set_name)], [T('Código'), esc(set.set_code)]);
+  }
+  if (set?.ygp) rows.push(['#Esta impresión'], [T('Expansión'), esc(set.set_name)], [T('Código'), esc(set.set_code)]);
+  if (set?.ocg || set?.ygp) {
+    if (loc.ocgRef) rows.push([T('Referencia: versión inglesa {0}', loc.ocgRef.label), loc.ocgRef.price + ` <small>(${T(set.ocg ? 'no es el precio de la japonesa' : 'no es el precio de esta impresión')})</small>`]);
+  }
   if (loc.code) rows.push(['#Tu carta'], [`${loc.code} (${T(YLANGS[loc.lang][1])})`, `<small>${T('TCGplayer solo vende cartas en inglés: el precio es el de {0}. Para tu idioma, mira Cardmarket.', esc(set.set_code))}</small>`]);
   if (loc.names && Object.values(loc.names).some(Boolean)) {
     rows.push(['#Nombre en otros idiomas']);
@@ -1437,24 +1695,31 @@ function yugiohView(c, set, scan, group = [], pr = null, loc = {}){
     ['Cardmarket (la edición más barata)', eur(p.cardmarket_price)], ['TCGplayer', usd(p.tcgplayer_price)],
     ['eBay', usd(p.ebay_price)], ['Amazon', usd(p.amazon_price)], ['CoolStuffInc', usd(p.coolstuffinc_price)]);
   const sp = chosen ? printPrice(chosen) : null;
-  const se = chosen?.e || null; // Cardmarket manda
+  let se = chosen?.e || null; // Cardmarket manda
+  if (se && isGMR(set) && sp && (se / sp > 3 || se / sp < 0.2)) se = null; // emparejamiento dudoso con otra versión
   const approx = !sp && set && Number(set.set_price) ? Number(set.set_price) : null; // TCGplayer no la vende: dato orientativo
   return {
+    gmr: isGMR(set), str: isStR(set), stamp: isStamp(set) ? stampName(set.set_name) : '', overframe: isOF(set), ofNoScan: isOF(set) && !set.ocg && !!scan && !scan.extra?.includes('EA'),
     img: scan?.url || c.card_images?.[0]?.image_url, replica: !scan, name: locName || c.name, subname: locName && locName !== c.name ? c.name : '', rarity: set?.set_rarity,
     alts,
     updated: pr && ps.length ? T(se ? 'Cardmarket del {0}' : 'TCGplayer del {0}', fecha(pr.updated)) : '',
     versionLabel: set ? `${loc.code || set.set_code} · ${set.set_rarity}${set.variant ? ' · ' + set.variant : ''}` : '',
-    meta: set ? `${esc(set.set_name)} · ${esc(loc.code || set.set_code)}${set.variant ? ' · ' + esc(set.variant) : ''}` : esc(c.type),
-    mainLabel: se ? 'Precio en Cardmarket de esta edición' : sp ? 'Precio de esta edición exacta' : approx ? 'Precio orientativo de esta edición' : set ? 'Precio de esta edición exacta' : 'Precio en Cardmarket (desde)',
+    meta: set ? `${esc(set.set_name)} · ${esc(loc.code || set.set_code)}${set.variant ? ' · ' + esc(ofText(set.variant)) : ''}${set.ofx ? ' · Overframe' : ''}` : esc(c.type),
+    mainLabel: set?.ocg || set?.ygp ? 'Precio de esta edición exacta' : se ? 'Precio en Cardmarket de esta edición' : sp ? 'Precio de esta edición exacta' : approx ? 'Precio orientativo de esta edición' : set ? 'Precio de esta edición exacta' : 'Precio en Cardmarket (desde)',
     mainValue: se ? eur(se) : sp ? usd(sp) : approx ? usd(approx) : set ? '' : eur(p.cardmarket_price) || usd(p.tcgplayer_price),
-    approx: se && chosen.ea ? 'Cardmarket no separa bien las versiones de esta carta en esta expansión: precio aproximado.' : approx ? 'TCGplayer no vende esta impresión; dato de YGOPRODeck, puede estar desactualizado.' : set && !sp ? 'TCGplayer no tiene precio de esta impresión ahora mismo.' : '',
-    value: se || sp || approx || Number(p.cardmarket_price) || null,
+    approx: set?.ygp ? 'Esta impresión no está a la venta con este código en TCGplayer ni en Cardmarket: no hay precio público. Abajo tienes el precio de la misma carta en otra edición como referencia.'
+      : set?.ocg ? 'Cardmarket y TCGplayer no venden cartas del OCG (Japón y Asia): no hay precio público de esta impresión. Abajo tienes el precio de la versión inglesa como referencia y enlaces a tiendas japonesas.'
+      : se && chosen.ea ? 'Cardmarket no separa bien las versiones de esta carta en esta expansión: precio aproximado.' : approx ? 'TCGplayer no vende esta impresión; dato de YGOPRODeck, puede estar desactualizado.' : set && !sp ? 'TCGplayer no tiene precio de esta impresión ahora mismo.' : '',
+    value: set?.ocg || set?.ygp ? null : se || sp || approx || Number(p.cardmarket_price) || null,
     rows,
     links: [['Cardmarket', `https://www.cardmarket.com/es/YuGiOh/Products/Search?searchString=${encodeURIComponent(c.name)}${loc.lang ? '&language=' + ({ fr: 2, de: 3, es: 4, it: 5, pt: 8 })[loc.lang] : ''}`],
             ['TCGplayer', `https://www.tcgplayer.com/search/yugioh/product?q=${encodeURIComponent(c.name)}`],
+            ...(set?.ocg === 'JP' ? [['Yuyu-tei (Japón)', `https://yuyu-tei.jp/sell/ygo/s/search?search_word=${encodeURIComponent(set.set_code)}`],
+              ['Mercari (Japón)', `https://jp.mercari.com/search?keyword=${encodeURIComponent(set.set_code)}`]] : []),
+            ...(set?.ocg ? [['Lista de la expansión (Yugipedia)', `https://yugipedia.com/wiki/Special:Search?search=${encodeURIComponent(set.set_code)}`]] : []),
             ['Ficha', c.ygoprodeck_url], ['Foto (Yugipedia)', scan ? `https://yugipedia.com/wiki/File:${encodeURIComponent(scan.file)}` : null]],
     reload: async () => { const n = (await getJSON(`${YGO}/cardinfo.php?id=${c.id}`))?.data?.[0]; if (n) { Object.assign(c, n); drawCurrent(); } },
-    openSet: set ? () => openYugiohSet(set.set_name) : null,
+    openSet: set && !set.ocg && !set.ygp ? () => openYugiohSet(set.set_name) : null,
     howto: async () => {
       // texto de la carta en francés, alemán o italiano si YGOPRODeck lo tiene
       if (['fr', 'de', 'it'].includes(LANG)) {
@@ -1466,7 +1731,19 @@ function yugiohView(c, set, scan, group = [], pr = null, loc = {}){
   };
 }
 
-async function openYugiohSet(name){
+// La carta tal y como la guarda la ficha (mismo nombre, etiqueta y precio), para «Añadir todas a mi colección»
+async function ygoColCard(c, s){
+  const showLang = YLANGS[LANG] ? LANG : null;
+  const names = showLang ? await withTimeout(ygoLocalNames(c.name), 6000) : null;
+  const ch = s.prints?.[0] || null, sp = ch ? printPrice(ch) : null;
+  let se = ch?.e || null;
+  if (se && isGMR(s) && sp && (se / sp > 3 || se / sp < 0.2)) se = null;
+  const img = await withTimeout(ygoRealImg(c, s.set_code, s.set_rarity, false, isOF(s)), 6000);
+  return { game: 'yugioh', name: (showLang && names?.[showLang]) || c.name, label: ygoLabelOf(s), rarity: s.set_rarity, set: s.set_name,
+    img: img || c.card_images?.[0]?.image_url || '', q: s.set_code, value: se || sp || null, priceHtml: se ? eur(se) : sp ? usd(sp) : '',
+    ...(isOF(s) ? { of: true } : {}) };
+}
+async function openYugiohSet(name, only = ''){
   loading(T('Cargando la expansión…'));
   const r = await getJSON(`${YGO}/cardinfo.php?cardset=${encodeURIComponent(name)}`);
   const cards = r?.data || [];
@@ -1481,14 +1758,40 @@ async function openYugiohSet(name){
       const sh = s.prints ? shownPrice(s.prints) : null;
       const v = s.prints ? sh?.n ?? null : Number(s.set_price) || null;
       items.push({
-    img: c.card_images?.[0]?.image_url_small, title: c.name, sub: `${s.set_code} · ${s.set_rarity}${s.variant ? ' · ' + s.variant : ''}`,
-    real: () => ygoRealImg(c, s.set_code, s.set_rarity, true),
+    img: c.card_images?.[0]?.image_url_small, title: c.name, sub: `${s.set_code} · ${isGMR(s) ? '🏆 ' : isStR(s) ? '✨ ' : ''}${s.set_rarity}${s.variant ? ' · ' + (isStamp(s) ? '🏅 ' : isOF(s) ? '🖼️ ' : '') + ofText(s.variant) : ''}${s.ofx ? ' · 🖼️ Overframe' : ''}`,
+    tags: tileTags(isOF(s), isGMR(s), isStR(s), isStamp(s)), st: isStamp(s), of: isOF(s),
+    col: () => ygoColCard(c, s),
+    real: () => ygoRealImg(c, s.set_code, s.set_rarity, true, isOF(s)),
     price: sh ? sh.t : v ? '≈ ' + usd(v) : '', v, code: s.set_code,
     open: () => openYugioh(c, s.set_code.toUpperCase(), s.set_rarity, null, s.variant) });
     }
   }
+  // completa con la lista de Yugipedia las cartas que YGOPRODeck no tiene (p. ej. los 3 Dioses de la Legendary Collection)
+  const prefix = (items[0]?.code || '').split('-')[0] || (((await ygoSetList) || []).find(x => x.set_name === name)?.set_code) || '';
+  if (prefix) {
+    const have = new Set(items.map(i => normCode(i.code)));
+    const miss = ((await withTimeout(ygpSetEntries(prefix, name), 6000)) || []).filter(h => !have.has(normCode(h.code)));
+    const cs = await withTimeout(Promise.all(miss.map(h => ygoCardByName(h.name))), 6000) || [];
+    for (const [k, h] of miss.entries()) {
+      const c = cs[k];
+      const vs = c ? ygoVersions(c, await withTimeout(ygoPrints(c.name), 3000)).filter(s => normCode(s.set_code) === normCode(h.code)) : [];
+      if (vs.length) for (const s of vs) { const sh = s.prints?.length ? shownPrice(s.prints) : null;
+        items.push({ img: c.card_images?.[0]?.image_url_small, title: c.name, sub: `${s.set_code} · ${s.set_rarity}${isOF(s) ? ' · 🖼️ Overframe' : ''}`,
+          real: () => ygoRealImg(c, s.set_code, s.set_rarity, true, isOF(s)), price: sh ? sh.t : '', v: sh?.n ?? null, code: s.set_code,
+          open: () => openYugioh(c, s.set_code.toUpperCase(), s.set_rarity, null, s.variant) }); }
+      else items.push({ img: c?.card_images?.[0]?.image_url_small || '', title: h.name, sub: `${h.code} · ${h.rs.join(', ')}${h.ea ? ' · 🖼️ Overframe' : ''}`,
+        real: c ? () => ygoRealImg(c, h.code, h.rs[0], true, h.ea) : undefined, price: '', v: null, code: h.code,
+        open: () => searchYugiohOCG(h.code) });
+    }
+  }
   items.sort((a, b) => a.code.localeCompare(b.code, 'en', { numeric: true }));
-  renderGrid(`${esc(name)} · ${T('{0} cartas', items.length)}`, items, { sort: true });
+  // solo un mazo del producto (LDK2-ENY…)
+  if (only) { const o = normCode(only), sub = items.filter(i => normCode(i.code).startsWith(o)); if (sub.length) { items.length = 0; items.push(...sub); name = `${name} · ${only}`; } }
+  const chips = [];
+  if (items.some(i => i.st)) chips.push({ t: `🏅 ${T('Solo con sello')}`, f: i => i.st }, { t: T('Sin sello'), f: i => !i.st });
+  if (items.some(i => i.of)) chips.push({ t: '🖼️ ' + T('Solo Overframe'), f: i => i.of });
+  const tag = (items[0]?.code || '').split('-')[0];
+  renderGrid(`${esc(name)} · ${T('{0} cartas', items.length)}`, items, { sort: true, chips, addAll: tag });
 }
 
 // =====================================================================
@@ -2345,7 +2648,7 @@ function colChart(cur){
   const pts = Object.keys(H).sort().filter(d => H[d][cur]).map(d => ({ l: new Date(d).toLocaleDateString(LOCALE(), { day: 'numeric', month: 'short' }), v: H[d][cur] }));
   return pts.length >= 2 ? chartHTML(pts, cur) : '';
 }
-const cardTile = (img, name, price, attrs, rank, g, pts) => `<button ${attrs}>${rank ? `<span class="rk">${rank}</span>` : ''}${g && ICONS[g] ? `<span class="gi" title="${esc(GAMES[g]?.label || '')}">${ICONS[g]}</span>` : ''}${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}<span class="nm2">${esc(name)}</span><b>${price || ''}</b>${sparkHTML(pts)}</button>`;
+const cardTile = (img, name, price, attrs, rank, g, pts, tg) => `<button ${attrs}>${tg ? tileTags(tg.of, tg.gmr, tg.str, tg.st) : ''}${rank ? `<span class="rk">${rank}</span>` : ''}${g && ICONS[g] ? `<span class="gi" title="${esc(GAMES[g]?.label || '')}">${ICONS[g]}</span>` : ''}${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}<span class="nm2">${esc(name)}</span><b>${price || ''}</b>${sparkHTML(pts)}</button>`;
 // historial de una carta guardada: el de este dispositivo + el guardado en tu cuenta (sirve en todos tus dispositivos)
 function histOf(i){
   const m = {};
@@ -2407,7 +2710,7 @@ function homeHTML(){
       return last.length ? `<div class="hmedals">${last.map(([id, ico, name]) => `<span class="hmedal" title="${esc(T(name))}"><i>${ico}</i>${T(name)}</span>`).join('')}<span class="hmedal more">${ACH.filter(a => S.ach[a[0]]).length}/${ACH.length} 🎖️</span></div>` : ''; })()}
     <button class="hmore" data-go="progress">${T('Todas las misiones y logros')} ›</button></div>` : ''}
 
-  ${top.length ? `<div class="gxsec"><h3>✨ ${T('Tus cartas destacadas')} <small>${cs.cur}</small></h3><div class="top5">${top.map((i, k) => cardTile(i.img, i.name, fm(i.value, i.cur), `data-col="${esc(i.__id)}"`, k + 1, i.game, histOf(i))).join('')}</div></div>` : ''}
+  ${top.length ? `<div class="gxsec"><h3>✨ ${T('Tus cartas destacadas')} <small>${cs.cur}</small></h3><div class="top5">${top.map((i, k) => cardTile(i.img, i.name, fm(i.value, i.cur), `data-col="${esc(i.__id)}"`, k + 1, i.game, histOf(i), i.game === 'yugioh' && { of: i.of || isOF(i.label), gmr: isGMR(i.rarity || i.label), str: isStR(i.rarity || i.label), st: isStamp(i.label) })).join('')}</div></div>` : ''}
   ${rec.length ? `<div class="gxsec"><h3>🕒 ${T('Vistas recientemente')}</h3><div class="top5">${rec.map(r => cardTile(r.i, r.n, r.p.length ? fm(r.p.at(-1)[1], r.c) : '', `data-g="${esc(r.g)}" data-rq="${esc(r.q || r.n)}" data-s="${r.s ? 1 : 0}"`, 0, r.g, r.p)).join('')}</div></div>` : ''}
 
   <div class="gxsec"><h3>📈 ${T('Evolución del mercado')} <small>${T('cartas que sigues')}</small></h3>
@@ -2988,7 +3291,7 @@ function cardFrom(v){
   const code = label ? label.split(' · ')[0] : '';
   const price = plain(v.mainValue);
   return {
-    game, name: v.name || '', label, rarity: v.rarity || '',
+    game, name: v.name || '', label, rarity: v.rarity || '', ...(v.overframe ? { of: true } : {}),
     set: (meta.split(' · ')[0] || '').trim(),
     img: v.img && !v.img.startsWith('data:') ? v.img : '', q: code && game === 'yugioh' ? code : ($('q').value.trim() || v.name || ''),
     value: Number(v.value) || null, price, cur: curOf(price),
@@ -3042,7 +3345,12 @@ function drawMine(){
 }
 
 // ---------- Pantalla "Mi colección" / "Favoritos" (2.0: dashboard, compra, estado, listas, objetivos) ----------
-let mineView = null, groupBy = 'set', gameFilter = 'all', listFilter = 'all', sortBy = 'num', mq = '';
+let mineView = null, groupBy = 'set', gameFilter = 'all', listFilter = 'all', sortBy = 'num', mq = '', kindFilter = 'all';
+// tipo especial de cada carta guardada (Yu-Gi-Oh!): con sello, Overframe, Grand Master Rare, Starlight o normal
+const KINDS = [['st', '🏅 Con sello'], ['of', '🖼️ Overframe'], ['gmr', '🏆 Grand Master Rare'], ['str', '✨ Starlight Rare'], ['normal', '🃏 Normales']];
+const kindOf = i => i.game !== 'yugioh' ? 'normal' : isStamp(i.label) ? 'st' : (i.of || isOF(i.label)) ? 'of'
+  : isGMR(i.rarity || i.label) ? 'gmr' : isStR(i.rarity || i.label) ? 'str' : 'normal';
+const kindName = k => (KINDS.find(x => x[0] === k) || ['', ''])[1];
 const CONDS = ['Mint', 'Near Mint', 'Excellent', 'Good', 'Light Played', 'Played', 'Poor'];
 const fmt = (v, c) => money(v, c, c === 'JPY' ? 0 : 2);
 const sumBy = (arr, f) => { const t = {}; for (const i of arr) { const r = f(i); if (r && r[1] != null && !isNaN(r[1])) t[r[0]] = (t[r[0]] || 0) + r[1]; } return t; };
@@ -3127,7 +3435,10 @@ function showMine(view, keep){
   if (gameFilter !== 'all' && !games.includes(gameFilter)) gameFilter = 'all';
   if (listFilter !== 'all' && !lists.includes(listFilter)) listFilter = 'all';
   const toks = normName(mq).split(/\s+/).filter(Boolean);
+  const kinds = KINDS.map(([k]) => [k, all.filter(i => kindOf(i) === k).length]);
+  if (kindFilter !== 'all' && !kinds.some(([k, n]) => k === kindFilter && n)) kindFilter = 'all';
   const list = all.filter(i => (gameFilter === 'all' || i.game === gameFilter) && (listFilter === 'all' || listsOf(i).includes(listFilter))
+    && (kindFilter === 'all' || kindOf(i) === kindFilter)
     && toks.every(k => normName([i.name, i.label, i.set, i.rarity, i.cond, i.lang, ...listsOf(i)].join(' ')).includes(k)));
   const q = i => view === 'fav' ? 1 : i.qty;
   // dashboard
@@ -3155,7 +3466,8 @@ function showMine(view, keep){
       ${hpts.length >= 2 && window.pcChart ? window.pcChart(hpts, mainCur) : `<p class="note">${T('Se guarda un punto cada día que abres la app con la sesión iniciada (en este dispositivo). En unos días verás aquí la gráfica.')}</p>`}
       <p class="note">${T('Los precios de cada carta se actualizan cuando abres su ficha.')}</p></div>` : '';
   // orden
-  const key2 = i => groupBy === 'rarity' ? (i.rarity || '—') : groupBy === 'cond' ? (i.cond || T('Sin estado')) : groupBy === 'none' ? '' : (i.set || T('Sin expansión'));
+  // «Especiales»: el número delante sirve para ordenar los grupos (con sello, Overframe, GMR, Starlight, normales)
+  const key2 = i => groupBy === 'kind' ? `${KINDS.findIndex(x => x[0] === kindOf(i)) + 1}. ${kindName(kindOf(i))}` : groupBy === 'rarity' ? (i.rarity || '—') : groupBy === 'cond' ? (i.cond || T('Sin estado')) : groupBy === 'none' ? '' : (i.set || T('Sin expansión'));
   const plOf = i => i.buy != null && i.value ? (i.value - i.buy) * (i.qty || 1) : -1e12;
   const SORTS = { num: (a, b) => (a.label || a.name).localeCompare(b.label || b.name, 'en', { numeric: true }),
     hi: (a, b) => (b.value || 0) * q(b) - (a.value || 0) * q(a), lo: (a, b) => (a.value || 1e12) - (b.value || 1e12),
@@ -3170,8 +3482,8 @@ function showMine(view, keep){
     const hit = i.target && i.value && i.value <= i.target;
     return `<div class="mrow" data-id="${esc(idOf(i))}">
       ${i.img ? `<img src="${esc(i.img)}" alt="" loading="lazy">` : '<span class="noimg">🃏</span>'}
-      <div class="mi"><button class="link mopen">${esc(i.name)}</button>
-        <div class="note">${esc([i.label, groupBy === 'rarity' ? i.set : i.rarity].filter(Boolean).join(' · '))}</div>
+      <div class="mi"><button class="link mopen">${esc(i.name)}</button>${i.game === 'yugioh' && (i.of || isOF(i.label)) ? ' ' + OF_BADGE : ''}${i.game === 'yugioh' && isGMR(i.rarity || i.label) ? ' ' + GMR_BADGE : ''}${i.game === 'yugioh' && isStR(i.rarity || i.label) ? ' ' + STR_BADGE : ''}${i.game === 'yugioh' && isStamp(i.label) ? ' ' + STAMP_BADGE(i.set) : ''}
+        <div class="note">${esc(ofText([i.label, groupBy === 'rarity' ? i.set : i.rarity].filter(Boolean).join(' · ')))}</div>
         <div class="note"><b>${esc(i.price || '')}</b>${window.pcSpark ? window.pcSpark(window.pcHistOf?.(i)) : ''}${ch != null ? ` <span class="${ch >= 0 ? 'up' : 'down'}">${ch >= 0 ? '▲' : '▼'}${Math.abs(ch).toFixed(1)}%</span>` : ''}
           ${i.buy != null ? ` · ${T('Compra')}: ${fmt(i.buy, i.buyCur || i.cur) || '0'}${ipl != null ? ` <span class="${ipl >= 0 ? 'up' : 'down'}">(${ipl >= 0 ? '+' : '−'}${fmt(Math.abs(ipl), i.cur) || '0'})</span>` : ''}` : ''}
           ${i.updated?.toDate ? ' · ' + T('Precio guardado el {0}. Abre la carta para actualizarlo.', i.updated.toDate().toLocaleDateString(LOCALE())) : ''}</div>
@@ -3194,11 +3506,13 @@ function showMine(view, keep){
       <input id="mfind" placeholder="🔎 ${T('Buscar en mi colección')}" value="${esc(mq)}">
       <select id="mgame"><option value="all">${T('Todos los juegos')}</option>${games.map(g => `<option value="${g}"${g === gameFilter ? ' selected' : ''}>${esc(GAMES[g]?.label || g)}</option>`).join('')}</select>
       ${lists.length ? `<select id="mlist"><option value="all">${T('Todas las listas')}</option>${lists.map(l => `<option value="${esc(l)}"${l === listFilter ? ' selected' : ''}>#${esc(l)}</option>`).join('')}</select>` : ''}
-      <select id="mgroup" aria-label="${T('Agrupar por')}"><option value="set">${T('Agrupar')}: ${T('Expansión')}</option><option value="rarity"${groupBy === 'rarity' ? ' selected' : ''}>${T('Agrupar')}: ${T('Rareza')}</option><option value="cond"${groupBy === 'cond' ? ' selected' : ''}>${T('Agrupar')}: ${T('Estado')}</option><option value="none"${groupBy === 'none' ? ' selected' : ''}>${T('Sin agrupar')}</option></select>
+      <select id="mgroup" aria-label="${T('Agrupar por')}"><option value="set">${T('Agrupar')}: ${T('Expansión')}</option><option value="kind"${groupBy === 'kind' ? ' selected' : ''}>${T('Agrupar')}: ${T('Especiales aparte')}</option><option value="rarity"${groupBy === 'rarity' ? ' selected' : ''}>${T('Agrupar')}: ${T('Rareza')}</option><option value="cond"${groupBy === 'cond' ? ' selected' : ''}>${T('Agrupar')}: ${T('Estado')}</option><option value="none"${groupBy === 'none' ? ' selected' : ''}>${T('Sin agrupar')}</option></select>
       <select id="msort" aria-label="${T('Ordenar')}">${[['num', 'Ordenar por número'], ['hi', 'Más valiosas primero'], ['lo', 'Más baratas primero'], ['name', 'Por nombre'], ['pl', 'Más beneficio primero'], ['new', 'Actualizadas recientemente']].map(([k, l]) => `<option value="${k}"${k === sortBy ? ' selected' : ''}>${T(l)}</option>`).join('')}</select>
     </div>
+    ${kinds.filter(([k, n]) => k !== 'normal' && n).length ? `<div class="chips mkinds"><button class="chip${kindFilter === 'all' ? ' on' : ''}" data-kind="all">${T('Todas')}</button>${kinds.filter(([, n]) => n).map(([k, n]) =>
+      `<button class="chip k-${k}${kindFilter === k ? ' on' : ''}" data-kind="${k}">${T(kindName(k))} <small>${n}</small></button>`).join('')}</div>` : ''}
     ${Object.entries(tree).map(([g, groups]) => `<h3 class="mg">${ICONS[g] || ''} ${esc(GAMES[g]?.label || g)} <small>${sumOf(Object.values(groups).flat())}</small></h3>
-      ${Object.entries(groups).sort((a, b) => a[0].localeCompare(b[0])).map(([k, arr]) => `<details class="mset" open><summary>${esc(k || T('Todas'))} <small>· ${T('{0} cartas', arr.length)} · ${sumOf(arr)}</small></summary>
+      ${Object.entries(groups).sort((a, b) => a[0].localeCompare(b[0])).map(([k, arr]) => `<details class="mset" open><summary>${esc((groupBy === 'kind' ? k.replace(/^\d+\.\s*/, '') : k) || T('Todas'))} <small>· ${T('{0} cartas', arr.length)} · ${sumOf(arr)}</small></summary>
         ${arr.sort(SORTS[sortBy] || SORTS.num).map(row).join('')}</details>`).join('')}`).join('') || `<div class="msg">${T('Ninguna carta coincide con el filtro.')}</div>`}`
     : `<div class="msg">${T(view === 'fav' ? 'No tienes favoritos todavía.' : 'Tu colección está vacía. Busca una carta y pulsa «➕ Añadir a mi colección».')}</div>`}
   </div>`;
@@ -3206,6 +3520,7 @@ function showMine(view, keep){
   if ($('mgame')) $('mgame').onchange = e => { gameFilter = e.target.value; showMine(view, true); };
   if ($('mlist')) $('mlist').onchange = e => { listFilter = e.target.value; showMine(view, true); };
   if ($('mgroup')) $('mgroup').onchange = e => { groupBy = e.target.value; showMine(view, true); };
+  out.querySelectorAll('.mkinds .chip').forEach(b => b.onclick = () => { kindFilter = b.dataset.kind; showMine(view, true); });
   if ($('msort')) $('msort').onchange = e => { sortBy = e.target.value; showMine(view, true); };
   if ($('mfind')) $('mfind').oninput = e => { mq = e.target.value; clearTimeout(showMine.t); showMine.t = setTimeout(() => { showMine(view, true); const f = $('mfind'); f.focus(); f.setSelectionRange(f.value.length, f.value.length); }, 250); };
   if ($('notif')) $('notif').onclick = () => Notification.requestPermission().then(() => showMine(view, true));
@@ -3225,7 +3540,8 @@ function openItem(i){
   mineView = null;
   if (game !== i.game) document.querySelector(`.tab[data-game="${i.game}"]`)?.click();
   $('q').value = i.q || i.name;
-  search().then(() => { backStack.push(() => showMine(from)); if (redraw) redraw(); });
+  pendingLabel = i.game === 'yugioh' ? i.label || null : null; // abre la versión guardada (Overframe o normal)
+  search().then(() => { pendingLabel = null; backStack.push(() => showMine(from)); if (redraw) redraw(); });
 }
 // al hacer una búsqueda normal se sale de la pantalla de colección
 $('form').addEventListener('submit', () => { mineView = null; });
@@ -3305,10 +3621,25 @@ window.cuentaAPI = {
   logout: () => signOut(auth),
   editName: () => { if (!user) return openLogin(''); editName(); },
   open: i => openItem(items.get(i.__id) || i),
+  // añade varias cartas (qty 1) sin tocar las que ya tienes; las nuevas llevan la lista «tag»
+  addMany: async (cards, tag, prog) => {
+    if (!user) { openLogin(T('Entra para guardar cartas en tu colección.')); return 0; }
+    let n = 0, k = 0;
+    for (const c0 of cards) {
+      const { priceHtml, ...c } = c0; const price = plain(priceHtml || ''); Object.assign(c, { price, cur: curOf(price) });
+      const old = items.get(idOf(c));
+      prog?.(++k, cards.length);
+      if (old?.qty > 0) continue;
+      try { await save(c, { qty: 1, ...(tag ? { lists: [...new Set([...(old ? listsOf(old) : []), tag])] } : {}) }); n++; } catch (e) { console.warn(e); }
+    }
+    return n;
+  },
 };
 
 </script>
 <!-- Sobre diario con una carta (bronce, plata u oro) -->
 <script type="module" src="sobre.js?v=6"></script>
+<!-- Mazos de Yu-Gi-Oh!: qué mazo puedo hacer, crear con tu colección y buscar mazos (en «Reglas») -->
+<script src="mazos.js?v=8"></script>
 </body>
 </html>
