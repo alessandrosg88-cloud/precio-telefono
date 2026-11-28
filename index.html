@@ -552,6 +552,9 @@ window.PC_BG = /[?&]bg=1\b/.test(location.search) && window.parent !== window;</
   .ptr.spin span{animation:spin .7s linear infinite} @keyframes spin{to{transform:rotate(360deg)}}
   @media (prefers-reduced-motion: reduce){ .sk,.top5 img,.mvr img,.list .item img,.tile img,.mrow img{animation:none} #gx.intro *{animation:none!important} }
 </style>
+<!-- Diseño nuevo (noviembre 2026). En Perfil → Apariencia se puede volver al diseño clásico. -->
+<link rel="stylesheet" href="diseno.css?v=1" id="pcdiseno">
+<script>try{if(localStorage.getItem('pc_diseno')==='clasico')document.getElementById('pcdiseno').disabled=true}catch(e){}</script>
 </head>
 <body>
 <div class="wrap">
@@ -2321,7 +2324,9 @@ function showProfile(){
       <button data-a="cen">${T('📐 Centrado PSA')}<span class="r">›</span></button>
     </div>
     <p class="ptitle">🎨 ${T('Apariencia')}</p>
-    <div class="gxsec" style="padding:10px"><div class="seg" id="pTheme">${(window.GX?.themes || []).map(([k, i, n]) => `<button data-th="${k}" class="${GX.theme === k ? 'on' : ''}">${i} ${T(n)}</button>`).join('')}</div></div>
+    <div class="gxsec" style="padding:10px"><div class="seg" id="pTheme">${(window.GX?.themes || []).map(([k, i, n]) => `<button data-th="${k}" class="${GX.theme === k ? 'on' : ''}">${i} ${T(n)}</button>`).join('')}</div>
+      <div class="seg" id="pDis" style="margin-top:8px">${[['nuevo', '✨', 'Diseño nuevo'], ['clasico', '🕰️', 'Diseño clásico']].map(([k, i, n]) =>
+        `<button data-ds="${k}" class="${((() => { try { return localStorage.getItem('pc_diseno') || 'nuevo'; } catch (e) { return 'nuevo'; } })()) === k ? 'on' : ''}">${i} ${T(n)}</button>`).join('')}</div></div>
     <p class="ptitle">${T('Juego')}</p>
     <div class="menu-list">${Object.entries(GAMES).map(([k, g]) => `<button data-g="${k}" class="${k === game ? 'on' : ''}">${ICONS[k]} ${g.label}${k === game ? '<span class="r">✓</span>' : ''}</button>`).join('')}</div>
     <p class="ptitle">🌐 ${L ? L[2] + ' ' + L[1] : ''}</p>
@@ -2347,6 +2352,8 @@ function showProfile(){
   });
   const gh = out.querySelector('.gxh'); if (gh) gh.onclick = () => GX.showProgress();
   out.querySelectorAll('[data-th]').forEach(b => b.onclick = () => { GX.setTheme(b.dataset.th); showProfile(); });
+  out.querySelectorAll('[data-ds]').forEach(b => b.onclick = () => { try { localStorage.setItem('pc_diseno', b.dataset.ds); } catch (e) {}
+    const l = document.getElementById('pcdiseno'); if (l) l.disabled = b.dataset.ds === 'clasico'; showProfile(); });
   out.querySelectorAll('[data-g]').forEach(b => b.onclick = () => { document.querySelector(`.tab[data-game="${b.dataset.g}"]`).click(); showGame2(); showProfile(); });
   out.querySelectorAll('[data-l]').forEach(b => b.onclick = () => { setLang(b.dataset.l); loadLang(LANG).then(() => { applyLang(); drawTabbar(); showGame2(); showProfile(); }); });
 }
