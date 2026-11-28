@@ -1471,7 +1471,10 @@ const jpPrices = code => { const k = String(code).toUpperCase();
 // precios de esa versión: misma rareza y misma Overframe (sin las de oferta con daños, si hay otras)
 const jpFor = (jp, s) => { if (!jp?.list?.length || !s) return [];
   const of = isOF(s), sameR = x => !s.set_rarity || s.set_rarity === '—' || x.r === s.set_rarity;
-  const l = jp.list.filter(x => x.of === of && sameR(x));
+  let l = jp.list.filter(x => x.of === of && sameR(x));
+  // BIGWEB no siempre marca la Overframe (p. ej. las Prismatic Secret de LOCH, que lo son todas): si de esa rareza
+  // no tiene ninguna marcada como Overframe, esas valen para la versión Overframe
+  if (!l.length && of) { const r2 = jp.list.filter(sameR); if (r2.length && !r2.some(x => x.of)) l = r2; }
   const good = l.filter(x => !x.c); return good.length ? good : l; };
 const jpStock = s => s === '0' ? T('agotado') : /^\d+$/.test(s) ? T('quedan {0}', s) : '';
 const ygoLabelOf = s => s ? `${s.set_code} · ${s.set_rarity}${s.variant ? ' · ' + s.variant : ''}` : '';
