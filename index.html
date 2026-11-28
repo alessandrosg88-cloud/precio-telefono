@@ -1449,6 +1449,21 @@ async function searchYugiohOCG(code){
     return openYugioh(card, code);
   return openYugiohOCG(card, code, f);
 }
+// ---- Precio en Japón (yenes) de las cartas del OCG: Yuyu-tei, guardado cada día en data/jp/<prefijo>.json ----
+const jpCache = {};
+const jpPrices = code => { const pre = String(code).split('-')[0].toLowerCase();
+  return (jpCache[pre] ||= getJSON(`data/jp/${pre}.json`).catch(() => null)).then(d => d ? { updated: d.updated, list: d.c?.[String(code).toUpperCase()] || [] } : null); };
+// rareza de Yugipedia -> abreviatura de Yuyu-tei
+const YY_RAR = { 'Common': ['N'], 'Short Print': ['N'], 'Rare': ['R'], 'Super Rare': ['SR'], 'Ultra Rare': ['UR'], 'Secret Rare': ['SE'],
+  'Prismatic Secret Rare': ['PSE'], 'Ultimate Rare': ['UL'], 'Holographic Rare': ['HR'], "Collector's Rare": ['CR'], 'Quarter Century Secret Rare': ['QCSE', 'QC'],
+  'Extra Secret Rare': ['EXSE'], 'Gold Rare': ['GR'], 'Gold Secret Rare': ['GSE'], 'Premium Gold Rare': ['PG'], 'Normal Parallel Rare': ['NP', 'P-N', 'NPR'],
+  'Super Parallel Rare': ['P-SR', 'SPR'], 'Ultra Parallel Rare': ['P-UR', 'UPR'], 'Millennium Rare': ['M'], 'Grand Master Rare': ['GMR'], '20th Secret Rare': ['20SE', '20thSE'],
+  'Kaiba Corporation Rare': ['KC'], 'Platinum Secret Rare': ['PLSE'] };
+const jpFor = (jp, s) => { if (!jp?.list?.length || !s) return [];
+  const of = isOF(s), ab = YY_RAR[s.set_rarity] || [];
+  const l = jp.list.filter(x => /オーバーフレーム/.test(x.n) === of);
+  return ab.length ? l.filter(x => ab.includes(x.r)) : l; };
+const jpStock = s => s === '×' ? T('agotado') : s === '◯' || s === '○' ? T('hay existencias') : /^\d+$/.test(s) ? T('quedan {0}', s) : '';
 const ygoLabelOf = s => s ? `${s.set_code} · ${s.set_rarity}${s.variant ? ' · ' + s.variant : ''}` : '';
 async function openYugiohOCG(c, code, f){
   const [scans0, pr] = await Promise.all([withTimeout(ygpScans(c.name), 4000), withTimeout(ygoPrints(c.name), 4000)]);
@@ -1465,8 +1480,10 @@ async function openYugiohOCG(c, code, f){
       || [...pool].sort((a, b) => shownPrice(a.prints).n - shownPrice(b.prints).n)[0];
     return e ? { label: ofText(ygoLabelOf(e)), price: shownPrice(e.prints).t } : null; };
   const scanOf = s => pickScan(scans, s.set_code, s.set_rarity, isOF(s));
-  return showVersions(items, idx < 0 ? 0 : idx, async s => yugiohView(c, s, scanOf(s), [], null, { ocgRef: ref(s) }),
-    s => { const x = scanOf(s); return { r: s.set_rarity, of: isOF(s), gmr: isGMR(s), str: isStR(s), t: s.set_code + (s.variant ? ' · ' + s.variant : ''), p: '', n: null,
+  const jp = OCG_REG[reg] ? await withTimeout(jpPrices(code), 4000) : null;
+  const jpMin = s => { const l = jpFor(jp, s); return l.length ? Math.min(...l.map(x => x.y)) : null; };
+  return showVersions(items, idx < 0 ? 0 : idx, async s => yugiohView(c, s, scanOf(s), [], null, { ocgRef: ref(s), jp: jpFor(jp, s), jpUpd: jp?.updated }),
+    s => { const x = scanOf(s), y = jpMin(s); return { r: s.set_rarity, of: isOF(s), gmr: isGMR(s), str: isStR(s), t: s.set_code + (s.variant ? ' · ' + s.variant : ''), p: y ? yen(y) : '', n: y ? y * FX.JPY : null,
       i: x ? ygpThumb(x.url) : c.card_images?.[0]?.image_url_small, rep: !x }; });
 }
 
@@ -1740,19 +1757,23 @@ function yugiohView(c, set, scan, group = [], pr = null, loc = {}){
   let se = chosen?.e || null; // Cardmarket manda
   if (se && isGMR(set) && sp && (se / sp > 3 || se / sp < 0.2)) se = null; // emparejamiento dudoso con otra versión
   const approx = !sp && set && Number(set.set_price) ? Number(set.set_price) : null; // TCGplayer no la vende: dato orientativo
+  const jy = set?.ocg && loc.jp?.length ? Math.min(...loc.jp.map(x => x.y)) : null; // precio en Japón (yenes)
+  if (jy) { rows.unshift(['#Precio en Japón (Yuyu-tei)'], ...loc.jp.map(x => [`${esc(x.r)} · ${esc(x.n)}`, yen(x.y) + (jpStock(x.s) ? ` <small>(${jpStock(x.s)})</small>` : '')]),
+    [T('En euros'), '≈ ' + fmtMoney(jy * FX.JPY, 'EUR', 2)], [T('En dólares'), '≈ ' + fmtMoney(jy * FX.JPY / FX.USD, 'USD', 2)]); }
   return {
     gmr: isGMR(set), str: isStR(set), stamp: isStamp(set) ? stampName(set.set_name) : '', overframe: isOF(set), ofNoScan: isOF(set) && !set.ocg && !!scan && !scan.extra?.includes('EA'),
     img: scan?.url || c.card_images?.[0]?.image_url, replica: !scan, name: locName || c.name, subname: locName && locName !== c.name ? c.name : '', rarity: set?.set_rarity,
     alts,
-    updated: pr && ps.length ? T(se ? 'Cardmarket del {0}' : 'TCGplayer del {0}', fecha(pr.updated)) : '',
+    updated: jy ? T('Yuyu-tei del {0}', fecha(loc.jpUpd)) : pr && ps.length ? T(se ? 'Cardmarket del {0}' : 'TCGplayer del {0}', fecha(pr.updated)) : '',
     versionLabel: set ? `${loc.code || set.set_code} · ${set.set_rarity}${set.variant ? ' · ' + set.variant : ''}` : '',
     meta: set ? `${esc(set.set_name)} · ${esc(loc.code || set.set_code)}${set.variant ? ' · ' + esc(ofText(set.variant)) : ''}${set.ofx ? ' · Overframe' : ''}` : esc(c.type),
-    mainLabel: set?.ocg || set?.ygp ? 'Precio de esta edición exacta' : se ? 'Precio en Cardmarket de esta edición' : sp ? 'Precio de esta edición exacta' : approx ? 'Precio orientativo de esta edición' : set ? 'Precio de esta edición exacta' : 'Precio en Cardmarket (desde)',
-    mainValue: se ? eur(se) : sp ? usd(sp) : approx ? usd(approx) : set ? '' : eur(p.cardmarket_price) || usd(p.tcgplayer_price),
-    approx: set?.ygp ? 'Esta impresión no está a la venta con este código en TCGplayer ni en Cardmarket: no hay precio público. Abajo tienes el precio de la misma carta en otra edición como referencia.'
+    mainLabel: jy ? 'Precio en Japón (Yuyu-tei)' : set?.ocg || set?.ygp ? 'Precio de esta edición exacta' : se ? 'Precio en Cardmarket de esta edición' : sp ? 'Precio de esta edición exacta' : approx ? 'Precio orientativo de esta edición' : set ? 'Precio de esta edición exacta' : 'Precio en Cardmarket (desde)',
+    mainValue: jy ? yen(jy) : se ? eur(se) : sp ? usd(sp) : approx ? usd(approx) : set ? '' : eur(p.cardmarket_price) || usd(p.tcgplayer_price),
+    approx: jy ? `≈ ${fmtMoney(jy * FX.JPY, 'EUR', 2)} · ≈ ${fmtMoney(jy * FX.JPY / FX.USD, 'USD', 2)} · ${T('precio de venta en la tienda japonesa Yuyu-tei, al cambio de hoy')}`
+      : set?.ygp ? 'Esta impresión no está a la venta con este código en TCGplayer ni en Cardmarket: no hay precio público. Abajo tienes el precio de la misma carta en otra edición como referencia.'
       : set?.ocg ? 'Cardmarket y TCGplayer no venden cartas del OCG (Japón y Asia): no hay precio público de esta impresión. Abajo tienes el precio de la versión inglesa como referencia y enlaces a tiendas japonesas.'
       : se && chosen.ea ? 'Cardmarket no separa bien las versiones de esta carta en esta expansión: precio aproximado.' : approx ? 'TCGplayer no vende esta impresión; dato de YGOPRODeck, puede estar desactualizado.' : set && !sp ? 'TCGplayer no tiene precio de esta impresión ahora mismo.' : '',
-    value: set?.ocg || set?.ygp ? null : se || sp || approx || Number(p.cardmarket_price) || null,
+    value: jy ? jy : set?.ocg || set?.ygp ? null : se || sp || approx || Number(p.cardmarket_price) || null,
     rows,
     links: [['Cardmarket', `https://www.cardmarket.com/es/YuGiOh/Products/Search?searchString=${encodeURIComponent(c.name)}${loc.lang ? '&language=' + ({ fr: 2, de: 3, es: 4, it: 5, pt: 8 })[loc.lang] : ''}`],
             ['TCGplayer', `https://www.tcgplayer.com/search/yugioh/product?q=${encodeURIComponent(c.name)}`],
