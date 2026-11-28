@@ -1315,11 +1315,13 @@ function pickScan(scans, code, rarity, of){
   const set = code ? String(code).toUpperCase().split('-')[0] : null;
   const reg = code ? ygpRegion(code) : 'EN';
   const ab = RAR_ABBR[rarity] || [];
-  let best = null, bs = -1;
+  let best = null, bs = -1, bestEA = null, bsEA = -1;
   for (const x of scans) {
     if (set && x.set.toUpperCase() !== set) continue;
     let sc = 0;
     if (x.reg === reg) sc += 8; else if (['EN', 'NA', 'EU'].includes(x.reg) && ['EN', 'NA', 'EU'].includes(reg)) sc += 3; else if (code) continue;
+    if (ab.length && of && x.extra.includes('EA') && !ab.includes(x.rar)) { // la misma ilustración Overframe en otra rareza
+      const s2 = sc + (x.ed === '1E' ? 1 : 0); if (s2 > bsEA) { bsEA = s2; bestEA = x; } continue; }
     if (ab.length) { if (ab[0] === x.rar) sc += 6; else if (ab.includes(x.rar)) sc += 4; else continue; } // otra rareza = otra carta
     const ea = x.extra.includes('EA');
     if (of === false && ea) continue;           // la normal nunca enseña la foto Overframe
@@ -1328,6 +1330,8 @@ function pickScan(scans, code, rarity, of){
     if (x.ed === '1E') sc += 1;
     if (sc > bs) { bs = sc; best = x; }
   }
+  // Overframe sin foto propia de esa rareza: mejor la foto Overframe de otra rareza que la de la versión normal
+  if (of && bestEA && !best) return bestEA;
   return best;
 }
 const ygpThumb = u => { const m = u?.match(/^(https:\/\/img\.yugipedia\.com\/)(.+\/)([^/]+)$/); return m ? `${m[1]}thumb/${m[2]}${m[3]}/200px-${m[3]}` : u; };
@@ -1588,6 +1592,18 @@ function ofImageFor(code, rarity){
     const s = pickScan(scans, code, rarity, true);
     return s && s.extra.includes('EA') ? s.url : null;
   })().catch(() => null);
+}
+const codeOFCache = {};
+function codeIsOF(code, rarity){
+  const k = code + '|' + rarity;
+  return codeOFCache[k] ||= (async () => {
+    const info = await getJSON(`${YGO}/cardsetsinfo.php?setcode=${encodeURIComponent(code)}`).catch(() => null);
+    if (!info?.name) return false;
+    const pr = await ygoPrints(info.name);
+    const same = (pr?.list || []).filter(e => normCode(e.c) === normCode(code));
+    return same.some(e => e.r === rarity && (e.of || /extended art/i.test(e.v || ''))) ||
+      (/starlight|grand master/i.test(rarity) && same.some(e => /extended art/i.test(e.v || '')));
+  })().catch(() => false);
 }
 const isEAimg = u => /-EA[.-]/i.test(String(u || ''));
 let pendingLabel = null; // versión guardada en la colección que hay que abrir (ver openItem)
@@ -3345,7 +3361,16 @@ function cardFrom(v){
 const idOf = c => (c.game + '|' + c.name + '|' + c.label).replace(/\//g, '∕').slice(0, 400);
 // Overframe guardadas con la foto de la versión normal: se cambia por la foto Overframe (dibujo fuera del marco)
 async function fixOFImgs(){
-  const todo = [...items].filter(([, i]) => i.game === 'yugioh' && (i.qty > 0 || i.fav) && i.img && !isEAimg(i.img) && (i.of || isOF(i.label)));
+  // Starlight / GMR guardadas sin la marca Overframe: se comprueba si su código tiene Overframe
+  for (const [id, i] of [...items]) {
+    if (i.game !== 'yugioh' || i.of || isOF(i.label) || !/starlight|grand master/i.test(i.label + ' ' + i.rarity)) continue;
+    const [code, rarity] = String(i.label || '').split(' · ');
+    if (code && await codeIsOF(code, rarity || i.rarity || '') && user) { i.of = true;
+      await setDoc(doc(db, 'users', user.uid, 'items', id), { of: true }, { merge: true }).catch(() => {}); }
+  }
+  // la GMR lleva su propia foto (con número de serie): solo se cambia si no es un escaneo de Yugipedia
+  const todo = [...items].filter(([, i]) => i.game === 'yugioh' && (i.qty > 0 || i.fav) && i.img && !isEAimg(i.img) && (i.of || isOF(i.label))
+    && !(isGMR(i.rarity || i.label) && /yugipedia/.test(i.img)));
   for (const [id, i] of todo) {
     const [code, rarity] = String(i.label || '').split(' · ');
     const url = code && await ofImageFor(code, rarity || i.rarity || '');
