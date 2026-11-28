@@ -1577,6 +1577,19 @@ const specialOf = x => { if (!x || (x.game || x.g) !== 'yugioh') return null;
   const r = { of: !!(x.of || x.tg?.of) || isOF(t), gmr: isGMR(t), str: isStR(t), st: isStamp(t) };
   return r.of || r.gmr || r.str || r.st ? r : null; };
 const thumbTags = x => { const t = specialOf(x); return t ? tileTags(t.of, t.gmr, t.str, t.st) : ''; };
+// foto de la versión Overframe de una impresión (Yugipedia marca esos escaneos con «-EA»); null si no la tiene
+const ofImgCache = {};
+function ofImageFor(code, rarity){
+  const k = code + '|' + rarity;
+  return ofImgCache[k] ||= (async () => {
+    const info = await getJSON(`${YGO}/cardsetsinfo.php?setcode=${encodeURIComponent(code)}`).catch(() => null);
+    if (!info?.name) return null;
+    const scans = await ygpScans(info.name, String(code).toUpperCase().split('-')[0]);
+    const s = pickScan(scans, code, rarity, true);
+    return s && s.extra.includes('EA') ? s.url : null;
+  })().catch(() => null);
+}
+const isEAimg = u => /-EA[.-]/i.test(String(u || ''));
 let pendingLabel = null; // versión guardada en la colección que hay que abrir (ver openItem)
 const printCache = {};
 async function ygoPrints(name){
@@ -2648,7 +2661,20 @@ function movers(){
     .map(([id, h]) => ({ id, ...h, ch: (h.p.at(-1)[1] - h.p[0][1]) / h.p[0][1] * 100, from: h.p[0][0] }))
     .filter(m => isFinite(m.ch));
 }
+let histOFfixed = false;
+async function fixHistOF(){
+  if (histOFfixed) return; histOFfixed = true;
+  const H = hist(); let ch = 0;
+  for (const [id, h] of Object.entries(H)) {
+    if (h.g !== 'yugioh' || !h.i || isEAimg(h.i) || !(h.tg?.of || isOF(id))) continue;
+    const parts = String(id).split('|')[2]?.split(' · ') || [];
+    const url = parts[0] && await ofImageFor(parts[0], parts[1] || '');
+    if (url) { h.i = url; ch++; }
+  }
+  if (ch) { LS.set(HKEY, H); if (typeof drawHome === 'function' && view === 'home') drawHome(); }
+}
 function recent(n = 10){
+  setTimeout(fixHistOF, 2500);
   return Object.entries(hist()).filter(([, h]) => h.n).sort((a, b) => b[1].t - a[1].t).slice(0, n).map(([id, h]) => ({ id, ...h }));
 }
 function openQ(g, q, sealed){
@@ -3294,6 +3320,7 @@ onAuthStateChanged(auth, u => {
   if (u) unsub = onSnapshot(collection(db, 'users', u.uid, 'items'), snap => {
     items = new Map(snap.docs.map(d => [d.id, d.data()])); itemsReady = true;
     drawAcct(); drawMine(); colEvent();
+    if (!window.PC_BG && !fixOFImgs.done) { fixOFImgs.done = 1; setTimeout(fixOFImgs, 3000); }
     if (mineView) showMine(mineView, true);
   });
   drawAcct(); drawMine();
@@ -3316,6 +3343,15 @@ function cardFrom(v){
   };
 }
 const idOf = c => (c.game + '|' + c.name + '|' + c.label).replace(/\//g, '∕').slice(0, 400);
+// Overframe guardadas con la foto de la versión normal: se cambia por la foto Overframe (dibujo fuera del marco)
+async function fixOFImgs(){
+  const todo = [...items].filter(([, i]) => i.game === 'yugioh' && (i.qty > 0 || i.fav) && i.img && !isEAimg(i.img) && (i.of || isOF(i.label)));
+  for (const [id, i] of todo) {
+    const [code, rarity] = String(i.label || '').split(' · ');
+    const url = code && await ofImageFor(code, rarity || i.rarity || '');
+    if (url && user) await setDoc(doc(db, 'users', user.uid, 'items', id), { img: url }, { merge: true }).catch(() => {});
+  }
+}
 async function save(c, patch){
   const id = idOf(c), old = items.get(id) || {};
   const data = { ...old, ...c, qty: old.qty || 0, fav: !!old.fav, ...patch, updated: serverTimestamp() };
