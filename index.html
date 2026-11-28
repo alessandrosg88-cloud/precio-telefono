@@ -705,7 +705,12 @@ $('form').onsubmit = e => { e.preventDefault(); search(); };
 
 // ===================== UTILIDADES =====================
 const usd = v => money(v, 'USD');
-const money = (v, cur, d = 2) => (v == null || v === '' || Number(v) === 0) ? null : new Intl.NumberFormat(LOCALE(), { style: 'currency', currency: cur, minimumFractionDigits: d, maximumFractionDigits: d }).format(Number(v));
+const fmtMoney = (v, cur, d) => new Intl.NumberFormat(LOCALE(), { style: 'currency', currency: cur, currencyDisplay: cur === 'JPY' ? 'narrowSymbol' : 'symbol', minimumFractionDigits: d, maximumFractionDigits: d }).format(v);
+const money = (v, cur, d = 2) => (v == null || v === '' || Number(v) === 0) ? null : fmtMoney(Number(v), cur, d);
+// FX = euros que vale 1 unidad de cada moneda (cambio del BCE, frankfurter.dev): para pasar los yenes a euros y dólares
+const FX = { EUR: 1, USD: 0.92, JPY: 0.0061, date: null };
+fetch('https://api.frankfurter.dev/v1/latest?base=EUR&symbols=USD,JPY').then(r => r.ok ? r.json() : null)
+  .then(d => { if (d?.rates?.USD) { FX.USD = 1 / d.rates.USD; if (d.rates.JPY) FX.JPY = 1 / d.rates.JPY; FX.date = d.date; } }).catch(() => {});
 const eur = v => money(v, 'EUR');
 const fecha = d => d ? new Date(d).toLocaleDateString(LOCALE()) : '';
 // reverso de carta para cuando no hay ninguna foto
@@ -2996,7 +3001,9 @@ function afterRender(v){
   const rowsCmp = [];
   const usedProv = new Set();
   for (const s of secs) {
-    const prov = PROVIDERS.find(p => p[1].test(s.name)) || PROVIDERS.find(p => p[1].test(v.mainLabel || ''));
+    // la tienda: la que dice la sección, si no la de sus filas y, solo para «esta edición», la del precio principal
+    const prov = PROVIDERS.find(p => p[1].test(s.name)) || PROVIDERS.find(p => s.rows.some(r => p[1].test(r[0])))
+      || (!/OCG|general|impresi/i.test(s.name) ? PROVIDERS.find(p => p[1].test(v.mainLabel || '')) : null);
     const pname = prov ? prov[0] : (s.name || T('Fuente'));
     usedProv.add(pname);
     const head = s.rows.find(r => curOf(plain(r[1])));
